@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.11.35208.52
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WFGL", "WFGL\WFGL.csproj", "{F561CCFD-951D-4797-A41E-0DEE1BD71D61}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DemoGame", "DemoGame\DemoGame.csproj", "{DA3E5CD2-D247-4CBD-A26B-2D63E94AF808}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{F561CCFD-951D-4797-A41E-0DEE1BD71D61}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F561CCFD-951D-4797-A41E-0DEE1BD71D61}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F561CCFD-951D-4797-A41E-0DEE1BD71D61}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F561CCFD-951D-4797-A41E-0DEE1BD71D61}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DA3E5CD2-D247-4CBD-A26B-2D63E94AF808}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DA3E5CD2-D247-4CBD-A26B-2D63E94AF808}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DA3E5CD2-D247-4CBD-A26B-2D63E94AF808}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DA3E5CD2-D247-4CBD-A26B-2D63E94AF808}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {E0D84982-88A9-4F42-8471-B479ADE5D703}
+	EndGlobalSection
+EndGlobal
