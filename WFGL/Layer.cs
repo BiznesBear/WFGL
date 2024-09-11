@@ -5,8 +5,13 @@ public sealed class Layer(byte drawWeight)
 {
     public readonly static Layer Defalut = new(0);
     internal static List<Layer> List { get; private set; } = [Defalut];
+
     public byte DrawWeight { get; } = drawWeight;
 
+
+    /// <summary>
+    /// Sets, and updates list of layers (with defalut, layer)
+    /// </summary>
     public static List<Layer> Registration
     {
         set
@@ -17,6 +22,10 @@ public sealed class Layer(byte drawWeight)
         }
     }
 
+    /// <summary>
+    /// Registers new layer
+    /// </summary>
+    /// <param name="layer">Layer to register</param>
     public void Register(Layer layer)
     {
         List.Add(layer);

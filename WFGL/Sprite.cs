@@ -1,21 +1,20 @@
-﻿using WFGL.Core;
-namespace WFGL;
+﻿namespace WFGL;
 
-public class Sprite : Transform
+public class Sprite : IAsset<Image>
 {
-    public Image? source;
-    public Image Source => source ?? throw new Exception("Cannot load sprite"); 
-    public Vector2 RealSize => new(Source.Width * Size.X * SpriteSize, Source.Height * Size.Y * SpriteSize);
-    public float SpriteSize { get; set; } = 1f;
-    public Sprite() { }
-    public Sprite(string filePath)
-    {
-        source = LoadFromSource(filePath).source;
-    }
-    public static Sprite LoadFromSource(string filePath) => new() { source = Image.FromFile(filePath) };
+    private Image? Source { get; set; } 
+    public Vector2 Scale { get; set; } = Vector2.One;
+    public string FilePath { get; private set; } = "";
 
-    public override void OnDraw(GameMaster master)
+    public Sprite() { }
+    public Sprite(string path) 
     {
-        master.DrawSprite(this);
+        FilePath = path;
+        Load(FilePath);
+    }
+    public Image GetSource() => Source ?? throw new Exception("Cannot load sprite");
+    public void Load(string filePath)
+    {
+        Source = Image.FromFile(filePath);
     }
 }

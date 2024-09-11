@@ -1,10 +1,18 @@
-﻿Fixed scaling and vectors 
-Asset manager
-Draw order ✅
-Canvas and ui
-Collisions
-Phisics
+﻿>> Right now:
+	Better rendering system managment
+	Component system 
 
-----------------
-Lighting system
-Raycasting
+>> Later:
+	Fixed scaling and vectors ✅
+	Draw weight ✅
+	Camera
+	Canvas and ui
+	Collisions
+	More Phisics
+
+>> Don't ask me what I drank
+	Particle system
+	Lighting system
+	Raycasting
+	Postprocessing
+	Converting windows forms view to code 🤡

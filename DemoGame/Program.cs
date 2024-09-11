@@ -1,49 +1,81 @@
-﻿using WFGL.Core;
-using WFGL;
+﻿using WFGL;
+using WFGL.Core;
+using WFGL.UI;
 using System.Windows.Forms;
 using System.Drawing;
+
 namespace DemoGame;
 
 internal class Program
 { 
     private static void Main(string[] args)
     {
-        Game game = new(GameWindowOptions.Default with { Background = System.Drawing.Color.DarkSlateGray });
+        GameWindow window = new GameWindow(GameWindowOptions.Default with { Background = Color.DarkSlateGray });
+        Game game = new(window);
         game.CreateWindow();
     }
 }
 
-class Game(GameWindowOptions options) : GameMaster(options)
+class Game : GameMaster
 {
-    Hierarchy hierarchy = new();
-
+    Hierarchy hierarchy;
 
     Layer topLayer = new(255);
+    Layer underTopLayer = new(254);
 
-    Player? player;
-    Sprite? sprite;
+    Player player;
+    internal SpriteRenderer sprite;
+    internal SpriteRenderer sprite2;
 
+    Canvas canvas;
+    StaticText fpsText;
+    StaticText userNameText;
 
+    Font font = new("Cascadia Mono Light", 14);
+
+    public Game(GameWindow window) : base(window)
+    {
+        Layer.Registration = [topLayer,underTopLayer];
+
+        hierarchy = new(this);
+
+        canvas = new(this);
+        fpsText = new(canvas, font, $"FPS: {Time.Fps}");
+        userNameText = new(canvas, font, Environment.UserName);
+
+        player = new() { Layer = topLayer};
+        sprite = new("C:\\Users\\ADAM\\Desktop\\CZYSCIEC\\aushf.jpg") { Position = new(2.5f,0), Layer = underTopLayer};
+        sprite2 = new("C:\\Users\\ADAM\\Desktop\\CZYSCIEC\\mozg-masz-wypadlo-ci.jpg") {  Position = Vector2.One };
+    }
 
     protected override void OnLoad()
     {
-        Time.SetFps(Time.RECOMMENDED_FPS);
-        hierarchy.AssignMaster(this);
-        Layer.Registration = [topLayer];
-
-        player = new() { Layer = topLayer };
-        sprite = new("C:\\Users\\ADAM\\Desktop\\CZYSCIEC\\aushf.jpg") { SpriteSize = 0.5f };
         player.Create(hierarchy);
         sprite.Create(hierarchy);
+        sprite2.Create(hierarchy);
+
+        fpsText.Create(canvas);
+        userNameText.Create(canvas);
     }
+
+
     protected override void OnUpdate()
     {
         hierarchy.UpdateAll();
+        canvas.UpdateAll();
+        userNameText.Position = player.Position + new Vector2(0.33f,-0.15f);
     }
+    
     protected override void OnDraw()
-    {        
+    {
+        fpsText.UpdateText($"FPS: {Time.Fps}");
         hierarchy.DrawAll();
+        canvas.DrawAll();
+
+        // currently draws the rect of render size
+        DrawRect(Pixel.Zero,new Pixel((int)(VirtualScale.FactorX*VirtualUnit.SCALING), (int)(VirtualScale.FactorY * VirtualUnit.SCALING)));
     }
+
     protected override void OnInput()
     {
         if (IsKeyPressed(Keys.F11))
@@ -51,39 +83,44 @@ class Game(GameWindowOptions options) : GameMaster(options)
             if (!IsFullScreen) FullScreen();
             else NormalScreen();
         }
+        if (IsKeyPressed(Keys.V) && IsKeyPressed(Keys.C) )
+        {
+            Output.Info(Output.Command());
+        }
     }
     protected override void OnResize()
     {
-        Debug.Info("Resized!");
+
     }
 }
 class Player : Transform
 {
-    internal Sprite sprite = new("C:\\Users\\ADAM\\Desktop\\CZYSCIEC\\furniture.png");
-    int speed = 6;
-    const int normalSpeed = 6;
-    const int sprintSpeed = 10;
+    internal SpriteRenderer playerSprite = new("C:\\Users\\ADAM\\Desktop\\CZYSCIEC\\furniture.png");
+    float speed = 4;
+    const float normalSpeed =2.5f;
+    const float sprintSpeed = 4;
     public override void OnCreate()
     {
-        sprite.SpriteSize = 0.3f;
-        sprite.Size = new(0.8f,0.5f);
+        playerSprite.Sprite.Scale = new(1f,0.6f);
     }
     public override void OnUpdate(GameMaster m)
     {
         speed = m.IsKeyPressed(Keys.Space)? sprintSpeed : normalSpeed;
 
         Vector2 direction = Vector2.Zero;
+
         if (m.IsKeyPressed(Keys.A)) direction -= new Vector2(speed, 0f);
         if (m.IsKeyPressed(Keys.D)) direction += new Vector2(speed, 0f);
         if (m.IsKeyPressed(Keys.W)) direction -= new Vector2(0f, speed);
         if (m.IsKeyPressed(Keys.S)) direction += new Vector2(0f, speed);
-
-        Position += direction.Normalize() * new Vector2(speed, speed);
-        Position = Position.CutToBounds(sprite, m.GetWindow());
-        sprite.Position = Position;
+       
+        Position += direction.Normalize() * speed * Time.DeltaTime;
+        playerSprite.Position = Position;
+        
     }
     public override void OnDraw(GameMaster m)
     {
-        m.DrawSprite(sprite);
+        m.DrawSprite(playerSprite, playerSprite.RealSize.VirtualizePixel(m.MainCamera));
+        m.DrawRect(Position.ToPixel(m.VirtualScale), playerSprite.RealSize.VirtualizePixel(m.MainCamera));
     }
 }

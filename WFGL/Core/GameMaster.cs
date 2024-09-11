@@ -1,4 +1,5 @@
-﻿using Timer = System.Windows.Forms.Timer;
+﻿using System.Diagnostics;
+using Timer = System.Windows.Forms.Timer;
 namespace WFGL.Core;
 
 public class GameMaster
@@ -11,43 +12,49 @@ public class GameMaster
     private Time TimeMaster { get; } = new();
     private Timer Timer { get; } = new();
 
+    public VirtualUnit VirtualScale => new VirtualUnit(VirtualScaleX, VirtualScaleY).NormalizeByMin();
+    protected float VirtualScaleX => VirtualUnit.VirtualizeToFactor(GameWindow.ClientSize.Width);
+    protected float VirtualScaleY => VirtualUnit.VirtualizeToFactor(GameWindow.ClientSize.Height);
+
+
     // input
     private readonly HashSet<Keys> pressedKeys = new();
 
     private Graphics Renderer { get; set; }
+    public Camera MainCamera { get; private set; }
 
 
-    
-
-    public GameMaster(GameWindowOptions options)
+    private Stopwatch frameStopwatch;
+    private int frames;
+    public GameMaster(GameWindow window)
     {
         // window
+        Console.Title = Application.ProductName??"Game console";
         Application.EnableVisualStyles();
-        GameWindow = new();
-        GameWindow.SetWindowOptions(options);
+        GameWindow = window;
+
+        // window events
         GameWindow.Paint += Draw;
-
         GameWindow.Resize += Resized;
-
-        // input
         GameWindow.KeyDown += KeyDown;
         GameWindow.KeyUp += KeyUp;
-
         // time
         TimeMaster.Timer = Timer;
         TimeMaster.Timer.Tick += Update;
-
+        frameStopwatch = new Stopwatch();
         Renderer = GameWindow.CreateGraphics();
+        MainCamera = new(this);
+        frameStopwatch.Start();
+        Time.SetFps(Time.DEFALUT_FPS);
+
     }
     #region Window
     public void CreateWindow()
     {
         Time.Start();
         OnLoad();
-        
         GameWindow.ShowDialog();
     }
-    public GameWindow GetWindow() => GameWindow;
 
     public void FullScreen() 
     {
@@ -59,25 +66,43 @@ public class GameMaster
     }
     public void NormalScreen()
     {
-        GameWindow.FormBorderStyle = FormBorderStyle.FixedDialog;
+        GameWindow.FormBorderStyle = GameWindow.BorderStyle;
         GameWindow.WindowState = FormWindowState.Normal;
         GameWindow.TopMost = false;
         GameWindow.ClientSize = windowSizeTemp;
         IsFullScreen = false;
     }
     private void Resized(object? sender, EventArgs e) { OnResize();  }
+
+    public GameWindow GetWindow() => GameWindow;
+    public Graphics GetRenderer() => Renderer;
+
     #endregion
 
     #region Logic
     private void Update(object? sender, EventArgs e)
     {
         // update all game lib stuff here
+
+        // counting current fps
+        frames++;
+        if (frameStopwatch.ElapsedMilliseconds >= 1000)
+        {
+            TimeMaster.framesPerSecond = frames / (frameStopwatch.ElapsedMilliseconds / 1000f);
+            frames = 0;
+            frameStopwatch.Restart();
+        }
+        // calculating delta time
+        DateTime currentTime = DateTime.Now;
+        TimeMaster.deltaTime = (currentTime - TimeMaster.previousTime).TotalSeconds;
+        TimeMaster.previousTime = currentTime;
+
+        // refreshing and updating other stuff
         GameWindow.Invalidate();
         OnUpdate();
     }
     private void Draw(object? sender, PaintEventArgs e) 
     {
-        // idk, but this is when window is updated, by user
         Renderer = e.Graphics;
         OnDraw();
 
@@ -86,12 +111,37 @@ public class GameMaster
         //Renderer.RotateTransform(rotationAngle);
         // Renderer.ResetTransform();
     }
+
+    //public void DrawStaticText(string content, StaticText text)
+    //{
+    //    float dynamicFontSize = text.baseSize; 
+    //    Font dynamicFont = new(text.font.FontFamily, dynamicFontSize);
+
+    //    Renderer.DrawString(content, dynamicFont, Brushes.Black, pos.X, pos.Y);
+    //    dynamicFont.Dispose();
+    //}
     #endregion
 
     #region Drawing
-    public void DrawSprite(Sprite sprite)
+
+    public void DrawRect(Pixel position, Pixel size)
     {
-        Renderer.DrawImage(sprite.Source, sprite.Position.X, sprite.Position.Y, sprite.RealSize.X,sprite.RealSize.Y);
+        var pen = new Pen(Color.Red, 1);
+        Renderer.DrawRectangle(pen,new(position.PushToPoint(),size.PushToSize()));
+    }
+    public void DrawRectangle(Pixel position, Pixel size)
+    {
+        var pen = new Pen(Color.Red, 1);
+        Renderer.DrawRectangle(pen, new(position.PushToPoint(), size.PushToSize()));
+        Renderer.FillRectangle(pen.Brush, new(position.PushToPoint(), size.PushToSize()));
+    }
+    public void DrawSprite(SpriteRenderer sprite,Pixel size)
+    {
+        Pixel pixel = sprite.Position.ToPixel(VirtualScale);
+        //Renderer.TranslateTransform(squarePosition.X + squareSize / 2, squarePosition.Y + squareSize / 2);
+        //Renderer.RotateTransform(rotationAngle);
+        // Renderer.ResetTransform();
+        Renderer.DrawImage(sprite.Source, pixel.X, pixel.Y, size.X, size.Y);
     }
     #endregion
 
@@ -105,12 +155,10 @@ public class GameMaster
     private void KeyUp(object? sender, KeyEventArgs e)
     {
         pressedKeys.Remove(e.KeyCode);
-
     }
     public bool IsKeyPressed(Keys keys) { return pressedKeys.Contains(keys); }
 
     #endregion
-
 
     #region VirtualFunctions
     /// <summary>
@@ -136,5 +184,7 @@ public class GameMaster
     /// Called every time when any key is pressed down.
     /// </summary>
     protected virtual void OnInput() { }
+
+
     #endregion
 }

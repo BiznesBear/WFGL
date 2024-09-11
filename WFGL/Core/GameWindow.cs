@@ -2,16 +2,18 @@
 
 public class GameWindow : Form
 {
-    public GameWindow()
+    public FormBorderStyle BorderStyle { get; set; } = FormBorderStyle.Sizable;
+    public GameWindow(GameWindowOptions options)
     {
         DoubleBuffered = true;
         MaximizeBox = false;
+        SetWindowOptions(options);
     }
     public void SetWindowOptions(GameWindowOptions options)
     {
-        FormBorderStyle = FormBorderStyle.FixedDialog;
+        FormBorderStyle = BorderStyle;
         Text = options.Title;
-        Size = options.Size;
+        ClientSize = options.Size;
         BackColor = options.Background;
         Icon = options.Icon;
     }
@@ -27,7 +29,7 @@ public struct GameWindowOptions
     public readonly static GameWindowOptions Default = new()
     {
         Title = "WFGL game window",
-        Size = new(900, 600),
+        Size = new(1280, 720),
         Background = Color.Black
     };
 }
