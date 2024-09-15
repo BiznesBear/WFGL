@@ -12,25 +12,41 @@ public class GameMaster
     private Time TimeMaster { get; } = new();
     private Timer Timer { get; } = new();
 
-    public VirtualUnit VirtualScale => new VirtualUnit(VirtualScaleX, VirtualScaleY).NormalizeByMin();
+    public VirtualUnit VirtualScale => new VirtualUnit(VirtualScaleX, VirtualScaleY).Normalize();
     protected float VirtualScaleX => VirtualUnit.VirtualizeToFactor(GameWindow.ClientSize.Width);
     protected float VirtualScaleY => VirtualUnit.VirtualizeToFactor(GameWindow.ClientSize.Height);
 
 
+    public VirtualUnit GetVUnitRatio()
+    {
+        // do tego wystarczy już tylko znormalizować ten kwadrat
+
+        VirtualUnit unit = new()
+        {
+            FactorX = VirtualScaleX - VirtualScaleX % MainCamera.AspectRatio.Width,
+            FactorY = VirtualScaleY - VirtualScaleY % MainCamera.AspectRatio.Height
+        };
+        //VirtualUnit unit = new()
+        //{
+        //    FactorX =  0,
+        //    FactorY = 0
+        //};
+        return unit;
+    }
+    public Pixel WindowCenter => new(GameWindow.ClientSize.Width/2, GameWindow.ClientSize.Height/2);
     // input
     private readonly HashSet<Keys> pressedKeys = new();
 
     private Graphics Renderer { get; set; }
     public Camera MainCamera { get; private set; }
 
-
+    // fps counter 
     private Stopwatch frameStopwatch;
     private int frames;
     public GameMaster(GameWindow window)
     {
         // window
-        Console.Title = Application.ProductName??"Game console";
-        Application.EnableVisualStyles();
+        Console.Title = Application.ProductName ?? "Game console";
         GameWindow = window;
 
         // window events
@@ -38,15 +54,19 @@ public class GameMaster
         GameWindow.Resize += Resized;
         GameWindow.KeyDown += KeyDown;
         GameWindow.KeyUp += KeyUp;
+
         // time
         TimeMaster.Timer = Timer;
         TimeMaster.Timer.Tick += Update;
-        frameStopwatch = new Stopwatch();
+
         Renderer = GameWindow.CreateGraphics();
+
         MainCamera = new(this);
-        frameStopwatch.Start();
+
         Time.SetFps(Time.DEFALUT_FPS);
 
+        frameStopwatch = new Stopwatch();
+        frameStopwatch.Start();
     }
     #region Window
     public void CreateWindow()
@@ -105,43 +125,50 @@ public class GameMaster
     {
         Renderer = e.Graphics;
         OnDraw();
-
-        // use somthing like this for rotating objects 
-        //Renderer.TranslateTransform(squarePosition.X + squareSize / 2, squarePosition.Y + squareSize / 2);
-        //Renderer.RotateTransform(rotationAngle);
-        // Renderer.ResetTransform();
     }
-
-    //public void DrawStaticText(string content, StaticText text)
-    //{
-    //    float dynamicFontSize = text.baseSize; 
-    //    Font dynamicFont = new(text.font.FontFamily, dynamicFontSize);
-
-    //    Renderer.DrawString(content, dynamicFont, Brushes.Black, pos.X, pos.Y);
-    //    dynamicFont.Dispose();
-    //}
+    
     #endregion
 
     #region Drawing
 
-    public void DrawRect(Pixel position, Pixel size)
+    public void DrawRect(Color color,float width, Pixel position, Pixel size)
     {
-        var pen = new Pen(Color.Red, 1);
-        Renderer.DrawRectangle(pen,new(position.PushToPoint(),size.PushToSize()));
+        var pen = new Pen(color, width);
+        Renderer.DrawRectangle(pen, new(position.PushToPoint(), size.PushToSize()));
     }
-    public void DrawRectangle(Pixel position, Pixel size)
+    public void DrawRect(Color color,Pixel position, Pixel size) => DrawRect(color, 1, position, size);
+    public void DrawRect(Pixel position, Pixel size) => DrawRect(Color.Red, 1, position, size);
+
+
+
+    public void DrawRectangle(Color color, float width, Pixel position, Pixel size)
     {
-        var pen = new Pen(Color.Red, 1);
+        var pen = new Pen(Color.DarkSlateGray, 1);
         Renderer.DrawRectangle(pen, new(position.PushToPoint(), size.PushToSize()));
         Renderer.FillRectangle(pen.Brush, new(position.PushToPoint(), size.PushToSize()));
     }
-    public void DrawSprite(SpriteRenderer sprite,Pixel size)
+    public void DrawRectangle(Color color,Pixel position, Pixel size) => DrawRectangle(color,1, position, size);
+    public void DrawRectangle(Pixel position, Pixel size) => DrawRectangle(Color.DarkSlateGray,1, position, size);
+
+    public void DrawSprite(Sprite sprite,Pixel position)
     {
-        Pixel pixel = sprite.Position.ToPixel(VirtualScale);
-        //Renderer.TranslateTransform(squarePosition.X + squareSize / 2, squarePosition.Y + squareSize / 2);
-        //Renderer.RotateTransform(rotationAngle);
-        // Renderer.ResetTransform();
-        Renderer.DrawImage(sprite.Source, pixel.X, pixel.Y, size.X, size.Y);
+        Pixel size = new Pixel(sprite.Source.Width, sprite.Source.Height).VirtualizePixel(MainCamera);
+        Renderer.DrawImage(sprite.Source, position.X, position.Y, size.X, size.Y);
+    }
+
+    public void DrawStaticText(UI.StaticText text)
+    {
+        float dynamicFontSize = text.BaseSize * MainCamera.Scaler.FactorX * VirtualUnit.SCALING;
+        Font dynamicFont = new(text.Font.FontFamily, dynamicFontSize);
+        Pixel pos = text.Position.ToPixel(VirtualScale);
+        Renderer.DrawString(text.Content, dynamicFont, text.Brush, pos.X, pos.Y);
+        dynamicFont.Dispose();
+    }
+
+    public void DrawPseudoDarkness(int alpha=140)
+    {
+        using SolidBrush darkBrush = new(Color.FromArgb(alpha, 0, 0, 0)); 
+        Renderer.FillRectangle(darkBrush, 0, 0, GameWindow.Width, GameWindow.Height); 
     }
     #endregion
 
@@ -149,18 +176,19 @@ public class GameMaster
     private void KeyDown(object? sender, KeyEventArgs e)
     {
         pressedKeys.Add(e.KeyCode);
-        OnInput();
+        OnKeyDown(e.KeyCode);
     }
 
     private void KeyUp(object? sender, KeyEventArgs e)
     {
         pressedKeys.Remove(e.KeyCode);
+        OnKeyUp(e.KeyCode);
     }
     public bool IsKeyPressed(Keys keys) { return pressedKeys.Contains(keys); }
 
     #endregion
 
-    #region VirtualFunctions
+    #region OtherFunctions
     /// <summary>
     /// When game is first loaded. Here create start logic.
     /// </summary>
@@ -183,8 +211,8 @@ public class GameMaster
     /// <summary>
     /// Called every time when any key is pressed down.
     /// </summary>
-    protected virtual void OnInput() { }
-
+    protected virtual void OnKeyDown(Keys keys) { }
+    protected virtual void OnKeyUp(Keys keys) { }
 
     #endregion
 }

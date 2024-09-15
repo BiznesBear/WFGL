@@ -11,18 +11,20 @@ public struct VirtualUnit(float x, float y)
     /// </summary>
     public VirtualUnit Normalize()
     {
-        float average = (FactorX + FactorY) / 2f;
-        FactorX = average;
-        FactorY = average;
-        return this;
-    }
-    public VirtualUnit NormalizeByMin()
-    {
         float average = Math.Min(FactorX, FactorY);
         FactorX = average;
         FactorY = average;
         return this;
     }
+
+    public VirtualUnit NormalizeByAvarage()
+    {
+        float average = (FactorX + FactorY) / 2f;
+        FactorX = average;
+        FactorY = average;
+        return this;
+    }
+    
     public static float VirtualizeToFactor(int pixels) => pixels / SCALING;
     public static float DevirtualizeFactor(int units) => units * SCALING;
 }

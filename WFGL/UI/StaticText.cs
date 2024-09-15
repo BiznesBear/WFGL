@@ -1,26 +1,35 @@
-using WFGL.Core;
 namespace WFGL.UI;
-
 
 public class StaticText : Transform
 {
-    public float baseSize;
-    public Font font;
-    public string content;
-    public Canvas canvas;
-    public Brush brush = Brushes.Black;
+    public float BaseSize { get; private set; } = 12;
+    public Font Font { get; private set; }
+    public string Content { get; set; }
+    public Canvas Canvas { get; }
+    public Brush Brush { get; set; } = Brushes.Black;
 
     public StaticText(Canvas parent, Font f, string text)
     {
-        font = f;
-        canvas = parent;
-        content = text;
+        Font = f;
+        BaseSize = f.Size;
+        Canvas = parent;
+        Content = text;
     }
-    public override void OnDraw(GameMaster m)
+    public StaticText(Canvas parent, Font f, Brush brush,string text)
     {
-        Pixel pos = Position.ToPixel(m.VirtualScale);
-        m.GetRenderer().DrawString(content, font, Brushes.Black, pos.X, pos.Y); //TODO: Rework this (now this is not scaling with virtualization :< )
+        Font = f;
+        BaseSize = f.Size;
+        Canvas = parent;
+        Content = text;
+        Brush = brush;
     }
-    public void UpdateText(string text) => content = text;
-    public void UpdateFont(Font f) => font = f;
+    public override void OnDraw(Core.GameMaster m)
+    {
+        m.DrawStaticText(this);
+    }
+    public void UpdateFont(Font f) 
+    {
+        Font = f;
+        BaseSize = f.Size;
+    }
 }

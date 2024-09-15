@@ -2,6 +2,6 @@
 
 public interface IAsset<T> 
 {
-    T GetSource();
+    T Source { get; }
     void Load(string filePath);
 }

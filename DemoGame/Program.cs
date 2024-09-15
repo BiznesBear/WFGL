@@ -10,7 +10,7 @@ internal class Program
 { 
     private static void Main(string[] args)
     {
-        GameWindow window = new GameWindow(GameWindowOptions.Default with { Background = Color.DarkSlateGray });
+        GameWindow window = new(GameWindowOptions.Default);
         Game game = new(window);
         game.CreateWindow();
     }
@@ -19,9 +19,11 @@ internal class Program
 class Game : GameMaster
 {
     Hierarchy hierarchy;
+    Hierarchy lights;
 
-    Layer topLayer = new(255);
-    Layer underTopLayer = new(254);
+    Layer lightLayer = new(150);
+    Layer topLayer = new(100);
+    Layer underTopLayer = new(99);
 
     Player player;
     internal SpriteRenderer sprite;
@@ -31,17 +33,23 @@ class Game : GameMaster
     StaticText fpsText;
     StaticText userNameText;
 
-    Font font = new("Cascadia Mono Light", 14);
+    PseduoLight pseudoLight;
+    //PseduoLight pseudoLight2;
+
+    Font font = new("Cascadia Mono Light", 12);
 
     public Game(GameWindow window) : base(window)
     {
-        Layer.Registration = [topLayer,underTopLayer];
+        Layer.Registration = [topLayer,underTopLayer,lightLayer];
 
         hierarchy = new(this);
-
+        lights = new(this);
+        Random random = new();
         canvas = new(this);
         fpsText = new(canvas, font, $"FPS: {Time.Fps}");
         userNameText = new(canvas, font, Environment.UserName);
+        pseudoLight = new() { Position = 1.5f,Layer=lightLayer };
+        //pseudoLight2 = new() { Position = random.Next(4),Layer=lightLayer };
 
         player = new() { Layer = topLayer};
         sprite = new("C:\\Users\\ADAM\\Desktop\\CZYSCIEC\\aushf.jpg") { Position = new(2.5f,0), Layer = underTopLayer};
@@ -53,6 +61,8 @@ class Game : GameMaster
         player.Create(hierarchy);
         sprite.Create(hierarchy);
         sprite2.Create(hierarchy);
+        pseudoLight.Create(lights);
+        //pseudoLight2.Create(lights);
 
         fpsText.Create(canvas);
         userNameText.Create(canvas);
@@ -62,43 +72,59 @@ class Game : GameMaster
     protected override void OnUpdate()
     {
         hierarchy.UpdateAll();
+        lights.UpdateAll();
         canvas.UpdateAll();
         userNameText.Position = player.Position + new Vector2(0.33f,-0.15f);
+        pseudoLight.Position = player.Position;
     }
     
     protected override void OnDraw()
     {
-        fpsText.UpdateText($"FPS: {Time.Fps}");
+        // drawing background of virtual render size 
+        Pixel scale = new Pixel((int)(VirtualScale.FactorX * VirtualUnit.SCALING), (int)(VirtualScale.FactorY * VirtualUnit.SCALING));
+        DrawRectangle(Pixel.Zero, scale);
+        DrawRect(WindowCenter-scale/new Pixel(2,2), scale);
+
+        fpsText.Content = $"FPS: {Time.Fps}";
         hierarchy.DrawAll();
+        DrawPseudoDarkness(70);
+        lights.DrawAll();
+
+
         canvas.DrawAll();
 
-        // currently draws the rect of render size
-        DrawRect(Pixel.Zero,new Pixel((int)(VirtualScale.FactorX*VirtualUnit.SCALING), (int)(VirtualScale.FactorY * VirtualUnit.SCALING)));
+        // draws the rect of current render size
+        //DrawRect(Pixel.Zero,new Pixel((int)(VirtualScaleX*VirtualUnit.SCALING), (int)(VirtualScaleY * VirtualUnit.SCALING)));
+        //DrawRect(Pixel.Zero,new Pixel((int)(GetVUnitRatio().FactorX*VirtualUnit.SCALING), (int)(GetVUnitRatio().FactorY * VirtualUnit.SCALING)));
+
     }
 
-    protected override void OnInput()
+    protected override void OnKeyDown(Keys keys)
     {
-        if (IsKeyPressed(Keys.F11))
-        {
-            if (!IsFullScreen) FullScreen();
-            else NormalScreen();
-        }
-        if (IsKeyPressed(Keys.V) && IsKeyPressed(Keys.C) )
+        if (IsKeyPressed(Keys.V) && IsKeyPressed(Keys.C))
         {
             Output.Info(Output.Command());
         }
     }
-    protected override void OnResize()
+    protected override void OnKeyUp(Keys keys)
     {
-
+        if (keys == Keys.F11)
+        {
+            if (!IsFullScreen) FullScreen();
+            else NormalScreen();
+        }
     }
 }
+
 class Player : Transform
 {
-    internal SpriteRenderer playerSprite = new("C:\\Users\\ADAM\\Desktop\\CZYSCIEC\\furniture.png");
-    float speed = 4;
-    const float normalSpeed =2.5f;
+    static Sprite sprite = new("C:\\Users\\ADAM\\Desktop\\CZYSCIEC\\furniture.png");
+    internal SpriteRenderer playerSprite = new(sprite);
+
+    float speed = normalSpeed;
+    const float normalSpeed = 2.5f;
     const float sprintSpeed = 4;
+
     public override void OnCreate()
     {
         playerSprite.Sprite.Scale = new(1f,0.6f);
@@ -113,14 +139,14 @@ class Player : Transform
         if (m.IsKeyPressed(Keys.D)) direction += new Vector2(speed, 0f);
         if (m.IsKeyPressed(Keys.W)) direction -= new Vector2(0f, speed);
         if (m.IsKeyPressed(Keys.S)) direction += new Vector2(0f, speed);
+
        
         Position += direction.Normalize() * speed * Time.DeltaTime;
         playerSprite.Position = Position;
-        
     }
     public override void OnDraw(GameMaster m)
     {
-        m.DrawSprite(playerSprite, playerSprite.RealSize.VirtualizePixel(m.MainCamera));
+        playerSprite.OnDraw(m);
         m.DrawRect(Position.ToPixel(m.VirtualScale), playerSprite.RealSize.VirtualizePixel(m.MainCamera));
     }
 }

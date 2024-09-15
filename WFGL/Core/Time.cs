@@ -19,7 +19,7 @@ public class Time
         Instance = this;
     }
     
-    internal Timer Timer { get; set; } = new() { };
+    internal Timer Timer { get; set; } = new();
 
     public static void Start() => GetInstance.Timer.Start();
     public static void Stop() => GetInstance.Timer.Stop();

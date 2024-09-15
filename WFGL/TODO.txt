@@ -1,14 +1,16 @@
 ﻿>> Right now:
-	Better rendering system managment
-	Component system 
+	Better rendering system managment (automatic virtualization) ⚙️
+	Camera ⚙️
+	PseudoLight
 
 >> Later:
 	Fixed scaling and vectors ✅
 	Draw weight ✅
-	Camera
-	Canvas and ui
+	Camera ⚙️
+	Canvas and ui ⚙️
 	Collisions
 	More Phisics
+	Tilemaps & tiled sprites
 
 >> Don't ask me what I drank
 	Particle system
