@@ -13,7 +13,12 @@ public class Hierarchy
     public void UpdateAll() 
     {
         if (Master == null) throw new Exception("Not assigned game master to hierarchy");
-        foreach (var trans in Transforms) trans.OnUpdate(Master);
+        foreach (var trans in Transforms)
+        { 
+            trans.OnUpdate(Master);
+            var iparentable = trans as IParentable;
+            iparentable?.UpdateToParent(Master);
+        }
     }
 
     public void DrawAll()

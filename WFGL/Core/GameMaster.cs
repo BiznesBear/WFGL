@@ -1,5 +1,4 @@
-﻿using System.Diagnostics;
-using Timer = System.Windows.Forms.Timer;
+﻿using WFGL.Input;
 namespace WFGL.Core;
 
 public class GameMaster
@@ -7,56 +6,44 @@ public class GameMaster
     private GameWindow GameWindow { get; set; }
 
     public bool IsFullScreen { get; private set; }
-    private Size windowSizeTemp;
-
-    private Time TimeMaster { get; } = new();
-    private Timer Timer { get; } = new();
+    
 
     public VirtualUnit VirtualScale => new VirtualUnit(VirtualScaleX, VirtualScaleY).Normalize();
     protected float VirtualScaleX => VirtualUnit.VirtualizeToFactor(GameWindow.ClientSize.Width);
     protected float VirtualScaleY => VirtualUnit.VirtualizeToFactor(GameWindow.ClientSize.Height);
 
-
-    public VirtualUnit GetVUnitRatio()
-    {
-        // do tego wystarczy już tylko znormalizować ten kwadrat
-
-        VirtualUnit unit = new()
-        {
-            FactorX = VirtualScaleX - VirtualScaleX % MainCamera.AspectRatio.Width,
-            FactorY = VirtualScaleY - VirtualScaleY % MainCamera.AspectRatio.Height
-        };
-        //VirtualUnit unit = new()
-        //{
-        //    FactorX =  0,
-        //    FactorY = 0
-        //};
-        return unit;
-    }
     public Pixel WindowCenter => new(GameWindow.ClientSize.Width/2, GameWindow.ClientSize.Height/2);
-    // input
-    private readonly HashSet<Keys> pressedKeys = new();
+    public Pixel WindowSize => new(GameWindow.ClientSize.Width, GameWindow.ClientSize.Height);
 
-    private Graphics Renderer { get; set; }
+    // input
+
     public Camera MainCamera { get; private set; }
 
-    // fps counter 
-    private Stopwatch frameStopwatch;
-    private int frames;
+    public Time TimeMaster { get; } = new();
+    private Graphics Renderer { get; set; }
+
+    private InputHandler? inputHandler;
+    public InputHandler InputMaster => inputHandler ?? throw new Exception("Cannot use unregistered input handler");
+
+    private Size windowSizeTemp;
+
+
     public GameMaster(GameWindow window)
     {
         // window
-        Console.Title = Application.ProductName ?? "Game console";
+        Console.Title = Application.ProductName ?? "WFGL game";
+
         GameWindow = window;
 
         // window events
         GameWindow.Paint += Draw;
         GameWindow.Resize += Resized;
-        GameWindow.KeyDown += KeyDown;
-        GameWindow.KeyUp += KeyUp;
+
+        GameWindow.MouseMove += MouseMoved;
+        
 
         // time
-        TimeMaster.Timer = Timer;
+
         TimeMaster.Timer.Tick += Update;
 
         Renderer = GameWindow.CreateGraphics();
@@ -64,12 +51,22 @@ public class GameMaster
         MainCamera = new(this);
 
         Time.SetFps(Time.DEFALUT_FPS);
-
-        frameStopwatch = new Stopwatch();
-        frameStopwatch.Start();
     }
+
+
+    public VirtualUnit GetVUnitRatio()
+    {
+        // do tego wystarczy już tylko znormalizować ten kwadrat
+        VirtualUnit unit = new()
+        {
+            FactorX = VirtualScaleX - VirtualScaleX % MainCamera.AspectRatio.Width,
+            FactorY = VirtualScaleY - VirtualScaleY % MainCamera.AspectRatio.Height
+        };
+        return unit;
+    }
+
     #region Window
-    public void CreateWindow()
+    public void Load()
     {
         Time.Start();
         OnLoad();
@@ -102,22 +99,6 @@ public class GameMaster
     #region Logic
     private void Update(object? sender, EventArgs e)
     {
-        // update all game lib stuff here
-
-        // counting current fps
-        frames++;
-        if (frameStopwatch.ElapsedMilliseconds >= 1000)
-        {
-            TimeMaster.framesPerSecond = frames / (frameStopwatch.ElapsedMilliseconds / 1000f);
-            frames = 0;
-            frameStopwatch.Restart();
-        }
-        // calculating delta time
-        DateTime currentTime = DateTime.Now;
-        TimeMaster.deltaTime = (currentTime - TimeMaster.previousTime).TotalSeconds;
-        TimeMaster.previousTime = currentTime;
-
-        // refreshing and updating other stuff
         GameWindow.Invalidate();
         OnUpdate();
     }
@@ -126,11 +107,11 @@ public class GameMaster
         Renderer = e.Graphics;
         OnDraw();
     }
-    
+
+
     #endregion
 
     #region Drawing
-
     public void DrawRect(Color color,float width, Pixel position, Pixel size)
     {
         var pen = new Pen(color, width);
@@ -143,7 +124,7 @@ public class GameMaster
 
     public void DrawRectangle(Color color, float width, Pixel position, Pixel size)
     {
-        var pen = new Pen(Color.DarkSlateGray, 1);
+        var pen = new Pen(color, width);
         Renderer.DrawRectangle(pen, new(position.PushToPoint(), size.PushToSize()));
         Renderer.FillRectangle(pen.Brush, new(position.PushToPoint(), size.PushToSize()));
     }
@@ -167,30 +148,41 @@ public class GameMaster
 
     public void DrawPseudoDarkness(int alpha=140)
     {
-        using SolidBrush darkBrush = new(Color.FromArgb(alpha, 0, 0, 0)); 
-        Renderer.FillRectangle(darkBrush, 0, 0, GameWindow.Width, GameWindow.Height); 
+        DrawRectangle(Color.FromArgb(alpha, 0, 0, 0),Pixel.Zero,WindowSize); 
     }
     #endregion
 
     #region Input
-    private void KeyDown(object? sender, KeyEventArgs e)
+
+    public void RegisterInput(InputHandler handler)
     {
-        pressedKeys.Add(e.KeyCode);
-        OnKeyDown(e.KeyCode);
+        if(inputHandler != null)
+        {
+            RemoveInput(inputHandler);
+        }
+
+        inputHandler = handler;
+        GameWindow.KeyDown += handler.KeyDown;
+        GameWindow.KeyUp += handler.KeyUp;
+    }
+    public void RemoveInput(InputHandler handler)
+    {
+        inputHandler = null;
+        GameWindow.KeyDown -= handler.KeyDown;
+        GameWindow.KeyUp -= handler.KeyUp;
     }
 
-    private void KeyUp(object? sender, KeyEventArgs e)
+    private void MouseMoved(object? sender, MouseEventArgs e)
     {
-        pressedKeys.Remove(e.KeyCode);
-        OnKeyUp(e.KeyCode);
+        Mouse.Position = e.Location.PushToPixel();
     }
-    public bool IsKeyPressed(Keys keys) { return pressedKeys.Contains(keys); }
 
     #endregion
 
     #region OtherFunctions
+
     /// <summary>
-    /// When game is first loaded. Here create start logic.
+    /// When game is first loaded. Load every thing here.
     /// </summary>
     protected virtual void OnLoad() { }
 
@@ -200,19 +192,13 @@ public class GameMaster
     protected virtual void OnUpdate() { }
 
     /// <summary>
-    /// Called every time the game window is drawed and always before update. Here draw transforms. 
+    /// Called when the game window is drawed and always before update.
     /// </summary>
     protected virtual void OnDraw() { }
 
     /// <summary>
-    /// Called every time when window is resized.
+    /// Called when windows is resized.
     /// </summary>
     protected virtual void OnResize() { }
-    /// <summary>
-    /// Called every time when any key is pressed down.
-    /// </summary>
-    protected virtual void OnKeyDown(Keys keys) { }
-    protected virtual void OnKeyUp(Keys keys) { }
-
     #endregion
 }

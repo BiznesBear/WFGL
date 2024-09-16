@@ -1,13 +1,16 @@
 ﻿>> Right now:
 	Better rendering system managment (automatic virtualization) ⚙️
 	Camera ⚙️
-	PseudoLight
+	Rework time and more futures (including counting current fps)
 
 >> Later:
 	Fixed scaling and vectors ✅
 	Draw weight ✅
 	Camera ⚙️
 	Canvas and ui ⚙️
+	PseudoLight (with blending) ⚙️
+	Drawing everything at once - hierarchy tree (optimalizations)
+	Rework how OnDraw and OnUpdate in transforms is called (optimalization, from foreach to events)
 	Collisions
 	More Phisics
 	Tilemaps & tiled sprites

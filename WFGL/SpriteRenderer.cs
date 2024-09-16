@@ -4,7 +4,6 @@ namespace WFGL;
 public class SpriteRenderer : Transform
 {
     public Image Source => Sprite.Source;
-
     public Sprite Sprite { get; set; } = new();
 
     /// <summary>

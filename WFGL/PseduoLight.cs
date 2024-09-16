@@ -1,18 +1,18 @@
-﻿using System.Drawing;
-using System.Drawing.Drawing2D;
-using WFGL.Core;
+﻿using WFGL.Core;
 
 namespace WFGL;
 
 public class PseduoLight : Transform
 {
     public float intensity=1;
-    public float radius=200;
-    public Color color = Color.Blue;
-    public byte alpha = 3;
+
+    public float radius=160;
+
+    public Color color = Color.GhostWhite;
+    public byte alpha = 6;
+
     private Bitmap? bitmap;
     private bool needsRedraw = true;
-    public byte alphaThreshold = 100;
 
     private void GenerateLightBitmap(GameMaster m)
     {
@@ -22,10 +22,10 @@ public class PseduoLight : Transform
         using (Graphics g = Graphics.FromImage(bitmap))
         {
             Pixel center = new((int)radius, (int)radius);
-            for (int r = (int)radius; r > 0; r -= 2)
+            for (int r = (int)radius; r > 0; r -= 4)
             {
                 int a = (int)(alpha * (float)(r / radius));
-                using SolidBrush brush = new SolidBrush(Color.FromArgb(a, color.R, color.G, color.B));
+                using SolidBrush brush = new(Color.FromArgb(a, color.R, color.G, color.B));
                 g.FillEllipse(brush, center.X - r, center.Y - r, r * 2, r * 2);
             }
         }

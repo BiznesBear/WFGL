@@ -36,6 +36,7 @@ public static class Converts
     public static Point PushToPoint(this Vector2 vector2) => new((int)vector2.X, (int)vector2.Y);
     public static Size PushToSize(this Vector2 vector2) => new((int)vector2.X, (int)vector2.Y);
     public static Pixel PushToPixel(this Vector2 vector2) => new((int)vector2.X, (int)vector2.Y);
+    public static Pixel PushToPixel(this Point vector2) => new((int)vector2.X, (int)vector2.Y);
 
     public static Point PushToPoint(this Pixel vector2) => new((int)vector2.X, (int)vector2.Y);
     public static Size PushToSize(this Pixel vector2) => new((int)vector2.X, (int)vector2.Y);
@@ -47,6 +48,7 @@ public static class Converts
 
 
     // real converts 
+    public static Vector2 ToVector2(this Pixel pixel, VirtualUnit vunit) => new((pixel.X / vunit.FactorX), (pixel.Y / vunit.FactorY));
     public static Pixel ToPixel(this Vector2 vector2, VirtualUnit vunit) => new((int)(vector2.X * vunit.FactorX), (int)(vector2.Y * vunit.FactorY));
 
     /// <summary>
