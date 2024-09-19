@@ -31,7 +31,11 @@ public sealed class Layer(byte drawWeight)
         List.Add(layer);
         UpdateList();
     }
-
+    public void Unregister(Layer layer)
+    {
+        List.Remove(layer);
+        UpdateList();
+    }
 
     /// <summary>
     /// Sorts layers list by draw order

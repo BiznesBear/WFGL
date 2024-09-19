@@ -1,12 +1,11 @@
 ﻿using WFGL.Input;
 namespace WFGL.Core;
-
 public class GameMaster
 {
     private GameWindow GameWindow { get; set; }
 
     public bool IsFullScreen { get; private set; }
-    
+
 
     public VirtualUnit VirtualScale => new VirtualUnit(VirtualScaleX, VirtualScaleY).Normalize();
     protected float VirtualScaleX => VirtualUnit.VirtualizeToFactor(GameWindow.ClientSize.Width);
@@ -23,17 +22,18 @@ public class GameMaster
     private Graphics Renderer { get; set; }
 
     private InputHandler? inputHandler;
-    public InputHandler InputMaster => inputHandler ?? throw new Exception("Cannot use unregistered input handler");
+    public InputHandler InputMaster => inputHandler ?? throw new GameError("Cannot use unregistered input handler");
 
     private Size windowSizeTemp;
 
-
+    // events 
+    public event WFGLEventArgs? WhenUpdate;
+    public event WFGLEventArgs? WhenDraw;
     public GameMaster(GameWindow window)
     {
         // window
-        Console.Title = Application.ProductName ?? "WFGL game";
-
         GameWindow = window;
+        windowSizeTemp = GameWindow.ClientSize;
 
         // window events
         GameWindow.Paint += Draw;
@@ -48,22 +48,11 @@ public class GameMaster
 
         Renderer = GameWindow.CreateGraphics();
 
-        MainCamera = new(this);
+        MainCamera = new(this,CameraOptions.Default);
 
         Time.SetFps(Time.DEFALUT_FPS);
     }
 
-
-    public VirtualUnit GetVUnitRatio()
-    {
-        // do tego wystarczy już tylko znormalizować ten kwadrat
-        VirtualUnit unit = new()
-        {
-            FactorX = VirtualScaleX - VirtualScaleX % MainCamera.AspectRatio.Width,
-            FactorY = VirtualScaleY - VirtualScaleY % MainCamera.AspectRatio.Height
-        };
-        return unit;
-    }
 
     #region Window
     public void Load()
@@ -72,7 +61,6 @@ public class GameMaster
         OnLoad();
         GameWindow.ShowDialog();
     }
-
     public void FullScreen() 
     {
         windowSizeTemp = GameWindow.ClientSize;
@@ -101,13 +89,14 @@ public class GameMaster
     {
         GameWindow.Invalidate();
         OnUpdate();
+        WhenUpdate?.Invoke(this);
     }
     private void Draw(object? sender, PaintEventArgs e) 
     {
         Renderer = e.Graphics;
         OnDraw();
+        WhenDraw?.Invoke(this);
     }
-
 
     #endregion
 
@@ -140,9 +129,12 @@ public class GameMaster
     public void DrawStaticText(UI.StaticText text)
     {
         float dynamicFontSize = text.BaseSize * MainCamera.Scaler.FactorX * VirtualUnit.SCALING;
+        if (dynamicFontSize < 0.02) return;
         Font dynamicFont = new(text.Font.FontFamily, dynamicFontSize);
         Pixel pos = text.Position.ToPixel(VirtualScale);
-        Renderer.DrawString(text.Content, dynamicFont, text.Brush, pos.X, pos.Y);
+        Brush brush = new SolidBrush(text.Color);
+        Renderer.DrawString(text.Content, dynamicFont, brush, pos.X, pos.Y);
+        brush.Dispose();
         dynamicFont.Dispose();
     }
 
@@ -153,14 +145,9 @@ public class GameMaster
     #endregion
 
     #region Input
-
     public void RegisterInput(InputHandler handler)
     {
-        if(inputHandler != null)
-        {
-            RemoveInput(inputHandler);
-        }
-
+        if(inputHandler != null) RemoveInput(inputHandler);
         inputHandler = handler;
         GameWindow.KeyDown += handler.KeyDown;
         GameWindow.KeyUp += handler.KeyUp;
@@ -179,7 +166,7 @@ public class GameMaster
 
     #endregion
 
-    #region OtherFunctions
+    #region OverwriteFunctions
 
     /// <summary>
     /// When game is first loaded. Load every thing here.

@@ -1,11 +1,8 @@
 ﻿>> Right now:
 	Better rendering system managment (automatic virtualization) ⚙️
-	Camera ⚙️
-	Rework time and more futures (including counting current fps)
+	Camera and resolutions ⚙️
 
 >> Later:
-	Fixed scaling and vectors ✅
-	Draw weight ✅
 	Camera ⚙️
 	Canvas and ui ⚙️
 	PseudoLight (with blending) ⚙️
@@ -21,3 +18,8 @@
 	Raycasting
 	Postprocessing
 	Converting windows forms view to code 🤡
+
+>> Already do:
+		Rework time and more futures (including counting current fps) ✅
+		Fixed scaling and vectors ✅
+		Draw weight ✅

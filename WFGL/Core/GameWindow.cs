@@ -14,6 +14,7 @@ public class GameWindow : Form
         FormBorderStyle = BorderStyle;
         Text = options.Title;
         ClientSize = options.Size;
+        MinimumSize = options.MinSize;
         BackColor = options.Background;
         Icon = options.Icon;
     }
@@ -23,6 +24,7 @@ public struct GameWindowOptions
 {
     public string Title {  get; set; }
     public Size Size {  get; set; }
+    public Size MinSize {  get; set; }
     public Color Background {  get; set; }
     public Icon Icon { get; set; } 
 
@@ -30,6 +32,7 @@ public struct GameWindowOptions
     {
         Title = "WFGL game window",
         Size = new(1280, 720),
+        MinSize = new(100, 100),
         Background = Color.Black
     };
 }

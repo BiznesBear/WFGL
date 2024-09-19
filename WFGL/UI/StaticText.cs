@@ -6,7 +6,8 @@ public class StaticText : Transform
     public Font Font { get; private set; }
     public string Content { get; set; }
     public Canvas Canvas { get; }
-    public Brush Brush { get; set; } = Brushes.Black;
+
+    public Color Color { get; set; } = Color.Black;
 
     public StaticText(Canvas parent, Font f, string text)
     {
@@ -15,13 +16,13 @@ public class StaticText : Transform
         Canvas = parent;
         Content = text;
     }
-    public StaticText(Canvas parent, Font f, Brush brush,string text)
+    public StaticText(Canvas parent, Font f, Color color,string text)
     {
         Font = f;
         BaseSize = f.Size;
         Canvas = parent;
         Content = text;
-        Brush = brush;
+        Color = color;
     }
     public override void OnDraw(Core.GameMaster m)
     {

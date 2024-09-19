@@ -31,6 +31,7 @@ public class PseduoLight : Transform
         }
         needsRedraw = false;
     }
+
     public override void OnDraw(GameMaster m)
     {
         if (needsRedraw || bitmap == null) 
@@ -39,6 +40,8 @@ public class PseduoLight : Transform
             return;
         }
         Pixel pos = Position.ToPixel(m.VirtualScale);
+        
+
         m.GetRenderer().DrawImage(bitmap, pos.X - (int)radius, pos.Y - (int)radius); 
     }
 }

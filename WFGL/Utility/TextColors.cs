@@ -13,6 +13,8 @@ internal static class TextColors
     public const string CYAN = "\u001b[36m";
 
     public static string FromEnum(this TextColor color) { return $"\u001b[{(int)color}m"; }
+    internal static string SetColor(this string message,TextColor color) => $"{FromEnum(color)}{message}{DEFAULT}";
+
 }
 internal enum TextColor
 {

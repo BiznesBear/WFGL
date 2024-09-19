@@ -11,7 +11,7 @@ public class Time
 
 
     private static Time? Instance { get; set; }
-    private static Time GetInstance => Instance ?? throw new Exception("Time instance is null");
+    private static Time GetInstance => Instance ?? throw new GameError("Time instance is null");
 
     private DateTime previousTime = DateTime.Now;
     private double deltaTime;

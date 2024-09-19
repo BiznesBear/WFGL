@@ -1,14 +1,16 @@
 ﻿using WFGL;
 using WFGL.Core;
 using WFGL.UI;
+using WFGL.Input;
+
 using System.Windows.Forms;
 using System.Drawing;
-using WFGL.Input;
 
 namespace DemoGame;
 
 internal class Program
-{ 
+{
+    [STAThread]
     private static void Main(string[] args)
     {
         GameWindow window = new(GameWindowOptions.Default);
@@ -19,12 +21,11 @@ internal class Program
 
 class Game : GameMaster
 {
-    Font font = new("Cascadia Mono Light", 12);
+    Font font = new("Cascadia Mono Light", 12); // in long term projects, please don't use this method (loading font from string as system font)
 
     Layer lightLayer = new(150);
     Layer topLayer = new(100);
     Layer underTopLayer = new(99);
-
 
     
 
@@ -45,6 +46,7 @@ class Game : GameMaster
     public Game(GameWindow window) : base(window)
     {
         RegisterInput(new GameInput(this));
+       
         Layer.Registration = [topLayer,underTopLayer,lightLayer];
 
         hierarchy = new(this);
@@ -70,16 +72,11 @@ class Game : GameMaster
         userNameText.Create(canvas);
     }
 
-
     protected override void OnUpdate()
     {
-        hierarchy.UpdateAll();
-        lights.UpdateAll();
-        canvas.UpdateAll();
-
         userNameText.Position = player.Position + new Vector2(0.33f,-0.15f);
         fpsText.Content = $"FPS: {TimeMaster.Fps}";
-       
+
         pseudoLight.Position = Mouse.Position.ToVector2(VirtualScale);
     }
     
@@ -89,15 +86,13 @@ class Game : GameMaster
         Pixel scale = new((int)(VirtualScale.FactorX * VirtualUnit.SCALING), (int)(VirtualScale.FactorY * VirtualUnit.SCALING));
 
         DrawRectangle(Pixel.Zero, scale);
+
+        // centered window view
         DrawRect(WindowCenter-scale/new Pixel(2,2), scale);
 
         hierarchy.DrawAll();
         lights.DrawAll();
         canvas.DrawAll();
-
-        // draws the rect of current render size
-        //DrawRect(Pixel.Zero,new Pixel((int)(VirtualScaleX*VirtualUnit.SCALING), (int)(VirtualScaleY * VirtualUnit.SCALING)));
-        //DrawRect(Pixel.Zero,new Pixel((int)(GetVUnitRatio().FactorX*VirtualUnit.SCALING), (int)(GetVUnitRatio().FactorY * VirtualUnit.SCALING)));
     }
 }
 
@@ -107,13 +102,13 @@ class GameInput(GameMaster master) : InputHandler(master)
     {
         if (key == Keys.F11)
         {
-            if (Master.IsFullScreen) Master.FullScreen();
+            if (!Master.IsFullScreen) Master.FullScreen();
             else Master.NormalScreen();
         }
     }
     protected override void OnKeyUp(Keys key)
     {
-        
+        Output.Info("Patrz i płacz");
     }
 }
 
