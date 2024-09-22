@@ -9,7 +9,7 @@
     <Authors>BiznesBear</Authors>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
     <Copyright>MIT</Copyright>
-    <PackageTags>game;windows;forms </PackageTags>
+    <PackageTags>game;windows;forms</PackageTags>
     <NeutralLanguage>en</NeutralLanguage>
     <RepositoryUrl>https://github.com/BiznesBear/WFGL</RepositoryUrl>
   </PropertyGroup>

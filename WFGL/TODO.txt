@@ -1,6 +1,6 @@
 ﻿>> Right now:
 	Better rendering system managment (automatic virtualization) ⚙️
-	Camera and resolutions ⚙️
+	Camera and resolutions and rendering one bitmap instead of (displayed objects count)⚙️
 
 >> Later:
 	Camera ⚙️

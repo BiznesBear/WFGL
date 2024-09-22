@@ -5,14 +5,25 @@ namespace WFGL;
 public class Hierarchy 
 {
     private GameMaster? Master { get; set; }
-    private GameMaster GetMaster => Master ?? throw new GameError("Null master in hierarchy");
+    private GameMaster GetMaster => Master ?? throw new WFGLError("Null master in hierarchy");
     private Dictionary<Layer, List<Transform>> Order = [];
 
     private readonly List<Transform> Transforms = new();
 
     public event Action ChangedList;
-    public event WFGLTransformEventArgs? Added;
-    public event WFGLTransformEventArgs? Removed;
+    public event WFGLTransformEventArgs? AddedTransform;
+    public event WFGLTransformEventArgs? RemovedTransform;
+
+    public List<Transform> Registration
+    {
+        set
+        {
+            foreach(Transform t in value)
+            {
+                t.Create(this);
+            }
+        }
+    }
 
     public Hierarchy() { ChangedList += UpdateOrder; }
     public Hierarchy(GameMaster master) : this() { AssignMaster(master); }
@@ -21,7 +32,7 @@ public class Hierarchy
     public void Register(Transform transform)
     {
         Transforms.Add(transform);
-        Added?.Invoke(transform);
+        AddedTransform?.Invoke(transform);
         ChangedList.Invoke();
         GetMaster.WhenUpdate += transform.OnUpdate;
     }
@@ -29,7 +40,7 @@ public class Hierarchy
     {
         GetMaster.WhenUpdate -= transform.OnUpdate;
         Transforms.Remove(transform);
-        Removed?.Invoke(transform);
+        RemovedTransform?.Invoke(transform);
         ChangedList.Invoke();
     }
     public void UpdateOrder()
@@ -37,21 +48,9 @@ public class Hierarchy
         Order = Transforms.GroupBy(t => t.Layer).ToDictionary(g => g.Key, g => g.ToList());
     }
 
-    [Obsolete]
-    public void UpdateAll() 
-    {
-        if (Master == null) throw new GameError("Not assigned game master to hierarchy");
-        foreach (var trans in Transforms)
-        { 
-            trans.OnUpdate(Master);
-            var iparentable = trans as IParentable;
-            iparentable?.UpdateToParent(Master);
-        }
-    }
-
     public void DrawAll()
     {
-        if (Master == null) throw new GameError("Not assigned game master to hierarchy");
+        if (Master == null) throw new WFGLError("Not assigned game master to hierarchy");
         foreach (Layer layer in Layer.List)
         {
             if (Order.TryGetValue(layer, out var transformsForLayer))
@@ -62,14 +61,5 @@ public class Hierarchy
                 }
             }
         }
-        // draw the hierarchy here with draw weight
-        //foreach (Layer layer in Layer.List)
-        //{
-        //    foreach (Transform transform in Transforms)
-        //    {
-        //        if (transform.Layer != layer) continue;
-        //        transform.OnDraw(Master);
-        //    }
-        //}
     }
 }

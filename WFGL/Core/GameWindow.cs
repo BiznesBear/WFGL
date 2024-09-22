@@ -7,6 +7,9 @@ public class GameWindow : Form
     {
         DoubleBuffered = true;
         MaximizeBox = false;
+        SetStyle(ControlStyles.OptimizedDoubleBuffer, true);
+        SetStyle(ControlStyles.UserPaint, true);
+        SetStyle(ControlStyles.AllPaintingInWmPaint, true);
         SetWindowOptions(options);
     }
     public void SetWindowOptions(GameWindowOptions options)
@@ -31,8 +34,8 @@ public struct GameWindowOptions
     public readonly static GameWindowOptions Default = new()
     {
         Title = "WFGL game window",
-        Size = new(1280, 720),
-        MinSize = new(100, 100),
+        Size = new(700, 600),
+        MinSize = new(200, 200),
         Background = Color.Black
     };
 }

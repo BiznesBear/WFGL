@@ -1,7 +1,7 @@
 ﻿using WFGL.Core;
 namespace WFGL;
 
-public abstract class Transform : IObject, IUpdatable, IDrawable
+public abstract class Transform : IObject
 {
     public Vector2 Scale { get; set; } = Vector2.One;
     public Vector2 Position { get; set; } = Vector2.Zero;
@@ -10,8 +10,8 @@ public abstract class Transform : IObject, IUpdatable, IDrawable
 
     public void Create(Hierarchy hierarchy)
     {
-        OnCreate();
         hierarchy.Register(this);
+        OnCreate();
     }
     public void Destroy(Hierarchy hierarchy)
     {

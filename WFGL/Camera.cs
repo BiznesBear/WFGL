@@ -20,5 +20,6 @@ public struct CameraOptions(Size aspectRatio,Size resolution,uint target = Camer
     public Size Resolution { get; set; } = resolution;
     public uint Target { get; set; } = target;
 
-    public readonly static CameraOptions Default = new(new Size(16, 9),new(1280, 720));
+    //public readonly static CameraOptions Default = new(new Size(16, 9),new(1280, 720));
+    public readonly static CameraOptions Default = new(new Size(16, 9),new(300, 300));
 }

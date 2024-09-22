@@ -1,4 +1,7 @@
-﻿using WFGL.Input;
+﻿using System.Drawing;
+using System.Drawing.Drawing2D;
+
+using WFGL.Input;
 namespace WFGL.Core;
 public class GameMaster
 {
@@ -6,53 +9,69 @@ public class GameMaster
 
     public bool IsFullScreen { get; private set; }
 
-
-    public VirtualUnit VirtualScale => new VirtualUnit(VirtualScaleX, VirtualScaleY).Normalize();
-    protected float VirtualScaleX => VirtualUnit.VirtualizeToFactor(GameWindow.ClientSize.Width);
-    protected float VirtualScaleY => VirtualUnit.VirtualizeToFactor(GameWindow.ClientSize.Height);
+    public VirtualUnit VirtualScale => new VirtualUnit(RealVirtualScaleX, RealVirtualScaleY).Normalize();
+    protected float RealVirtualScaleX => VirtualUnit.VirtualizeToFactor(GameWindow.ClientSize.Width);
+    protected float RealVirtualScaleY => VirtualUnit.VirtualizeToFactor(GameWindow.ClientSize.Height);
 
     public Pixel WindowCenter => new(GameWindow.ClientSize.Width/2, GameWindow.ClientSize.Height/2);
     public Pixel WindowSize => new(GameWindow.ClientSize.Width, GameWindow.ClientSize.Height);
+    public Pixel RenderSize => new((int)VirtualScale.FactorX * VirtualUnit.SCALING, (int)VirtualScale.FactorX * VirtualUnit.SCALING);
 
     // input
 
     public Camera MainCamera { get; private set; }
 
     public Time TimeMaster { get; } = new();
-    private Graphics Renderer { get; set; }
+    public Graphics Renderer { get; private set; }
 
     private InputHandler? inputHandler;
-    public InputHandler InputMaster => inputHandler ?? throw new GameError("Cannot use unregistered input handler");
+    public InputHandler InputMaster => inputHandler ?? throw new WFGLError("Cannot use unregistered input handler");
 
     private Size windowSizeTemp;
 
     // events 
     public event WFGLEventArgs? WhenUpdate;
     public event WFGLEventArgs? WhenDraw;
+
+    public Bitmap renderBuffer;
+
     public GameMaster(GameWindow window)
     {
         // window
         GameWindow = window;
         windowSizeTemp = GameWindow.ClientSize;
 
+
         // window events
         GameWindow.Paint += Draw;
         GameWindow.Resize += Resized;
 
         GameWindow.MouseMove += MouseMoved;
-        
+        MainCamera = new(this, CameraOptions.Default);
 
-        // time
+
 
         TimeMaster.Timer.Tick += Update;
 
-        Renderer = GameWindow.CreateGraphics();
+        renderBuffer = new Bitmap(RenderSize.X, RenderSize.Y);
+        Renderer = Graphics.FromImage(renderBuffer);
 
-        MainCamera = new(this,CameraOptions.Default);
 
         Time.SetFps(Time.DEFALUT_FPS);
-    }
 
+        ResetRenderBuffer();
+
+    }
+    private void ResetRenderBuffer()
+    {
+        renderBuffer.Dispose();
+        renderBuffer = new Bitmap(RenderSize.X, RenderSize.Y);
+
+        Renderer = Graphics.FromImage(renderBuffer);
+        Renderer.SetClip(new Rectangle(0, 0, RenderSize.X, RenderSize.Y));
+        Renderer.SmoothingMode = SmoothingMode.None;
+        Renderer.InterpolationMode = InterpolationMode.NearestNeighbor;
+    }
 
     #region Window
     public void Load()
@@ -77,39 +96,46 @@ public class GameMaster
         GameWindow.ClientSize = windowSizeTemp;
         IsFullScreen = false;
     }
-    private void Resized(object? sender, EventArgs e) { OnResize();  }
+    private void Resized(object? sender, EventArgs e) 
+    {
+        ResetRenderBuffer();
+        OnResize();  
+    }
 
     public GameWindow GetWindow() => GameWindow;
-    public Graphics GetRenderer() => Renderer;
 
     #endregion
 
     #region Logic
     private void Update(object? sender, EventArgs e)
     {
-        GameWindow.Invalidate();
+        GameWindow.Invalidate(new Rectangle(0, 0, RenderSize.X, RenderSize.Y));
         OnUpdate();
         WhenUpdate?.Invoke(this);
     }
     private void Draw(object? sender, PaintEventArgs e) 
     {
-        Renderer = e.Graphics;
         OnDraw();
         WhenDraw?.Invoke(this);
+
+
+        e.Graphics.SetClip((new Rectangle(0, 0, RenderSize.X, RenderSize.Y)));
+        e.Graphics.DrawImageUnscaled(renderBuffer, new Rectangle(0, 0, RenderSize.X, RenderSize.Y));
     }
 
     #endregion
 
     #region Drawing
+
+    private readonly Pen defaultPen = new(Color.Red, 1);
+    private readonly SolidBrush defaultBrush = new(Color.DarkSlateGray);
+
     public void DrawRect(Color color,float width, Pixel position, Pixel size)
     {
-        var pen = new Pen(color, width);
-        Renderer.DrawRectangle(pen, new(position.PushToPoint(), size.PushToSize()));
+        Renderer.DrawRectangle(defaultPen, new(position.PushToPoint(), size.PushToSize()));
     }
     public void DrawRect(Color color,Pixel position, Pixel size) => DrawRect(color, 1, position, size);
     public void DrawRect(Pixel position, Pixel size) => DrawRect(Color.Red, 1, position, size);
-
-
 
     public void DrawRectangle(Color color, float width, Pixel position, Pixel size)
     {
@@ -126,7 +152,7 @@ public class GameMaster
         Renderer.DrawImage(sprite.Source, position.X, position.Y, size.X, size.Y);
     }
 
-    public void DrawStaticText(UI.StaticText text)
+    public void DrawText(UI.StringRenderer text)
     {
         float dynamicFontSize = text.BaseSize * MainCamera.Scaler.FactorX * VirtualUnit.SCALING;
         if (dynamicFontSize < 0.02) return;

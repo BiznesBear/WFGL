@@ -40,8 +40,7 @@ public class PseduoLight : Transform
             return;
         }
         Pixel pos = Position.ToPixel(m.VirtualScale);
-        
 
-        m.GetRenderer().DrawImage(bitmap, pos.X - (int)radius, pos.Y - (int)radius); 
+        m.Renderer.DrawImage(bitmap, pos.X - (int)radius, pos.Y - (int)radius); 
     }
 }

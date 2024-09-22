@@ -21,7 +21,7 @@ internal class Program
 
 class Game : GameMaster
 {
-    Font font = new("Cascadia Mono Light", 12); // in long term projects, please don't use this method (loading font from string as system font)
+    Font font = new("Cascadia Mono Light", 12);
 
     Layer lightLayer = new(150);
     Layer topLayer = new(100);
@@ -29,16 +29,26 @@ class Game : GameMaster
 
     
 
-    Hierarchy hierarchy;
+    Hierarchy objects;
     Hierarchy lights;
     Canvas canvas;
 
     Player player;
+
+    Sprite maszWypadloCi = new("C:\\Users\\ADAM\\Desktop\\CZYSCIEC\\mozg-masz-wypadlo-ci.jpg");
+
     internal SpriteRenderer sprite;
     internal SpriteRenderer sprite2;
+    internal SpriteRenderer sprite3;
+    internal SpriteRenderer sprite4;
+    internal SpriteRenderer sprite5;
+    internal SpriteRenderer sprite6;
+    internal SpriteRenderer sprite7;
+    internal SpriteRenderer sprite8;
+    internal SpriteRenderer sprite9;
 
-    StaticText fpsText;
-    StaticText userNameText;
+    StringRenderer fpsText;
+    StringRenderer userNameText;
 
     PseduoLight pseudoLight;
 
@@ -49,7 +59,7 @@ class Game : GameMaster
        
         Layer.Registration = [topLayer,underTopLayer,lightLayer];
 
-        hierarchy = new(this);
+        objects = new(this);
         lights = new(this);
         canvas = new(this);
         fpsText = new(canvas, font, $"FPS: {TimeMaster.Fps}");
@@ -58,15 +68,45 @@ class Game : GameMaster
 
         player = new() { Layer = topLayer};
         sprite = new("C:\\Users\\ADAM\\Desktop\\CZYSCIEC\\aushf.jpg") { Position = new(2.5f,0), Layer = underTopLayer};
-        sprite2 = new("C:\\Users\\ADAM\\Desktop\\CZYSCIEC\\mozg-masz-wypadlo-ci.jpg") { Position = Vector2.One };
+        sprite2 = new(maszWypadloCi) { Position = Vector2.One };
+        sprite3 = new(maszWypadloCi) { Position = 3 };
+        sprite4 = new(maszWypadloCi) { Position = 2 };
+        sprite5 = new(maszWypadloCi) { Position = 4 };
+        sprite6 = new(maszWypadloCi) { Position = new(0,4) };
+        sprite7 = new(maszWypadloCi) { Position = Vector2.Zero };
+        sprite8 = new(maszWypadloCi) { Position = new(0, 3) };
+        sprite9 = new(maszWypadloCi) { Position = new(3, 0) };
     }
 
     protected override void OnLoad()
     {
-        player.Create(hierarchy);
-        sprite.Create(hierarchy);
-        sprite2.Create(hierarchy);
-        pseudoLight.Create(lights);
+        // don't create hierarchy like this
+        //player.Create(objects);
+        //sprite.Create(objects);
+        //sprite2.Create(objects);
+        //sprite3.Create(objects);
+        //sprite4.Create(objects);
+        //sprite5.Create(objects);
+        //sprite6.Create(objects);
+        //sprite7.Create(objects);
+        //sprite8.Create(objects);
+        //sprite9.Create(objects);
+        // use this instead
+
+        objects.Registration = [
+            player,
+            sprite,
+            sprite2,
+            sprite3,
+            sprite4,
+            sprite5,
+            sprite6,
+            sprite7,
+            sprite8,
+            sprite9,
+        ];
+
+        //pseudoLight.Create(lights);
 
         fpsText.Create(canvas);
         userNameText.Create(canvas);
@@ -74,23 +114,31 @@ class Game : GameMaster
 
     protected override void OnUpdate()
     {
+        //var playerPos = player.Position.ToPixel(VirtualScale);
+        //var textPos = userNameText.Position.ToPixel(VirtualScale);
+        //var text2Pos = fpsText.Position.ToPixel(VirtualScale);
+        //GetWindow().Invalidate(new Rectangle(playerPos.X-3, playerPos.Y-3, player.playerSprite.RealSize.X+6, player.playerSprite.RealSize.Y+6));
+        //GetWindow().Invalidate(new Rectangle(textPos.X, textPos.Y, player.playerSprite.RealSize.X, player.playerSprite.RealSize.Y));
+        //GetWindow().Invalidate(new Rectangle(text2Pos.X, text2Pos.Y, 100, 100));
+
+
         userNameText.Position = player.Position + new Vector2(0.33f,-0.15f);
         fpsText.Content = $"FPS: {TimeMaster.Fps}";
+        
 
         pseudoLight.Position = Mouse.Position.ToVector2(VirtualScale);
     }
-    
     protected override void OnDraw()
     {
         // drawing background of virtual render size 
-        Pixel scale = new((int)(VirtualScale.FactorX * VirtualUnit.SCALING), (int)(VirtualScale.FactorY * VirtualUnit.SCALING));
-
+        Pixel scale = new(RenderSize.X, RenderSize.Y);
         DrawRectangle(Pixel.Zero, scale);
 
+        
         // centered window view
-        DrawRect(WindowCenter-scale/new Pixel(2,2), scale);
+        //DrawRect(WindowCenter-scale/new Pixel(2,2), scale);
 
-        hierarchy.DrawAll();
+        objects.DrawAll();
         lights.DrawAll();
         canvas.DrawAll();
     }
@@ -108,7 +156,7 @@ class GameInput(GameMaster master) : InputHandler(master)
     }
     protected override void OnKeyUp(Keys key)
     {
-        Output.Info("Patrz i płacz");
+        
     }
 }
 
@@ -142,6 +190,6 @@ class Player : Transform
     public override void OnDraw(GameMaster m)
     {
         playerSprite.OnDraw(m);
-        m.DrawRect(Position.ToPixel(m.VirtualScale), playerSprite.RealSize.VirtualizePixel(m.MainCamera));
+        //m.DrawRect(Position.ToPixel(m.VirtualScale), playerSprite.RealSize.VirtualizePixel(m.MainCamera));
     }
 }
