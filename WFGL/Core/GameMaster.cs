@@ -1,39 +1,46 @@
-﻿using System.Drawing;
-using System.Drawing.Drawing2D;
-
+﻿using System.Drawing.Drawing2D;
 using WFGL.Input;
 namespace WFGL.Core;
+
 public class GameMaster
 {
     private GameWindow GameWindow { get; set; }
 
+    #region Settings
     public bool IsFullScreen { get; private set; }
+    public bool WindowAspectRatioLock { get; set; } = false;
+    public SmoothingMode Smoothing { get; set; } = SmoothingMode.None;
+    public InterpolationMode Interpolation { get; set; } = InterpolationMode.NearestNeighbor;
 
-    public VirtualUnit VirtualScale => new VirtualUnit(RealVirtualScaleX, RealVirtualScaleY).Normalize();
-    protected float RealVirtualScaleX => VirtualUnit.VirtualizeToFactor(GameWindow.ClientSize.Width);
-    protected float RealVirtualScaleY => VirtualUnit.VirtualizeToFactor(GameWindow.ClientSize.Height);
+    #endregion
 
-    public Pixel WindowCenter => new(GameWindow.ClientSize.Width/2, GameWindow.ClientSize.Height/2);
-    public Pixel WindowSize => new(GameWindow.ClientSize.Width, GameWindow.ClientSize.Height);
-    public Pixel RenderSize => new((int)VirtualScale.FactorX * VirtualUnit.SCALING, (int)VirtualScale.FactorX * VirtualUnit.SCALING);
-
-    // input
-
+    #region RenderingAndTime
     public Camera MainCamera { get; private set; }
-
     public Time TimeMaster { get; } = new();
     public Graphics Renderer { get; private set; }
 
     private InputHandler? inputHandler;
-    public InputHandler InputMaster => inputHandler ?? throw new WFGLError("Cannot use unregistered input handler");
-
-    private Size windowSizeTemp;
+    public InputHandler InputMaster => inputHandler ?? throw new WFGLNullInstanceError("Cannot use unregistered input handler");
+    #endregion
 
     // events 
-    public event WFGLEventArgs? WhenUpdate;
-    public event WFGLEventArgs? WhenDraw;
+    public event GameMasterEventArgs? WhenUpdate;
+    public event GameMasterEventArgs? WhenDraw;
 
+    // other
     public Bitmap renderBuffer;
+    private Size windowSizeTemp;
+
+    #region Getters
+    public VirtualUnit VirtualScale => new VirtualUnit(RealVirtualScaleX, RealVirtualScaleY).Normalize();
+    public float RealVirtualScaleX => VirtualUnit.VirtualizeToFactor(GameWindow.ClientSize.Width);
+    public float RealVirtualScaleY => VirtualUnit.VirtualizeToFactor(GameWindow.ClientSize.Height);
+
+    public Point WindowCenter => new(GameWindow.ClientSize.Width / 2, GameWindow.ClientSize.Height / 2);
+    public Size WindowSize => new(GameWindow.ClientSize.Width, GameWindow.ClientSize.Height);
+    public Size RenderSize => new((int)VirtualScale.FactorX * VirtualUnit.SCALING, (int)VirtualScale.FactorX * VirtualUnit.SCALING);
+
+    #endregion
 
     public GameMaster(GameWindow window)
     {
@@ -41,21 +48,20 @@ public class GameMaster
         GameWindow = window;
         windowSizeTemp = GameWindow.ClientSize;
 
-
         // window events
         GameWindow.Paint += Draw;
-        GameWindow.Resize += Resized;
+        GameWindow.ResizeEnd += Resized;
 
         GameWindow.MouseMove += MouseMoved;
-        MainCamera = new(this, CameraOptions.Default);
-
+        float aspectRatio = (float)GameWindow.ClientSize.Width / GameWindow.ClientSize.Height;
+        CameraOptions options = new(new Size((int)aspectRatio,(int)aspectRatio),GameWindow.ClientSize);
+        MainCamera = new(this, options);
 
 
         TimeMaster.Timer.Tick += Update;
 
-        renderBuffer = new Bitmap(RenderSize.X, RenderSize.Y);
+        renderBuffer = new Bitmap(RenderSize.Width, RenderSize.Height);
         Renderer = Graphics.FromImage(renderBuffer);
-
 
         Time.SetFps(Time.DEFALUT_FPS);
 
@@ -65,12 +71,13 @@ public class GameMaster
     private void ResetRenderBuffer()
     {
         renderBuffer.Dispose();
-        renderBuffer = new Bitmap(RenderSize.X, RenderSize.Y);
+        renderBuffer = new Bitmap(RenderSize.Width, RenderSize.Height);
 
         Renderer = Graphics.FromImage(renderBuffer);
-        Renderer.SetClip(new Rectangle(0, 0, RenderSize.X, RenderSize.Y));
-        Renderer.SmoothingMode = SmoothingMode.None;
-        Renderer.InterpolationMode = InterpolationMode.NearestNeighbor;
+        Renderer.SetClip(new Rectangle(0, 0, RenderSize.Width, RenderSize.Height));
+        Renderer.SmoothingMode = Smoothing;
+        Renderer.InterpolationMode = Interpolation;
+        OnRenderBufferReset();
     }
 
     #region Window
@@ -98,8 +105,9 @@ public class GameMaster
     }
     private void Resized(object? sender, EventArgs e) 
     {
+        if(WindowAspectRatioLock) GameWindow.ClientSize = MainCamera.GetAspect();
         ResetRenderBuffer();
-        OnResize();  
+        OnResized();  
     }
 
     public GameWindow GetWindow() => GameWindow;
@@ -109,7 +117,7 @@ public class GameMaster
     #region Logic
     private void Update(object? sender, EventArgs e)
     {
-        GameWindow.Invalidate(new Rectangle(0, 0, RenderSize.X, RenderSize.Y));
+        GameWindow.Invalidate(new Rectangle(0, 0, RenderSize.Width, RenderSize.Height));
         OnUpdate();
         WhenUpdate?.Invoke(this);
     }
@@ -118,9 +126,8 @@ public class GameMaster
         OnDraw();
         WhenDraw?.Invoke(this);
 
-
-        e.Graphics.SetClip((new Rectangle(0, 0, RenderSize.X, RenderSize.Y)));
-        e.Graphics.DrawImageUnscaled(renderBuffer, new Rectangle(0, 0, RenderSize.X, RenderSize.Y));
+        e.Graphics.SetClip((new Rectangle(0, 0, RenderSize.Width, RenderSize.Height)));
+        e.Graphics.DrawImageUnscaled(renderBuffer, new Rectangle(0, 0, RenderSize.Width, RenderSize.Height));
     }
 
     #endregion
@@ -130,28 +137,28 @@ public class GameMaster
     private readonly Pen defaultPen = new(Color.Red, 1);
     private readonly SolidBrush defaultBrush = new(Color.DarkSlateGray);
 
-    public void DrawRect(Color color,float width, Pixel position, Pixel size)
+    public void DrawRect(Color color,float width, Point position, Size size)
     {
-        Renderer.DrawRectangle(defaultPen, new(position.PushToPoint(), size.PushToSize()));
+        Renderer.DrawRectangle(defaultPen, new(position, size));
     }
-    public void DrawRect(Color color,Pixel position, Pixel size) => DrawRect(color, 1, position, size);
-    public void DrawRect(Pixel position, Pixel size) => DrawRect(Color.Red, 1, position, size);
+    public void DrawRect(Color color, Point position, Size size) => DrawRect(color, 1, position, size);
+    public void DrawRect(Point position, Size size) => DrawRect(Color.Red, 1, position, size);
 
-    public void DrawRectangle(Color color, float width, Pixel position, Pixel size)
+    public void DrawRectangle(Color color, float width, Point position, Size size)
     {
         var pen = new Pen(color, width);
-        Renderer.DrawRectangle(pen, new(position.PushToPoint(), size.PushToSize()));
-        Renderer.FillRectangle(pen.Brush, new(position.PushToPoint(), size.PushToSize()));
+        Renderer.DrawRectangle(pen, new(position, size));
+        Renderer.FillRectangle(pen.Brush, new(position, size));
     }
-    public void DrawRectangle(Color color,Pixel position, Pixel size) => DrawRectangle(color,1, position, size);
-    public void DrawRectangle(Pixel position, Pixel size) => DrawRectangle(Color.DarkSlateGray,1, position, size);
+    public void DrawRectangle(Color color, Point position, Size size) => DrawRectangle(color,1, position, size);
+    public void DrawRectangle(Point position, Size size) => DrawRectangle(Color.DarkSlateGray,1, position, size);
 
-    public void DrawSprite(Sprite sprite,Pixel position)
+    public void DrawSprite(Sprite sprite,Point position)
     {
-        Pixel size = new Pixel(sprite.Source.Width, sprite.Source.Height).VirtualizePixel(MainCamera);
-        Renderer.DrawImage(sprite.Source, position.X, position.Y, size.X, size.Y);
+        Pixel size = new Pixel(sprite.GetSource().Width, sprite.GetSource().Height).VirtualizePixel(MainCamera);
+        Renderer.DrawImage(sprite.GetSource(), position.X, position.Y, size.X, size.Y);
     }
-
+    public void DrawSprite(Sprite sprite, Pixel position) => DrawSprite(sprite, position.PushToPoint());
     public void DrawText(UI.StringRenderer text)
     {
         float dynamicFontSize = text.BaseSize * MainCamera.Scaler.FactorX * VirtualUnit.SCALING;
@@ -162,11 +169,6 @@ public class GameMaster
         Renderer.DrawString(text.Content, dynamicFont, brush, pos.X, pos.Y);
         brush.Dispose();
         dynamicFont.Dispose();
-    }
-
-    public void DrawPseudoDarkness(int alpha=140)
-    {
-        DrawRectangle(Color.FromArgb(alpha, 0, 0, 0),Pixel.Zero,WindowSize); 
     }
     #endregion
 
@@ -192,7 +194,7 @@ public class GameMaster
 
     #endregion
 
-    #region OverwriteFunctions
+    #region EventFunctions
 
     /// <summary>
     /// When game is first loaded. Load every thing here.
@@ -212,6 +214,11 @@ public class GameMaster
     /// <summary>
     /// Called when windows is resized.
     /// </summary>
-    protected virtual void OnResize() { }
+    protected virtual void OnResized() { }
+
+    /// <summary>
+    /// Called when render buffer is reseted.
+    /// </summary>
+    protected virtual void OnRenderBufferReset() { }
     #endregion
 }

@@ -1,5 +1,6 @@
 using WFGL;
 using WFGL.Core;
 
-public delegate void WFGLEventArgs(GameMaster master);
-public delegate void WFGLTransformEventArgs(Transform transform);
+public delegate void GameMasterEventArgs(GameMaster master);
+public delegate void ObjectEventArgs(IObject obj);
+public delegate void TransformEventArgs(Transform transform);

@@ -2,26 +2,25 @@
 
 namespace WFGL;
 
-public class Hierarchy 
+public class Hierarchy : Transform
 {
     private GameMaster? Master { get; set; }
-    private GameMaster GetMaster => Master ?? throw new WFGLError("Null master in hierarchy");
-    private Dictionary<Layer, List<Transform>> Order = [];
+    private GameMaster GetMaster() => Master ?? throw new WFGLNullInstanceError("Null master in hierarchy");
+    private Dictionary<Layer, List<IObject>> Order = [];
 
-    private readonly List<Transform> Transforms = new();
+    private readonly List<IObject> objects = new();
 
     public event Action ChangedList;
-    public event WFGLTransformEventArgs? AddedTransform;
-    public event WFGLTransformEventArgs? RemovedTransform;
+    public event ObjectEventArgs? AddedObject;
+    public event ObjectEventArgs? RemovedObject;
 
-    public List<Transform> Registration
+    public List<IObject> Objects
     {
+        get => objects;
         set
         {
-            foreach(Transform t in value)
-            {
-                t.Create(this);
-            }
+            foreach(IObject obj in value) 
+                obj.Create(this);
         }
     }
 
@@ -29,37 +28,30 @@ public class Hierarchy
     public Hierarchy(GameMaster master) : this() { AssignMaster(master); }
     public void AssignMaster(GameMaster master) => Master = master;
 
-    public void Register(Transform transform)
+    public void Register(IObject obj)
     {
-        Transforms.Add(transform);
-        AddedTransform?.Invoke(transform);
+        objects.Add(obj);
+        AddedObject?.Invoke(obj);
         ChangedList.Invoke();
-        GetMaster.WhenUpdate += transform.OnUpdate;
+        GetMaster().WhenUpdate += obj.OnUpdate;
     }
-    public void Unregister(Transform transform)
+    public void Unregister(IObject obj)
     {
-        GetMaster.WhenUpdate -= transform.OnUpdate;
-        Transforms.Remove(transform);
-        RemovedTransform?.Invoke(transform);
+        GetMaster().WhenUpdate -= obj.OnUpdate;
+        objects.Remove(obj);
+        RemovedObject?.Invoke(obj);
         ChangedList.Invoke();
     }
     public void UpdateOrder()
     {
-        Order = Transforms.GroupBy(t => t.Layer).ToDictionary(g => g.Key, g => g.ToList());
+        Order = Layer.SortObjectList(objects);
     }
-
+    public IEnumerable<IObject> GetObjects() => Layer.GetObjectsFrom(Order);
     public void DrawAll()
     {
-        if (Master == null) throw new WFGLError("Not assigned game master to hierarchy");
-        foreach (Layer layer in Layer.List)
+        foreach (IObject obj in GetObjects())
         {
-            if (Order.TryGetValue(layer, out var transformsForLayer))
-            {
-                foreach (Transform transform in transformsForLayer)
-                {
-                    transform.OnDraw(GetMaster);
-                }
-            }
+            obj.OnDraw(GetMaster());
         }
     }
 }

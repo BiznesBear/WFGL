@@ -13,11 +13,19 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="assets\" />
+    <PackageReference Include="Box2D" Version="2.3.0" />
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Box2D" Version="2.3.0" />
+    <None Update="aushf.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="furniture.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="mozg-masz-wypadlo-ci.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
 </Project>

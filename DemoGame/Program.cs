@@ -6,6 +6,7 @@ using WFGL.Input;
 using System.Windows.Forms;
 using System.Drawing;
 
+
 namespace DemoGame;
 
 internal class Program
@@ -19,68 +20,57 @@ internal class Program
     }
 }
 
-class Game : GameMaster
+internal class Game : GameMaster
 {
-    Font font = new("Cascadia Mono Light", 12);
+    readonly static Font font = new("Cascadia Mono Light", 12);
 
-    Layer lightLayer = new(150);
-    Layer topLayer = new(100);
-    Layer underTopLayer = new(99);
+    readonly static Layer lightLayer = new(150);
+    readonly static Layer topLayer = new(100);
+    readonly static Layer underTopLayer = new(99);
 
-    
 
     Hierarchy objects;
     Hierarchy lights;
-    Canvas canvas;
+    Hierarchy canvas;
 
-    Player player;
+    Player player = new() { Layer = topLayer };
 
-    Sprite maszWypadloCi = new("C:\\Users\\ADAM\\Desktop\\CZYSCIEC\\mozg-masz-wypadlo-ci.jpg");
+    readonly static Sprite maszWypadloCi = new("mozg-masz-wypadlo-ci.jpg");
 
-    internal SpriteRenderer sprite;
-    internal SpriteRenderer sprite2;
-    internal SpriteRenderer sprite3;
-    internal SpriteRenderer sprite4;
-    internal SpriteRenderer sprite5;
-    internal SpriteRenderer sprite6;
-    internal SpriteRenderer sprite7;
-    internal SpriteRenderer sprite8;
-    internal SpriteRenderer sprite9;
+    SpriteRenderer sprite = new ("aushf.jpg") { Position = new (2.5f,0), Layer = underTopLayer };
+    SpriteRenderer sprite2 = new (maszWypadloCi) { Position = Vector2.One };
+    SpriteRenderer sprite3 = new (maszWypadloCi) { Position = 3 };
+    SpriteRenderer sprite4 = new(maszWypadloCi) { Position = 2 };
+    SpriteRenderer sprite5 = new(maszWypadloCi) { Position = 4 };
+    SpriteRenderer sprite6 = new(maszWypadloCi) { Position = new(0, 4) };
+    SpriteRenderer sprite7 = new(maszWypadloCi) { Position = Vector2.Zero };
+    SpriteRenderer sprite8 = new(maszWypadloCi) { Position = new(0, 3) };
+    SpriteRenderer sprite9 = new(maszWypadloCi) { Position = new(3, 0) };
 
     StringRenderer fpsText;
-    StringRenderer userNameText;
+    StringRenderer userNameText = new(font, Environment.UserName);
 
-    PseduoLight pseudoLight;
-
+    DrawableGroup background;
 
     public Game(GameWindow window) : base(window)
     {
         RegisterInput(new GameInput(this));
-       
-        Layer.Registration = [topLayer,underTopLayer,lightLayer];
+        WindowAspectRatioLock = true;
+        Layer.Layers = [topLayer,underTopLayer,lightLayer];
 
         objects = new(this);
         lights = new(this);
         canvas = new(this);
-        fpsText = new(canvas, font, $"FPS: {TimeMaster.Fps}");
-        userNameText = new(canvas, font, Environment.UserName);
-        pseudoLight = new() { Position = 1.5f,Layer=lightLayer };
+        fpsText = new(font, $"FPS: {TimeMaster.Fps}");
 
-        player = new() { Layer = topLayer};
-        sprite = new("C:\\Users\\ADAM\\Desktop\\CZYSCIEC\\aushf.jpg") { Position = new(2.5f,0), Layer = underTopLayer};
-        sprite2 = new(maszWypadloCi) { Position = Vector2.One };
-        sprite3 = new(maszWypadloCi) { Position = 3 };
-        sprite4 = new(maszWypadloCi) { Position = 2 };
-        sprite5 = new(maszWypadloCi) { Position = 4 };
-        sprite6 = new(maszWypadloCi) { Position = new(0,4) };
-        sprite7 = new(maszWypadloCi) { Position = Vector2.Zero };
-        sprite8 = new(maszWypadloCi) { Position = new(0, 3) };
-        sprite9 = new(maszWypadloCi) { Position = new(3, 0) };
+        background = new(this,objects);
+
     }
 
     protected override void OnLoad()
     {
         // don't create hierarchy like this
+
         //player.Create(objects);
         //sprite.Create(objects);
         //sprite2.Create(objects);
@@ -91,10 +81,9 @@ class Game : GameMaster
         //sprite7.Create(objects);
         //sprite8.Create(objects);
         //sprite9.Create(objects);
-        // use this instead
 
-        objects.Registration = [
-            player,
+        // use this instead
+        background.Objects = [
             sprite,
             sprite2,
             sprite3,
@@ -105,35 +94,37 @@ class Game : GameMaster
             sprite8,
             sprite9,
         ];
+        background.Render();
 
-        //pseudoLight.Create(lights);
+        objects.Objects = [
+            player,
+            sprite,
+            background
+            //sprite2,
+            //sprite3,
+            //sprite4,
+            //sprite5,
+            //sprite6,
+            //sprite7,
+            //sprite8,
+            //sprite9
+        ];
 
-        fpsText.Create(canvas);
-        userNameText.Create(canvas);
+        canvas.Objects = [
+            fpsText,
+            userNameText,
+        ];
     }
 
     protected override void OnUpdate()
     {
-        //var playerPos = player.Position.ToPixel(VirtualScale);
-        //var textPos = userNameText.Position.ToPixel(VirtualScale);
-        //var text2Pos = fpsText.Position.ToPixel(VirtualScale);
-        //GetWindow().Invalidate(new Rectangle(playerPos.X-3, playerPos.Y-3, player.playerSprite.RealSize.X+6, player.playerSprite.RealSize.Y+6));
-        //GetWindow().Invalidate(new Rectangle(textPos.X, textPos.Y, player.playerSprite.RealSize.X, player.playerSprite.RealSize.Y));
-        //GetWindow().Invalidate(new Rectangle(text2Pos.X, text2Pos.Y, 100, 100));
-
-
         userNameText.Position = player.Position + new Vector2(0.33f,-0.15f);
         fpsText.Content = $"FPS: {TimeMaster.Fps}";
-        
-
-        pseudoLight.Position = Mouse.Position.ToVector2(VirtualScale);
     }
     protected override void OnDraw()
     {
         // drawing background of virtual render size 
-        Pixel scale = new(RenderSize.X, RenderSize.Y);
-        DrawRectangle(Pixel.Zero, scale);
-
+        DrawRectangle(Pixel.Zero.PushToPoint(), RenderSize);
         
         // centered window view
         //DrawRect(WindowCenter-scale/new Pixel(2,2), scale);
@@ -142,27 +133,29 @@ class Game : GameMaster
         lights.DrawAll();
         canvas.DrawAll();
     }
+
+    protected override void OnResized()
+    {
+        background.Render();
+    }
 }
 
-class GameInput(GameMaster master) : InputHandler(master)
+internal class GameInput(GameMaster master) : InputHandler(master)
 {
     protected override void OnKeyDown(Keys key)
     {
         if (key == Keys.F11)
         {
+            // full screen
             if (!Master.IsFullScreen) Master.FullScreen();
             else Master.NormalScreen();
         }
     }
-    protected override void OnKeyUp(Keys key)
-    {
-        
-    }
 }
 
-class Player : Transform 
+internal class Player : Transform 
 {
-    static Sprite sprite = new("C:\\Users\\ADAM\\Desktop\\CZYSCIEC\\furniture.png");
+    static Sprite sprite = new("furniture.png");
     internal SpriteRenderer playerSprite = new(sprite);
 
     float speed = normalSpeed;
@@ -190,6 +183,5 @@ class Player : Transform
     public override void OnDraw(GameMaster m)
     {
         playerSprite.OnDraw(m);
-        //m.DrawRect(Position.ToPixel(m.VirtualScale), playerSprite.RealSize.VirtualizePixel(m.MainCamera));
     }
 }

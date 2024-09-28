@@ -34,8 +34,8 @@ public struct GameWindowOptions
     public readonly static GameWindowOptions Default = new()
     {
         Title = "WFGL game window",
-        Size = new(700, 600),
-        MinSize = new(200, 200),
+        Size = new(700, 700),
+        MinSize = new(250, 250),
         Background = Color.Black
     };
 }

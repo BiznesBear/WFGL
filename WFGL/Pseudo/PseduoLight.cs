@@ -1,12 +1,12 @@
 ﻿using WFGL.Core;
 
-namespace WFGL;
+namespace WFGL.Pseudo;
 
 public class PseduoLight : Transform
 {
-    public float intensity=1;
+    public float intensity = 1;
 
-    public float radius=160;
+    public float radius = 160;
 
     public Color color = Color.GhostWhite;
     public byte alpha = 6;
@@ -34,13 +34,13 @@ public class PseduoLight : Transform
 
     public override void OnDraw(GameMaster m)
     {
-        if (needsRedraw || bitmap == null) 
+        if (needsRedraw || bitmap == null)
         {
             GenerateLightBitmap(m);
             return;
         }
         Pixel pos = Position.ToPixel(m.VirtualScale);
 
-        m.Renderer.DrawImage(bitmap, pos.X - (int)radius, pos.Y - (int)radius); 
+        m.Renderer.DrawImage(bitmap, pos.X - (int)radius, pos.Y - (int)radius);
     }
 }

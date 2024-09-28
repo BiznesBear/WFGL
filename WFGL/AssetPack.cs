@@ -26,7 +26,7 @@ public class AssetPack<T> : Dictionary<string, IAsset<T>> where T : class
     {
         if (typeof(T) == typeof(Image))
         {
-            return new Sprite(filePath) as IAsset<T> ?? throw new Exception("");
+            return new Sprite(filePath) as IAsset<T> ?? throw new WFGLNullInstanceError($"Null IAsset<{nameof(T)}>");
         }
         throw new NotSupportedException($"Unsupported asset type: {typeof(T).Name}");
     }

@@ -11,7 +11,7 @@ public class Time
 
 
     private static Time? Instance { get; set; }
-    private static Time GetInstance => Instance ?? throw new WFGLError("Time instance is null");
+    private static Time GetInstance => Instance ?? throw new WFGLNullInstanceError("Time instance is null");
 
     private DateTime previousTime = DateTime.Now;
     private double deltaTime;
@@ -37,11 +37,11 @@ public class Time
         frames++;
         if (frameStopwatch.ElapsedMilliseconds >= 1000)
         {
-            if(frames > 0 || frameStopwatch.ElapsedMilliseconds > 0)framesPerSecond = frames / (frameStopwatch.ElapsedMilliseconds / 1000f);
             frames = 0;
             frameStopwatch.Restart();
         }
-        if (frames > 0 || frameStopwatch.ElapsedMilliseconds > 0) framesPerSecond = frames / (frameStopwatch.ElapsedMilliseconds / 1000f);
+        if (frames > 0 || frameStopwatch.ElapsedMilliseconds > 0) 
+            framesPerSecond = frames / (frameStopwatch.ElapsedMilliseconds / 1000f);
         DateTime currentTime = DateTime.Now;
         deltaTime = (currentTime - previousTime).TotalSeconds;
         previousTime = currentTime;

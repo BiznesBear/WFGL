@@ -1,25 +1,23 @@
 using WFGL.Core;
 namespace WFGL;
-public interface IAsset<T>
+public interface IAsset<T> 
 {
-    T Source { get; }
+    T GetSource();
     void Load(string filePath);
 }
 public interface IObject
 {
+    public Layer Layer { get; set; } 
     public void Create(Hierarchy hierarchy);
     public void Destroy(Hierarchy hierarchy);
-    public virtual void OnCreate() { }
-    public virtual void OnDestroy() { }
 
-    public virtual void OnUpdate(GameMaster m) { }
-    public virtual void OnDraw(GameMaster m) { }
-
-
+    public void OnUpdate(GameMaster m);
+    public void OnDraw(GameMaster m);
 }
 public interface IDrawable
 {
-
+    public Group? Group { get; set; }
+    public void Draw(GameMaster m, Graphics r);
 }
 public interface IParentable
 {
@@ -37,7 +35,7 @@ public interface ICollide
     public Vector2 ColliderSize { get; set; }
     public Vector2 ColliderOffset { get; set; }
 }
-public interface ICircleCollide : ICollide
+public interface IRadiousCollide : ICollide
 {
     public float Radius { get; set; }
 }

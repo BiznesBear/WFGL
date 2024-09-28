@@ -1,16 +1,12 @@
-﻿>> Right now:
-	Better rendering system managment (automatic virtualization) ⚙️
-	Camera and resolutions and rendering one bitmap instead of (displayed objects count)⚙️
-
->> Later:
+﻿>> TODO:
+	Grouping bitmaps 
+	Code clean up
 	Camera ⚙️
 	Canvas and ui ⚙️
 	PseudoLight (with blending) ⚙️
-	Drawing everything at once - hierarchy tree (optimalizations)
-	Rework how OnDraw and OnUpdate in transforms is called (optimalization, from foreach to events)
-	Collisions
-	More Phisics
-	Tilemaps & tiled sprites
+	Collisions & more Phisics
+	Tilemaps, tiled sprites
+	Optimalizations
 
 >> Don't ask me what I drank
 	Particle system
@@ -18,8 +14,3 @@
 	Raycasting
 	Postprocessing
 	Converting windows forms view to code 🤡
-
->> Already do:
-		Rework time and more futures (including counting current fps) ✅
-		Fixed scaling and vectors ✅
-		Draw weight ✅
