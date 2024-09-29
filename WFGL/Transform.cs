@@ -11,15 +11,15 @@ public abstract class Transform : IObject
     public void Create(Hierarchy hierarchy)
     {
         hierarchy.Register(this);
-        OnCreate();
+        OnCreate(hierarchy, hierarchy.GetMaster());
     }
     public void Destroy(Hierarchy hierarchy)
     {
-        OnDestroy();
+        OnDestroy(hierarchy, hierarchy.GetMaster());
         hierarchy.Unregister(this);
     }
-    public virtual void OnCreate() { }
-    public virtual void OnDestroy() { }
+    public virtual void OnCreate(Hierarchy h, GameMaster m) { }
+    public virtual void OnDestroy(Hierarchy h, GameMaster m) { }
     public virtual void OnUpdate(GameMaster m) { }
     public virtual void OnDraw(GameMaster m) { }
 }

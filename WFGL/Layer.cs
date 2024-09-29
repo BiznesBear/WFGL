@@ -4,7 +4,7 @@
 public sealed class Layer(byte drawWeight)
 {
     public readonly static Layer Defalut = new(0);
-    public static List<Layer> layers { get; private set; } = [Defalut];
+    private static List<Layer> layers { get; set; } = [Defalut];
 
     public short DrawWeight { get; } = drawWeight;
 

@@ -19,23 +19,19 @@ public interface IDrawable
     public Group? Group { get; set; }
     public void Draw(GameMaster m, Graphics r);
 }
-public interface IParentable
+public interface IParentable // TODO: make this work
 {
     public Transform? Parent { get; set; }
     public void BindParent(Transform? parent = null);
     public void UpdateToParent(GameMaster m);
 }
-public interface IPivotable
+public interface IPivotable // TODO: make this work
 {
     public Vector2 Pivot { get; set; } // RealPos -> Position + Size * Pivot | Size is not Scale 
     public Vector2 RealPosition { get; }
 }
 public interface ICollide
 {
-    public Vector2 ColliderSize { get; set; }
-    public Vector2 ColliderOffset { get; set; }
-}
-public interface IRadiousCollide : ICollide
-{
-    public float Radius { get; set; }
+    public Vector2 ColliderSize { get;  }
+    public Vector2 ColliderPosition { get;  }
 }

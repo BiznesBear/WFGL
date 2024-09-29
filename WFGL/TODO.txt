@@ -1,16 +1,13 @@
 ﻿>> TODO:
-	Grouping bitmaps 
 	Code clean up
 	Camera ⚙️
-	Canvas and ui ⚙️
-	PseudoLight (with blending) ⚙️
-	Collisions & more Phisics
-	Tilemaps, tiled sprites
-	Optimalizations
+	Canvas and more ui ⚙️
+	More Phisics
+	Grid, tiled sprites
+	Optimalizations ⚙️
 
 >> Don't ask me what I drank
 	Particle system
-	Lighting system
+	Lighting system / PseudoLight (with blending) ⚙️
 	Raycasting
 	Postprocessing
-	Converting windows forms view to code 🤡

@@ -2,5 +2,5 @@
 
 public static class Mouse
 {
-    public static Pixel Position { get; internal set; } = Pixel.Zero;
+    public static Point Position { get; internal set; } = new Point();
 }

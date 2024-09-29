@@ -21,7 +21,7 @@ public class PseduoLight : Transform
 
         using (Graphics g = Graphics.FromImage(bitmap))
         {
-            Pixel center = new((int)radius, (int)radius);
+            Point center = new((int)radius, (int)radius);
             for (int r = (int)radius; r > 0; r -= 4)
             {
                 int a = (int)(alpha * (float)(r / radius));
@@ -39,7 +39,7 @@ public class PseduoLight : Transform
             GenerateLightBitmap(m);
             return;
         }
-        Pixel pos = Position.ToPixel(m.VirtualScale);
+        Point pos = Position.ToPoint(m.VirtualScale);
 
         m.Renderer.DrawImage(bitmap, pos.X - (int)radius, pos.Y - (int)radius);
     }

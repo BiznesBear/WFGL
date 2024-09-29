@@ -16,9 +16,7 @@ public class Group : Transform
             {
                 obj.Create(Hierarchy);
                 if (obj is IDrawable idraw)
-                {
                     idraw.Group = this;
-                }
             }
         }
     }
@@ -43,9 +41,7 @@ public class DrawableGroup : Group, IDrawable
     public Bitmap GetRender() => finRender ?? throw new WFGLNullInstanceError("Null group render");
     public void Render()
     {
-        //TODO: Rework - create bitmap of objects size not render size
-        //TODO: Stop drawing IDrawable in hierarchy if it's already in group
-        finRender = new(Master.RenderSize.Width, Master.RenderSize.Height);
+        finRender = new(Master.RenderSize.X, Master.RenderSize.Y);
         renderer = Graphics.FromImage(finRender);
        
         foreach(var obj in Layer.GetObjectsFrom(Layer.SortObjectList(Members)))

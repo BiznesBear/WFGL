@@ -2,10 +2,10 @@
 using WFGL.Core;
 using WFGL.UI;
 using WFGL.Input;
+using WFGL.Pseudo;
 
 using System.Windows.Forms;
 using System.Drawing;
-
 
 namespace DemoGame;
 
@@ -33,11 +33,11 @@ internal class Game : GameMaster
     Hierarchy lights;
     Hierarchy canvas;
 
-    Player player = new() { Layer = topLayer };
+    Player player;
 
     readonly static Sprite maszWypadloCi = new("mozg-masz-wypadlo-ci.jpg");
 
-    SpriteRenderer sprite = new ("aushf.jpg") { Position = new (2.5f,0), Layer = underTopLayer };
+    internal static CollidingSprite sprite = new ("aushf.jpg") { Position = new (2.5f,0), Layer = underTopLayer };
     SpriteRenderer sprite2 = new (maszWypadloCi) { Position = Vector2.One };
     SpriteRenderer sprite3 = new (maszWypadloCi) { Position = 3 };
     SpriteRenderer sprite4 = new(maszWypadloCi) { Position = 2 };
@@ -55,14 +55,14 @@ internal class Game : GameMaster
     public Game(GameWindow window) : base(window)
     {
         RegisterInput(new GameInput(this));
-        WindowAspectRatioLock = true;
+        WindowAspectLock = true;
         Layer.Layers = [topLayer,underTopLayer,lightLayer];
 
         objects = new(this);
         lights = new(this);
         canvas = new(this);
         fpsText = new(font, $"FPS: {TimeMaster.Fps}");
-
+        player = new(this) { Layer = topLayer };
         background = new(this,objects);
 
     }
@@ -98,16 +98,7 @@ internal class Game : GameMaster
 
         objects.Objects = [
             player,
-            sprite,
             background
-            //sprite2,
-            //sprite3,
-            //sprite4,
-            //sprite5,
-            //sprite6,
-            //sprite7,
-            //sprite8,
-            //sprite9
         ];
 
         canvas.Objects = [
@@ -124,14 +115,14 @@ internal class Game : GameMaster
     protected override void OnDraw()
     {
         // drawing background of virtual render size 
-        DrawRectangle(Pixel.Zero.PushToPoint(), RenderSize);
+        DrawRectangle(new Point(), RenderSize);
         
-        // centered window view
-        //DrawRect(WindowCenter-scale/new Pixel(2,2), scale);
 
         objects.DrawAll();
         lights.DrawAll();
         canvas.DrawAll();
+        DrawRect(sprite.ColliderPosition.ToPoint(VirtualScale),sprite.ColliderSize.ToPoint(VirtualScale));
+        DrawRect(player.ColliderPosition.ToPoint(VirtualScale), player.ColliderSize.ToPoint(VirtualScale));
     }
 
     protected override void OnResized()
@@ -153,23 +144,30 @@ internal class GameInput(GameMaster master) : InputHandler(master)
     }
 }
 
-internal class Player : Transform 
+internal class Player : Transform, ICollide 
 {
     static Sprite sprite = new("furniture.png");
     internal SpriteRenderer playerSprite = new(sprite);
-
+    internal bool lockMovement=false;
     float speed = normalSpeed;
     const float normalSpeed = 2.5f;
     const float sprintSpeed = 4;
+    internal WFGL.Vector2 dir;
 
-    public override void OnCreate()
+    private GameMaster Master;
+    public Vector2 ColliderSize => playerSprite.RealSize.VirtualizePixel(Master.MainCamera).ToVector2(Master.VirtualScale);
+    public Vector2 ColliderPosition => playerSprite.Position + dir;
+    
+    public Player(GameMaster master) { Master = master; }
+    public override void OnCreate(Hierarchy h, GameMaster m)
     {
         playerSprite.Sprite.Scale = new(1f,0.6f);
     }
     public override void OnUpdate(GameMaster m)
     {
         var input = m.InputMaster;
-        speed = input.IsKeyPressed(Keys.Space)? sprintSpeed : normalSpeed;
+        if (!lockMovement) speed = input.IsKeyPressed(Keys.Space) ? sprintSpeed : normalSpeed;
+        else speed = 0;
 
         Vector2 direction = Vector2.Zero;
         if (input.IsKeyPressed(Keys.A)) direction -= new Vector2(speed, 0f);
@@ -177,7 +175,12 @@ internal class Player : Transform
         if (input.IsKeyPressed(Keys.W)) direction -= new Vector2(0f, speed);
         if (input.IsKeyPressed(Keys.S)) direction += new Vector2(0f, speed);
 
-        Position += direction.Normalize() * speed * m.TimeMaster.DeltaTime;
+        dir = direction.Normalize() * speed * m.TimeMaster.DeltaTime;
+
+        if (!this.IsColliding(Game.sprite, m))
+        {
+            Position += dir;
+        }
         playerSprite.Position = Position;
     }
     public override void OnDraw(GameMaster m)

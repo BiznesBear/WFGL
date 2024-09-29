@@ -5,7 +5,7 @@ namespace WFGL;
 public class Hierarchy : Transform
 {
     private GameMaster? Master { get; set; }
-    private GameMaster GetMaster() => Master ?? throw new WFGLNullInstanceError("Null master in hierarchy");
+    public GameMaster GetMaster() => Master ?? throw new WFGLNullInstanceError("Null master in hierarchy");
     private Dictionary<Layer, List<IObject>> Order = [];
 
     private readonly List<IObject> objects = new();
