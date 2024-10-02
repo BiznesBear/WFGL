@@ -1,5 +1,9 @@
 namespace WFGL;
 
+/// <summary>
+/// IDC WHAT IS THIS. I THINK IT"S USEFUL
+/// </summary>
+/// <typeparam name="T">type of asset</typeparam>
 public class AssetPack<T> : Dictionary<string, IAsset<T>> where T : class
 {
     public AssetPack() { }

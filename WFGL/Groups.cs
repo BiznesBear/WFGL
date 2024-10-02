@@ -1,10 +1,11 @@
 ﻿using WFGL.Core;
-
 namespace WFGL;
+
+
+// Remeber group is not hierarchy. It's external IObject linking method. But still this needs rework.
 public class Group : Transform
 {
     protected List<IObject> Members { get; } = new();
-    protected GameMaster Master { get; }
     protected Hierarchy Hierarchy { get; }
     public List<IObject> Objects
     {
@@ -21,9 +22,9 @@ public class Group : Transform
         }
     }
 
-    public Group(GameMaster master, Hierarchy hierarchy)
+    public Group(GameMaster m, Hierarchy hierarchy)
     {
-        Master = master;
+        master = m;
         Hierarchy = hierarchy;
     }
     public Group(GameMaster master, Hierarchy hierarchy, params IObject[] objs) : this(master, hierarchy)
@@ -42,14 +43,14 @@ public class DrawableGroup : Group, IDrawable
     public Bitmap GetRender() => finRender ?? throw new WFGLNullInstanceError("Null group render");
     public void Render()
     {
-        finRender = new(Master.RenderSize.X, Master.RenderSize.Y);
+        finRender = new(GetMaster().RenderSize.X, GetMaster().RenderSize.Y);
         renderer = Graphics.FromImage(finRender);
        
-        foreach(var obj in Layer.GetObjectsFrom(Layer.SortObjectList(Members)))
+        foreach(var obj in LayerMaster.GetObjectsFrom(GetMaster().LayerMaster,LayerMaster.SortObjectList(Members)))
         {
             if (obj is IDrawable idraw)
             {
-                idraw.Draw(Master, renderer);
+                idraw.Draw(GetMaster(), renderer);
             }
         }
     }

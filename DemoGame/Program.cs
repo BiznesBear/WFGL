@@ -58,7 +58,7 @@ internal class Game : GameMaster
     {
         RegisterInput(new GameInput(this));
         WindowAspectLock = true;
-        Layer.Layers = [topLayer,underTopLayer,lightLayer];
+        LayerMaster.Layers = [topLayer,underTopLayer,lightLayer];
 
         objects = new(this);
         lights = new(this);
@@ -101,33 +101,31 @@ internal class Game : GameMaster
         objects.Objects = [
             player,
             background,
-            mapBounds
+            mapBounds,
         ];
 
         canvas.Objects = [
             fpsText,
             userNameText,
         ];
+
+        RegisterHierarchy(objects);
+        RegisterHierarchy(canvas);
     }
 
     protected override void OnUpdate()
     {
         userNameText.Position = player.Position + new Vector2(0.33f,-0.15f);
         fpsText.Content = $"FPS: {TimeMaster.Fps}";
-        mapBounds.colliderSize = RenderSize.ToVector2(VirtualScale) - 1.9f; // i created map bounds in the real psyho way 
+        mapBounds.colliderSize = RenderSize.ToVector2(VirtualScale) - 1.9f; // i created map bounds in the real psyho way (very bad way don't do this pls)
     }
     protected override void OnDraw()
     {
-        // drawing background of virtual render size 
+        // drawing background 
         DrawRectangle(new Point(), RenderSize);
-        
-
-        objects.DrawAll();
-        lights.DrawAll();
-        canvas.DrawAll();
-
-
-
+    }
+    protected override void OnAfterDraw()
+    {
         mapBounds.DrawColliderBounds(this);
         sprite.DrawColliderBounds(this);
         player.DrawColliderBounds(this);
@@ -135,6 +133,7 @@ internal class Game : GameMaster
 
     protected override void OnResized()
     {
+        // groups need to be rendered by hand 
         background.Render();
     }
 }
@@ -160,7 +159,7 @@ internal class Player : Transform, ICollide
     const float normalSpeed = 2.5f;
     const float sprintSpeed = 4;
     internal Vector2 dir;
-    //internal Ray ray;
+
     internal RayInfo raycastInfo;
     private GameMaster Master;
     public Vector2 ColliderSize => playerSprite.RealSize.VirtualizePixel(Master.MainCamera).ToVector2(Master.VirtualScale);
@@ -193,12 +192,12 @@ internal class Player : Transform, ICollide
         Ray ray = new(Position, Position + 2);
         ray.IsColliding(Game.sprite, out raycastInfo);  
         inP = raycastInfo.intersectionPoint;
+
     }
     private Vector2 inP;
     public override void OnDraw(GameMaster m)
     {
         playerSprite.OnDraw(m);
         raycastInfo.ray.DrawGizmos(m, inP);
-
     }
 }

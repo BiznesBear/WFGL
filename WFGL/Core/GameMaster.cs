@@ -17,6 +17,7 @@ public class GameMaster
     #region RenderingAndTime
     public Camera MainCamera { get; private set; }
     public Time TimeMaster { get; } = new();
+    public LayerMaster LayerMaster { get; } = new();
     public Graphics Renderer { get; private set; }
 
     private InputHandler? inputHandler;
@@ -42,6 +43,12 @@ public class GameMaster
 
     #endregion
 
+    #region Game 
+
+    public Hierarchy MainHierarchy { get; }
+
+    #endregion 
+
     public GameMaster(GameWindow window)
     {
         // window
@@ -66,6 +73,10 @@ public class GameMaster
         Time.SetFps(Time.DEFALUT_FPS);
 
         ResetRenderBuffer();
+
+        MainHierarchy = new Hierarchy(this);
+        WhenUpdate += MainHierarchy.OnUpdate;
+        WhenDraw += MainHierarchy.OnDraw;
     }
     private void ResetRenderBuffer()
     {
@@ -118,6 +129,16 @@ public class GameMaster
 
     #endregion
 
+    public void RegisterHierarchy(Hierarchy hierarchy)
+    {
+        MainHierarchy.Register(hierarchy);
+    }
+    public void UnregisterHierarchy(Hierarchy hierarchy)
+    {
+        MainHierarchy.Unregister(hierarchy);
+    }
+
+
     #region Logic
     private void Update(object? sender, EventArgs e)
     {
@@ -129,9 +150,9 @@ public class GameMaster
     {
         OnDraw();
         WhenDraw?.Invoke(this);
+        OnAfterDraw();
 
         e.Graphics.SetClip((new Rectangle(0, 0, RenderSize.X, RenderSize.Y)));
-        //e.Graphics.DrawImageUnscaled(renderBuffer, new Rectangle(0, 0, RenderSize.X, RenderSize.Y));
         e.Graphics.DrawImageUnscaled(renderBuffer, new Rectangle(0, 0, RenderSize.X, RenderSize.Y));
     }
 
@@ -224,9 +245,14 @@ public class GameMaster
     protected virtual void OnUpdate() { }
 
     /// <summary>
-    /// Called when the game window is drawed and always before update.
+    /// Called when the game window is drawed and always before update. Perfect for drawing background.
     /// </summary>
     protected virtual void OnDraw() { }
+
+    /// <summary>
+    /// Called after OnDraw function is called. Perfect for drawing foreground.
+    /// </summary>
+    protected virtual void OnAfterDraw() { }
 
     /// <summary>
     /// Called when windows is resized.

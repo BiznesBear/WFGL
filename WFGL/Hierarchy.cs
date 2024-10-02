@@ -11,6 +11,7 @@ public class Hierarchy : Transform
     public event Action ChangedList;
     public event ObjectEventArgs? AddedObject;
     public event ObjectEventArgs? RemovedObject;
+    internal event GameMasterEventArgs? WhenUpdate;
 
     public List<IObject> Objects
     {
@@ -33,21 +34,33 @@ public class Hierarchy : Transform
         objects.Add(obj);
         AddedObject?.Invoke(obj);
         ChangedList.Invoke();
-        GetMaster().WhenUpdate += obj.OnUpdate;
+        WhenUpdate += obj.OnUpdate;
     }
     public void Unregister(IObject obj)
     {
-        GetMaster().WhenUpdate -= obj.OnUpdate;
+        WhenUpdate -= obj.OnUpdate;
         objects.Remove(obj);
         RemovedObject?.Invoke(obj);
         ChangedList.Invoke();
     }
     public void UpdateOrder()
     {
-        Order = Layer.SortObjectList(objects);
+        Order = LayerMaster.SortObjectList(objects);
     }
-    public IEnumerable<IObject> GetObjects() => Layer.GetObjectsFrom(Order);
-    public void DrawAll()
+    public IEnumerable<IObject> GetObjects() => LayerMaster.GetObjectsFrom(GetMaster().LayerMaster,Order);
+    public void DestroyAll()
+    {
+        foreach (IObject obj in objects) obj.Destroy(this);
+    }
+    public override void OnUpdate(GameMaster m)
+    {
+        WhenUpdate?.Invoke(m);
+    }
+    public override void OnDraw(GameMaster m)
+    {
+        DrawAll();
+    }
+    protected void DrawAll()
     {
         foreach (IObject obj in GetObjects())
         {
