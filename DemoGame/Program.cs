@@ -2,10 +2,11 @@
 using WFGL.Core;
 using WFGL.UI;
 using WFGL.Input;
-using WFGL.Pseudo;
+using WFGL.Physics;
 
 using System.Windows.Forms;
 using System.Drawing;
+
 
 namespace DemoGame;
 
@@ -32,6 +33,7 @@ internal class Game : GameMaster
     Hierarchy objects;
     Hierarchy lights;
     Hierarchy canvas;
+    DrawableGroup background;
 
     Player player;
 
@@ -50,7 +52,7 @@ internal class Game : GameMaster
     StringRenderer fpsText;
     StringRenderer userNameText = new(font, Environment.UserName);
 
-    DrawableGroup background;
+    internal static Collider mapBounds = new() { colliderOffset = 0.95f };
 
     public Game(GameWindow window) : base(window)
     {
@@ -98,7 +100,8 @@ internal class Game : GameMaster
 
         objects.Objects = [
             player,
-            background
+            background,
+            mapBounds
         ];
 
         canvas.Objects = [
@@ -111,6 +114,7 @@ internal class Game : GameMaster
     {
         userNameText.Position = player.Position + new Vector2(0.33f,-0.15f);
         fpsText.Content = $"FPS: {TimeMaster.Fps}";
+        mapBounds.colliderSize = RenderSize.ToVector2(VirtualScale) - 1.9f; // i created map bounds in the real psyho way 
     }
     protected override void OnDraw()
     {
@@ -121,8 +125,12 @@ internal class Game : GameMaster
         objects.DrawAll();
         lights.DrawAll();
         canvas.DrawAll();
-        DrawRect(sprite.ColliderPosition.ToPoint(VirtualScale),sprite.ColliderSize.ToPoint(VirtualScale));
-        DrawRect(player.ColliderPosition.ToPoint(VirtualScale), player.ColliderSize.ToPoint(VirtualScale));
+
+
+
+        mapBounds.DrawColliderBounds(this);
+        sprite.DrawColliderBounds(this);
+        player.DrawColliderBounds(this);
     }
 
     protected override void OnResized()
@@ -148,12 +156,12 @@ internal class Player : Transform, ICollide
 {
     static Sprite sprite = new("furniture.png");
     internal SpriteRenderer playerSprite = new(sprite);
-    internal bool lockMovement=false;
     float speed = normalSpeed;
     const float normalSpeed = 2.5f;
     const float sprintSpeed = 4;
-    internal WFGL.Vector2 dir;
-
+    internal Vector2 dir;
+    //internal Ray ray;
+    internal RayInfo raycastInfo;
     private GameMaster Master;
     public Vector2 ColliderSize => playerSprite.RealSize.VirtualizePixel(Master.MainCamera).ToVector2(Master.VirtualScale);
     public Vector2 ColliderPosition => playerSprite.Position + dir;
@@ -161,13 +169,13 @@ internal class Player : Transform, ICollide
     public Player(GameMaster master) { Master = master; }
     public override void OnCreate(Hierarchy h, GameMaster m)
     {
+        base.OnCreate(h, m);
         playerSprite.Sprite.Scale = new(1f,0.6f);
     }
     public override void OnUpdate(GameMaster m)
     {
         var input = m.InputMaster;
-        if (!lockMovement) speed = input.IsKeyPressed(Keys.Space) ? sprintSpeed : normalSpeed;
-        else speed = 0;
+        speed = input.IsKeyPressed(Keys.Space) ? sprintSpeed : normalSpeed;
 
         Vector2 direction = Vector2.Zero;
         if (input.IsKeyPressed(Keys.A)) direction -= new Vector2(speed, 0f);
@@ -177,14 +185,20 @@ internal class Player : Transform, ICollide
 
         dir = direction.Normalize() * speed * m.TimeMaster.DeltaTime;
 
-        if (!this.IsColliding(Game.sprite, m))
+        if (!this.IsColliding(Game.sprite) && this.IsColliding(Game.mapBounds)) // to avoid player clipping
         {
-            Position += dir;
+            Position += dir;   
         }
         playerSprite.Position = Position;
+        Ray ray = new(Position, Position + 2);
+        ray.IsColliding(Game.sprite, out raycastInfo);  
+        inP = raycastInfo.intersectionPoint;
     }
+    private Vector2 inP;
     public override void OnDraw(GameMaster m)
     {
         playerSprite.OnDraw(m);
+        raycastInfo.ray.DrawGizmos(m, inP);
+
     }
 }

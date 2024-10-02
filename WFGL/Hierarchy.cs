@@ -4,8 +4,6 @@ namespace WFGL;
 
 public class Hierarchy : Transform
 {
-    private GameMaster? Master { get; set; }
-    public GameMaster GetMaster() => Master ?? throw new WFGLNullInstanceError("Null master in hierarchy");
     private Dictionary<Layer, List<IObject>> Order = [];
 
     private readonly List<IObject> objects = new();
@@ -19,14 +17,16 @@ public class Hierarchy : Transform
         get => objects;
         set
         {
-            foreach(IObject obj in value) 
+            foreach(IObject obj in value)
+            {
                 obj.Create(this);
+            }
         }
     }
 
     public Hierarchy() { ChangedList += UpdateOrder; }
     public Hierarchy(GameMaster master) : this() { AssignMaster(master); }
-    public void AssignMaster(GameMaster master) => Master = master;
+    public void AssignMaster(GameMaster m)=> master = m;
 
     public void Register(IObject obj)
     {

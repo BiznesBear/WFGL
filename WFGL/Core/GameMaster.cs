@@ -38,7 +38,6 @@ public class GameMaster
 
     public Point WindowCenter => new(GameWindow.ClientSize.Width / 2, GameWindow.ClientSize.Height / 2);
     public Size WindowSize => new(GameWindow.ClientSize.Width, GameWindow.ClientSize.Height);
-    //public Rectangle CenteredRenderClip => new(WindowCenter.X - RenderSize.Width, 0, RenderSize.Width, RenderSize.Height);
     public Point RenderSize => new((int)VirtualScale.FactorX * VirtualUnit.SCALING, (int)VirtualScale.FactorX * VirtualUnit.SCALING);
 
     #endregion
@@ -132,6 +131,7 @@ public class GameMaster
         WhenDraw?.Invoke(this);
 
         e.Graphics.SetClip((new Rectangle(0, 0, RenderSize.X, RenderSize.Y)));
+        //e.Graphics.DrawImageUnscaled(renderBuffer, new Rectangle(0, 0, RenderSize.X, RenderSize.Y));
         e.Graphics.DrawImageUnscaled(renderBuffer, new Rectangle(0, 0, RenderSize.X, RenderSize.Y));
     }
 
@@ -139,15 +139,24 @@ public class GameMaster
 
     #region Drawing
 
-    private readonly Pen defaultPen = new(Color.Red, 1);
-    private readonly SolidBrush defaultBrush = new(Color.DarkSlateGray);
+    public readonly Pen defaultPen = new(Color.Red, 1);
+    public readonly SolidBrush defaultBrush = new(Color.DarkSlateGray);
 
-    public void DrawRect(Color color,float width, Point position, Point size)
+    public void DrawLine(Pen pen, Point pos1, Point pos2)
     {
-        Renderer.DrawRectangle(defaultPen, new(position, size.PushToSize()));
+        Renderer.DrawLine(pen, pos1, pos2);
     }
-    public void DrawRect(Color color, Point position, Point size) => DrawRect(color, 1, position, size);
+    public void DrawLine(Color color, float width, Point pos1, Point pos2) => DrawLine(new Pen(color, width), pos1, pos2);
+    public void DrawLine(Point pos1, Point pos2) => DrawLine(Color.Red, 1, pos1, pos2);
+
+
+    public void DrawRect(Pen pen, Point position, Point size)
+    {
+        Renderer.DrawRectangle(pen, new(position, size.PushToSize()));
+    }
+    public void DrawRect(Color color, float width,Point position, Point size) => DrawRect(new Pen(color, width),position, size);
     public void DrawRect(Point position, Point size) => DrawRect(Color.Red, 1, position, size);
+
 
     public void DrawRectangle(Pen pen, Point position, Point size)
     {

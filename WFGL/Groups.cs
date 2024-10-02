@@ -20,6 +20,7 @@ public class Group : Transform
             }
         }
     }
+
     public Group(GameMaster master, Hierarchy hierarchy)
     {
         Master = master;

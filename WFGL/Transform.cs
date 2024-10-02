@@ -8,6 +8,9 @@ public abstract class Transform : IObject
     public float Rotation { get; set; }
     public Layer Layer { get; set; } = Layer.Defalut;
 
+    protected GameMaster? master;
+    protected GameMaster GetMaster() => master ?? throw new WFGLNullInstanceError("Null game master instance in transform");
+
     public void Create(Hierarchy hierarchy)
     {
         hierarchy.Register(this);
@@ -18,7 +21,7 @@ public abstract class Transform : IObject
         OnDestroy(hierarchy, hierarchy.GetMaster());
         hierarchy.Unregister(this);
     }
-    public virtual void OnCreate(Hierarchy h, GameMaster m) { }
+    public virtual void OnCreate(Hierarchy h, GameMaster m) { master = m; }
     public virtual void OnDestroy(Hierarchy h, GameMaster m) { }
     public virtual void OnUpdate(GameMaster m) { }
     public virtual void OnDraw(GameMaster m) { }

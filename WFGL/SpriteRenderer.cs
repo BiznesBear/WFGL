@@ -6,6 +6,7 @@ public class SpriteRenderer : Transform, IDrawable
     public Image Source => Sprite.GetSource();
     public Sprite Sprite { get; set; } = new();
     public Group? Group { get; set; }
+
     // TODO: Rework how real size of any object is get
     /// <summary>
     /// Viewed size of sprite on the screen
@@ -40,18 +41,10 @@ public class SpriteRenderer : Transform, IDrawable
 }
 public class CollidingSprite : SpriteRenderer, ICollide
 {
-    public Vector2 ColliderSize => RealSize.VirtualizePixel(Master.MainCamera).ToVector2(Master.VirtualScale);
+    public Vector2 ColliderSize => RealSize.VirtualizePixel(GetMaster().MainCamera).ToVector2(GetMaster().VirtualScale);
     public Vector2 ColliderPosition => Position;
-
-    private GameMaster? master;
-    private GameMaster Master => master ?? throw new WFGLNullInstanceError("Null master instance in colliding sprite");
 
     public CollidingSprite() : base() { }
     public CollidingSprite(string filePath) : base(filePath) { }
     public CollidingSprite(Sprite sprite) : base(sprite) { }
-
-    public override void OnCreate(Hierarchy h, GameMaster m)
-    {
-        master = m;
-    }
 }
