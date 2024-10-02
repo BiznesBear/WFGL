@@ -1,4 +1,5 @@
 ﻿>> TODO:
+	Better colliding support (and remove so much statics from 'Game' in DemoGame project)
 	Code clean up
 	Camera ⚙️
 	Canvas and more ui ⚙️

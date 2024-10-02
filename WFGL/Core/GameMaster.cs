@@ -70,7 +70,7 @@ public class GameMaster
         renderBuffer = new Bitmap(RenderSize.X, RenderSize.Y);
         Renderer = Graphics.FromImage(renderBuffer);
 
-        Time.SetFps(Time.DEFALUT_FPS);
+        Time.SetFps();
 
         ResetRenderBuffer();
 
