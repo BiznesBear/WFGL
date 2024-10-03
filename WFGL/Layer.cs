@@ -56,7 +56,7 @@ public sealed class LayerMaster
         }
     }
 }
-public sealed class Layer(byte drawWeight)
+public sealed class Layer(short drawWeight)
 {
     public readonly static Layer Defalut = new(0);
     public short DrawWeight { get; } = drawWeight;

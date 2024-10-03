@@ -25,8 +25,8 @@ public class GameMaster
     #endregion
 
     // events 
-    public event GameMasterEventArgs? WhenUpdate;
-    public event GameMasterEventArgs? WhenDraw;
+    public event GameMasterEventHandler? WhenUpdate;
+    public event GameMasterEventHandler? WhenDraw;
 
     // other
     public Bitmap renderBuffer;
@@ -60,6 +60,12 @@ public class GameMaster
         GameWindow.ResizeEnd += Resized;
 
         GameWindow.MouseMove += MouseMoved;
+        GameWindow.MouseDown += MouseDown;
+        GameWindow.MouseUp += MouseUp;
+        GameWindow.MouseDoubleClick += MouseDoubleClicked;
+        GameWindow.MouseEnter += MouseEnter;
+        GameWindow.MouseLeave += MouseLeave;
+
         float aspectRatio = (float)GameWindow.ClientSize.Width / GameWindow.ClientSize.Height;
         CameraOptions options = new(new Size((int)aspectRatio,(int)aspectRatio),GameWindow.ClientSize);
         MainCamera = new(this, options);
@@ -91,13 +97,15 @@ public class GameMaster
         OnRenderBufferReset();
     }
 
-    #region Window
     public void Load()
     {
         Time.Start();
         OnLoad();
         GameWindow.ShowDialog();
     }
+
+    #region Window
+
     public void FullScreen() 
     {
         windowSizeTemp = GameWindow.ClientSize;
@@ -228,8 +236,26 @@ public class GameMaster
     private void MouseMoved(object? sender, MouseEventArgs e)
     {
         Mouse.Position = e.Location;
+        
     }
-
+    private void MouseDown(object? sender, MouseEventArgs e)
+    {
+        InputMaster.OnMouseDown(e.Button);
+        Mouse.Clicks++;
+        Mouse.pressedButtons.Add(e.Button);
+    }
+    private void MouseUp(object? sender, MouseEventArgs e)
+    {
+        InputMaster.OnMouseUp(e.Button);
+        Mouse.Clicks++;
+        Mouse.pressedButtons.Remove(e.Button);
+    }
+    private void MouseDoubleClicked(object? sender, MouseEventArgs e)
+    {
+        InputMaster.OnMouseDoubleClicked(e.Button);
+    }
+    private void MouseEnter(object? sender, EventArgs e) { Mouse.Inside = true; }
+    private void MouseLeave(object? sender, EventArgs e) { Mouse.Inside = false; }
     #endregion
 
     #region EventFunctions

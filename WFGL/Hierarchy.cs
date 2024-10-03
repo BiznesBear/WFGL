@@ -9,9 +9,9 @@ public class Hierarchy : Transform
     private readonly List<IObject> objects = new();
 
     public event Action ChangedList;
-    public event ObjectEventArgs? AddedObject;
-    public event ObjectEventArgs? RemovedObject;
-    internal event GameMasterEventArgs? WhenUpdate;
+    public event ObjectEventHandler? AddedObject;
+    public event ObjectEventHandler? RemovedObject;
+    internal event GameMasterEventHandler? WhenUpdate;
 
     public List<IObject> Objects
     {
@@ -66,5 +66,10 @@ public class Hierarchy : Transform
         {
             obj.OnDraw(GetMaster());
         }
+    }
+    public IEnumerable<T> GetAllObjectsWithType<T>()
+    {
+        foreach (var item in objects)
+            if (item is T t) yield return t;
     }
 }

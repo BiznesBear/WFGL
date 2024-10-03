@@ -1,9 +1,9 @@
 ﻿namespace WFGL;
 
 /// <summary>
-/// Console, but with built-in colors
+/// WFGL debug output with built-in colors
 /// </summary>
-public static class WFGLDebug
+public static class WDO
 {
     public static void Info(object message) => Console.WriteLine($"[INFO] ".SetColor(TextColor.Cyan) + message);
     public static void Warring(object message) => Console.WriteLine($"[WARRING] ".SetColor(TextColor.Yellow) + message);

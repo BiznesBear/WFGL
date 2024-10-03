@@ -4,7 +4,10 @@ public class Sprite : IAsset<Bitmap>
 {
     private Bitmap? source { get; set; } 
     public Vector2 Scale { get; set; } = Vector2.One;
-    public string FilePath { get; private set; } = "";
+    // TODO: add more properties 
+
+    
+    public string? FilePath { get; private set; } = null;
     public Sprite() { }
     public Sprite(string path) 
     {

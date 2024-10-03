@@ -33,4 +33,23 @@ public abstract class InputHandler(Core.GameMaster master)
     /// </summary>
     /// <param name="key">Last realesed key</param>
     protected virtual void OnKeyUp(Keys key) { }
+
+
+    /// <summary>
+    /// Called when mouse is clicked (any button)
+    /// </summary>
+    /// <param name="key">Last realesed key</param>
+    public virtual void OnMouseDown(MouseButtons buttons) { }
+
+    /// <summary>
+    /// Called when mouse is un clicked (any button)
+    /// </summary>
+    /// <param name="key">Last realesed key</param>
+    public virtual void OnMouseUp(MouseButtons buttons) { }
+
+    /// <summary>
+    /// Called when mouse is double clicked (any button)
+    /// </summary>
+    /// <param name="key">Last realesed key</param>
+    public virtual void OnMouseDoubleClicked(MouseButtons buttons) { }
 }
