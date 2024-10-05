@@ -56,12 +56,12 @@ public static class Converts
     #endregion
 
     /// <summary>
-    /// Used for drawing real scale of images.
+    /// Used for rescaling 
     /// </summary>
-    public static Point VirtualizePixel(this Point pixel, Camera camera) => new((int)(pixel.X * camera.Scaler.FactorX), (int)(pixel.Y * camera.Scaler.FactorY));
+    public static Point VirtualizePixel(this Point pixel, Camera camera) => new((int)(pixel.X * camera.Scaler), (int)(pixel.Y * camera.Scaler));
 
     /// <summary>
-    /// Used for drawing real scale of images.
+    /// 
     /// </summary>
     public static Size VirtualizePixel(this Size pixel, Camera camera) => pixel.PushToPoint().VirtualizePixel(camera).PushToSize();
 }

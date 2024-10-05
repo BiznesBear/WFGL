@@ -24,7 +24,14 @@ public class StringRenderer : Transform
 
     public override void OnDraw(Core.GameMaster m)
     {
-        m.DrawText(this);
+        float dynamicFontSize = BaseSize * m.MainCamera.Scaler * VirtualUnit.SCALING;
+        if (dynamicFontSize < 0.02) return;
+        Font dynamicFont = new(Font.FontFamily, dynamicFontSize);
+        Point pos = Position.ToPoint(m.VirtualScale);
+        Brush brush = new SolidBrush(Color);
+        m.Renderer.DrawString(Content, dynamicFont, brush, pos.X, pos.Y);
+        brush.Dispose();
+        dynamicFont.Dispose();
     }
     public void UpdateFont(Font f) 
     {

@@ -10,9 +10,10 @@ namespace DemoGame;
 
 internal class Program
 {
+
     #pragma warning disable
     public static Game gameInstance;
-    #pragma warning enable
+    #pragma warning restore
 
     [STAThread]
     private static void Main(string[] args)
@@ -25,38 +26,32 @@ internal class Program
 
 internal class Game : GameMaster
 {
-    readonly static Font font = new("Cascadia Mono Light", 12);
+    // assets
+    public readonly static Font font = new("Cascadia Mono Light", 12);
+    public readonly static Sprite maszWypadloCi = new("mozg-masz-wypadlo-ci.jpg");
+    public readonly static Sprite playerSprite = new("furniture.png");
 
+    // layers
     readonly static Layer canvasLayer = new(300);
     readonly static Layer topLayer = new(100);
     readonly static Layer underTopLayer = new(99);
 
+    // hroups, groups & hierarchys
+    internal Group<ICollide> colliders;
 
     internal Hierarchy objects;
     internal Hierarchy canvas;
+    internal StaticRenderHroup background;
 
-    internal DrawableGroup background;
-
-    internal Player player;
-
-    readonly static Sprite maszWypadloCi = new("mozg-masz-wypadlo-ci.jpg");
+    // objects
 
     internal CollidingSprite sprite = new ("aushf.jpg") { Position = new (2.5f,0), Layer = underTopLayer };
-    SpriteRenderer sprite2 = new (maszWypadloCi) { Position = Vector2.One };
-    SpriteRenderer sprite3 = new (maszWypadloCi) { Position = 3 };
-    SpriteRenderer sprite4 = new(maszWypadloCi) { Position = 2 };
-    SpriteRenderer sprite5 = new(maszWypadloCi) { Position = 4 };
-    SpriteRenderer sprite6 = new(maszWypadloCi) { Position = new(0, 4) };
-    SpriteRenderer sprite7 = new(maszWypadloCi) { Position = Vector2.Zero };
-    SpriteRenderer sprite8 = new(maszWypadloCi) { Position = new(0, 3) };
-    SpriteRenderer sprite9 = new(maszWypadloCi) { Position = new(3, 0) };
-
-
+    internal Player player;
 
     StringRenderer fpsText;
     StringRenderer userNameText = new(font, Environment.UserName);
 
-    internal Collider mapBounds = new() { colliderOffset = 0.95f };
+    RectangleButton myButton = new(Color.Wheat,Color.Blue,Color.Red) { Layer = canvasLayer };
 
     public Game(GameWindow window) : base(window)
     {
@@ -69,8 +64,8 @@ internal class Game : GameMaster
         canvas = new(this) { Layer = canvasLayer };
         fpsText = new(font, $"FPS: {TimeMaster.Fps}");
         player = new(this) { Layer = topLayer };
-        background = new(this, objects) ;
-
+        background = new(this);
+        colliders = new(background);
     }
     
     protected override void OnLoad()
@@ -92,21 +87,20 @@ internal class Game : GameMaster
 
         background.Objects = [
             sprite,
-            sprite2,
-            sprite3,
-            sprite4,
-            sprite5,
-            sprite6,
-            sprite7,
-            sprite8,
-            sprite9,
+            new SpriteRenderer(maszWypadloCi) { Position = 1 },
+            new SpriteRenderer(maszWypadloCi) { Position = 3 },
+            new SpriteRenderer(maszWypadloCi) { Position = 2 },
+            new SpriteRenderer(maszWypadloCi) { Position = 4 },
+            new SpriteRenderer(maszWypadloCi) { Position = new(0, 4) },
+            new SpriteRenderer(maszWypadloCi) { Position = new(0, 3) },
+            new SpriteRenderer(maszWypadloCi){ Position = Vector2.Zero },
+            new SpriteRenderer(maszWypadloCi) { Position = new(3, 0) },
         ];
-        background.Render();
 
         objects.Objects = [
             player,
             background,
-            mapBounds,
+            myButton
         ];
 
         canvas.Objects = [
@@ -117,24 +111,23 @@ internal class Game : GameMaster
         RegisterHierarchy(objects);
         RegisterHierarchy(canvas);
 
+        colliders.Update();
+        background.Render();
     }
     protected override void OnUpdate()
     {
         userNameText.Position = player.Position + new Vector2(0.33f,-0.15f);
         fpsText.Content = $"FPS: {TimeMaster.Fps}";
-        mapBounds.colliderSize = RenderSize.ToVector2(VirtualScale) - 1.9f; // i created map bounds in the real psyho way (very bad way don't do this pls)
     }
     protected override void OnDraw()
     {
         // drawing background 
-        DrawRectangle(new Point(), RenderSize);
+        DrawRectangle(new(new Point(), RenderSize.PushToSize()));
     }
     protected override void OnAfterDraw()
     {
-        mapBounds.DrawColliderBounds(this);
         sprite.DrawColliderBounds(this);
         player.DrawColliderBounds(this);
-        player.raycastInfo.ray.DrawGizmos(this);
     }
 
     protected override void OnResized()
@@ -155,28 +148,28 @@ internal class GameInput(GameMaster master) : InputHandler(master)
             else Master.NormalScreen();
         }
     }
-    public override void OnMouseDown(MouseButtons buttons)
-    {
-        WDO.Info(Mouse.Clicks);
-    }
 }
 
 internal class Player : Transform, ICollide 
 {
-    static Sprite sprite = new("furniture.png");
-    internal SpriteRenderer playerSprite = new(sprite);
+    // sub-objects
+    internal SpriteRenderer playerSprite = new(Game.playerSprite);
+
+    // movement
     float speed = normalSpeed;
     const float normalSpeed = 2.5f;
     const float sprintSpeed = 4;
     internal Vector2 dir;
 
-    internal RayInfo raycastInfo;
-    private GameMaster Master;
-    public Vector2 ColliderSize => playerSprite.RealSize.VirtualizePixel(Master.MainCamera).ToVector2(Master.VirtualScale);
-    public Vector2 ColliderPosition => playerSprite.Position + dir;
-    private Vector2 inP;
 
-    public Player(GameMaster master) { Master = master; }
+    // colliders 
+    internal RayInfo hitInfo;
+    public Vector2 ColliderSize => playerSprite.RealSize.VirtualizePixel(GetMaster().MainCamera).ToVector2(GetMaster().VirtualScale);
+    public Vector2 ColliderPosition => playerSprite.Position + dir;
+
+    private Vector2 inP; 
+
+    public Player(GameMaster m) { master = m; }
     public override void OnCreate(Hierarchy h, GameMaster m)
     {
         base.OnCreate(h, m);
@@ -184,6 +177,7 @@ internal class Player : Transform, ICollide
     }
     public override void OnUpdate(GameMaster m)
     {
+        // movement
         var input = m.InputMaster;
         speed = input.IsKeyPressed(Keys.Space) ? sprintSpeed : normalSpeed;
 
@@ -195,20 +189,22 @@ internal class Player : Transform, ICollide
 
         dir = direction.Normalize() * speed * m.TimeMaster.DeltaTime;
 
-        if (!this.IsColliding(Program.gameInstance.sprite) && this.IsColliding(Program.gameInstance.mapBounds)) // to avoid player clipping
-        {
-            Position += dir;   
-        }
-
+        if (!this.IsColliding(Program.gameInstance.colliders, out ICollide? coll)) // to avoid player clipping
+            Position += dir;
         playerSprite.Position = Position;
-        Ray ray = new(Position, Position + 2);
-        ray.IsColliding(Program.gameInstance.sprite, out raycastInfo);  
-        inP = raycastInfo.intersectionPoint;
+
+        
+        // raycast
+        Ray ray = new(Position, coll!=null? coll.ColliderPosition: 1, 2);
+        ray.IsColliding(Program.gameInstance.sprite, out hitInfo);  
+        inP = hitInfo.intersectionPoint;
     }
     public override void OnDraw(GameMaster m)
     {
+        // updating not registred object manually
         playerSprite.OnDraw(m);
-        raycastInfo.ray.DrawGizmos(m);
-        raycastInfo.ray.DrawGizmos(m, inP);
+
+        // drawing ray gizmos
+        hitInfo.ray.DrawGizmos(m, inP);
     }
 }

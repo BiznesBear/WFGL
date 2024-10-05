@@ -4,6 +4,7 @@ public static class Physics
 {
     public static bool IsColliding(this ICollide self, ICollide other)
     {
+        
         float leftA = self.ColliderPosition.X;
         float rightA = self.ColliderPosition.X + self.ColliderSize.X;
         float topA = self.ColliderPosition.Y;
@@ -16,9 +17,20 @@ public static class Physics
         float bottomB = other.ColliderPosition.Y + other.ColliderSize.Y;
 
         if (rightA < leftB || leftA > rightB || bottomA < topB || topA > bottomB) return false;
+
         return true;
     }
-
+    public static bool IsColliding(this ICollide self, IEnumerable<ICollide> other, out ICollide? collider)
+    {
+        foreach (ICollide coll in other)
+            if (IsColliding(self, coll)) 
+            { 
+                collider = coll;
+                return true; 
+            }
+        collider = null;
+        return false;
+    }
 
     public static bool IsColliding(this Ray ray, ICollide rect, out RayInfo info)
     {
@@ -53,45 +65,16 @@ public static class Physics
         if (t_max < 0) return false;
 
         float t_hit = (t_min >= 0) ? t_min : t_max;
-        
+
+        if (ray.maxRange != null && t_hit > ray.maxRange)
+            return false;
+
         info = new(ray,t_hit);
 
         return true; 
     }
     public static void DrawColliderBounds(this ICollide self, Core.GameMaster m)
     {
-        m.DrawRect(self.ColliderPosition.ToPoint(m.VirtualScale), self.ColliderSize.ToPoint(m.VirtualScale));
+        m.DrawRect(new(self.ColliderPosition.ToPoint(m.VirtualScale), self.ColliderSize.ToSize(m.VirtualScale)));
     }
-}
-
-public struct Ray(Vector2 origin, Vector2 direction)
-{
-    public Vector2 Origin { get; set; } = origin;  
-    public Vector2 Direction { get; set; } = direction;
-
-    public void DrawGizmos(Core.GameMaster m)
-    {
-        m.DrawLine(Origin.ToPoint(m.VirtualScale), Direction.ToPoint(m.VirtualScale));
-    }
-    public void DrawGizmos(Core.GameMaster m, Vector2 intersectionPoint)
-    {
-        m.DrawLine(Origin.ToPoint(m.VirtualScale), intersectionPoint.ToPoint(m.VirtualScale));
-    }
-    public override string ToString() => $"{Origin} => {Direction}";
-}
-public readonly struct RayInfo
-{
-    public readonly Ray ray;
-    public readonly Vector2 intersectionPoint;
-    public readonly bool anyIntersects;
-    public RayInfo(Ray r, float t_hit)
-    {
-        ray = r;
-        intersectionPoint = new(
-            ray.Origin.X + t_hit * ray.Direction.X,
-            ray.Origin.Y + t_hit * ray.Direction.Y
-        );
-        anyIntersects = true;
-    }
-    public override string ToString() => $"{ray}: {intersectionPoint}";
 }

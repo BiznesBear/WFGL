@@ -4,14 +4,13 @@ namespace WFGL.Core;
 
 public class Time 
 {
-    public const int DEFALUT_INTERVAL = 10;
+    public const int DEFALUT_INTERVAL = 1000 / DEFALUT_FPS;
     public const int DEFALUT_FPS = 100;
 
     internal Timer Timer { get; } = new();
 
 
     private static Time? Instance { get; set; }
-    private static Time GetInstance => Instance ?? throw new WFGLNullInstanceError("Time instance is null");
 
     private DateTime previousTime = DateTime.Now;
     private double deltaTime;
@@ -20,8 +19,8 @@ public class Time
     private Stopwatch frameStopwatch;
     private int frames;
 
-    public float DeltaTime => (float)GetInstance.deltaTime;
-    public float Fps => GetInstance.framesPerSecond;
+    public float DeltaTime => (float)deltaTime;
+    public float Fps => framesPerSecond;
 
     public Time()
     {
@@ -47,8 +46,8 @@ public class Time
         previousTime = currentTime;
     }
 
-    public static void Start() => GetInstance.Timer.Start();
-    public static void Stop() => GetInstance.Timer.Stop();
-    public static void SetInterval(int ms = DEFALUT_INTERVAL) => GetInstance.Timer.Interval = ms;
-    public static void SetFps(int fps = DEFALUT_FPS) => GetInstance.Timer.Interval = 1000 / fps;
+    public void Start() => Timer.Start();
+    public void Stop() => Timer.Stop();
+    public void SetInterval(int ms = DEFALUT_INTERVAL) => Timer.Interval = ms;
+    public void SetFps(int fps = DEFALUT_FPS) => Timer.Interval = 1000 / fps;
 }

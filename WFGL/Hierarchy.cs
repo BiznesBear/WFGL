@@ -25,9 +25,8 @@ public class Hierarchy : Transform
         }
     }
 
-    public Hierarchy() { ChangedList += UpdateOrder; }
-    public Hierarchy(GameMaster master) : this() { AssignMaster(master); }
-    public void AssignMaster(GameMaster m)=> master = m;
+    public Hierarchy(GameMaster master) { ChangedList += UpdateOrder; AssignMaster(master); }
+    public void AssignMaster(GameMaster m) => master = m;
 
     public void Register(IObject obj)
     {

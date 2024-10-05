@@ -4,7 +4,6 @@ namespace WFGL.Core;
 
 public class GameMaster
 {
-    private GameWindow GameWindow { get; set; }
 
     #region Settings
     public bool IsFullScreen { get; private set; }
@@ -14,14 +13,17 @@ public class GameMaster
 
     #endregion
 
-    #region RenderingAndTime
-    public Camera MainCamera { get; private set; }
+    #region Masters
+
+    private GameWindow GameWindow { get; set; }
+    public Camera MainCamera { get; set; }
     public Time TimeMaster { get; } = new();
     public LayerMaster LayerMaster { get; } = new();
     public Graphics Renderer { get; private set; }
 
     private InputHandler? inputHandler;
     public InputHandler InputMaster => inputHandler ?? throw new WFGLNullInstanceError("Cannot use unregistered input handler");
+
     #endregion
 
     // events 
@@ -59,12 +61,7 @@ public class GameMaster
         GameWindow.Paint += Draw;
         GameWindow.ResizeEnd += Resized;
 
-        GameWindow.MouseMove += MouseMoved;
-        GameWindow.MouseDown += MouseDown;
-        GameWindow.MouseUp += MouseUp;
-        GameWindow.MouseDoubleClick += MouseDoubleClicked;
-        GameWindow.MouseEnter += MouseEnter;
-        GameWindow.MouseLeave += MouseLeave;
+        
 
         float aspectRatio = (float)GameWindow.ClientSize.Width / GameWindow.ClientSize.Height;
         CameraOptions options = new(new Size((int)aspectRatio,(int)aspectRatio),GameWindow.ClientSize);
@@ -76,7 +73,7 @@ public class GameMaster
         renderBuffer = new Bitmap(RenderSize.X, RenderSize.Y);
         Renderer = Graphics.FromImage(renderBuffer);
 
-        Time.SetFps();
+        TimeMaster.SetFps();
 
         ResetRenderBuffer();
 
@@ -99,7 +96,7 @@ public class GameMaster
 
     public void Load()
     {
-        Time.Start();
+        TimeMaster.Start();
         OnLoad();
         GameWindow.ShowDialog();
     }
@@ -137,6 +134,7 @@ public class GameMaster
 
     #endregion
 
+    #region MainHierarchy
     public void RegisterHierarchy(Hierarchy hierarchy)
     {
         MainHierarchy.Register(hierarchy);
@@ -145,7 +143,7 @@ public class GameMaster
     {
         MainHierarchy.Unregister(hierarchy);
     }
-
+    #endregion
 
     #region Logic
     private void Update(object? sender, EventArgs e)
@@ -171,51 +169,36 @@ public class GameMaster
     public readonly Pen defaultPen = new(Color.Red, 1);
     public readonly SolidBrush defaultBrush = new(Color.DarkSlateGray);
 
-    public void DrawLine(Pen pen, Point pos1, Point pos2)
+    public void DrawLine(Pen pen, Point pos1, Point pos2) => Renderer.DrawLine(pen, pos1, pos2);
+
+    public void DrawLine(Color color, Point pos1, Point pos2) => DrawLine(new Pen(color, 1), pos1, pos2);
+    public void DrawLine(Point pos1, Point pos2) => DrawLine(defaultPen, pos1, pos2);
+
+
+    public void DrawRect(Pen pen, Rectangle rect) => Renderer.DrawRectangle(pen, rect);
+    public void DrawRect(Color color, Rectangle rect)
     {
-        Renderer.DrawLine(pen, pos1, pos2);
+        var pen = new Pen(color, 1);
+        DrawRect(pen, rect);
     }
-    public void DrawLine(Color color, float width, Point pos1, Point pos2) => DrawLine(new Pen(color, width), pos1, pos2);
-    public void DrawLine(Point pos1, Point pos2) => DrawLine(Color.Red, 1, pos1, pos2);
+    public void DrawRect(Rectangle rect) => DrawRect(defaultPen, rect);
 
-
-    public void DrawRect(Pen pen, Point position, Point size)
+    public void DrawRectangle(Pen pen, Rectangle rect)
     {
-        Renderer.DrawRectangle(pen, new(position, size.PushToSize()));
+        Renderer.FillRectangle(pen.Brush, rect);
     }
-    public void DrawRect(Color color, float width,Point position, Point size) => DrawRect(new Pen(color, width),position, size);
-    public void DrawRect(Point position, Point size) => DrawRect(Color.Red, 1, position, size);
-
-
-    public void DrawRectangle(Pen pen, Point position, Point size)
+    public void DrawRectangle(Color color, Rectangle rect)
     {
-        Renderer.DrawRectangle(pen, new(position, size.PushToSize()));
-        Renderer.FillRectangle(pen.Brush, new(position, size.PushToSize()));
+        var pen = new Pen(color, 1);
+        DrawRectangle(pen, rect);
     }
-    public void DrawRectangle(Color color, float width, Point position, Point size)
-    {
-        var pen = new Pen(color, width);
-        DrawRectangle(pen, position, size);
-    }
-    public void DrawRectangle(Color color, Point position, Point size) => DrawRectangle(color,1, position, size);
-    public void DrawRectangle(Point position, Point size) => DrawRectangle(Color.DarkSlateGray,1, position, size);
-
-    public void DrawSprite(Sprite sprite,Point position)
+    public void DrawRectangle(Rectangle rect) => DrawRectangle(defaultBrush.Color, rect);
+    public void DrawSprite(Sprite sprite, Point position)
     {
         Point size = new Point(sprite.GetSource().Width, sprite.GetSource().Height).VirtualizePixel(MainCamera);
         Renderer.DrawImage(sprite.GetSource(), position.X, position.Y, size.X, size.Y);
     }
-    public void DrawText(UI.StringRenderer text)
-    {
-        float dynamicFontSize = text.BaseSize * MainCamera.Scaler.FactorX * VirtualUnit.SCALING;
-        if (dynamicFontSize < 0.02) return;
-        Font dynamicFont = new(text.Font.FontFamily, dynamicFontSize);
-        Point pos = text.Position.ToPoint(VirtualScale);
-        Brush brush = new SolidBrush(text.Color);
-        Renderer.DrawString(text.Content, dynamicFont, brush, pos.X, pos.Y);
-        brush.Dispose();
-        dynamicFont.Dispose();
-    }
+   
     #endregion
 
     #region Input
@@ -225,37 +208,28 @@ public class GameMaster
         inputHandler = handler;
         GameWindow.KeyDown += handler.KeyDown;
         GameWindow.KeyUp += handler.KeyUp;
+
+        GameWindow.MouseMove += handler.MouseMoved;
+        GameWindow.MouseDown += handler.MouseDown;
+        GameWindow.MouseUp += handler.MouseUp;
+        GameWindow.MouseDoubleClick += handler.MouseDoubleClicked;
+        GameWindow.MouseEnter += handler.MouseEnter;
+        GameWindow.MouseLeave += handler.MouseLeave;
     }
     public void RemoveInput(InputHandler handler)
     {
         inputHandler = null;
         GameWindow.KeyDown -= handler.KeyDown;
         GameWindow.KeyUp -= handler.KeyUp;
+        GameWindow.MouseMove -= handler.MouseMoved;
+        GameWindow.MouseDown -= handler.MouseDown;
+        GameWindow.MouseUp -= handler.MouseUp;
+        GameWindow.MouseDoubleClick -= handler.MouseDoubleClicked;
+        GameWindow.MouseEnter -= handler.MouseEnter;
+        GameWindow.MouseLeave -= handler.MouseLeave;
     }
 
-    private void MouseMoved(object? sender, MouseEventArgs e)
-    {
-        Mouse.Position = e.Location;
-        
-    }
-    private void MouseDown(object? sender, MouseEventArgs e)
-    {
-        InputMaster.OnMouseDown(e.Button);
-        Mouse.Clicks++;
-        Mouse.pressedButtons.Add(e.Button);
-    }
-    private void MouseUp(object? sender, MouseEventArgs e)
-    {
-        InputMaster.OnMouseUp(e.Button);
-        Mouse.Clicks++;
-        Mouse.pressedButtons.Remove(e.Button);
-    }
-    private void MouseDoubleClicked(object? sender, MouseEventArgs e)
-    {
-        InputMaster.OnMouseDoubleClicked(e.Button);
-    }
-    private void MouseEnter(object? sender, EventArgs e) { Mouse.Inside = true; }
-    private void MouseLeave(object? sender, EventArgs e) { Mouse.Inside = false; }
+    
     #endregion
 
     #region EventFunctions

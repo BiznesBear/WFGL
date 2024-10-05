@@ -5,6 +5,8 @@ public abstract class Transform : IObject
 {
     public Vector2 Scale { get; set; } = Vector2.One;
     public Vector2 Position { get; set; } = Vector2.Zero;
+
+    public Point RealPosition => Position.ToPoint(GetMaster().VirtualScale);
     public float Rotation { get; set; }
     public Layer Layer { get; set; } = Layer.Defalut;
 
@@ -25,4 +27,13 @@ public abstract class Transform : IObject
     public virtual void OnDestroy(Hierarchy h, GameMaster m) { }
     public virtual void OnUpdate(GameMaster m) { }
     public virtual void OnDraw(GameMaster m) { }
+}
+public interface IObject
+{
+    public Layer Layer { get; set; }
+    public void Create(Hierarchy hierarchy);
+    public void Destroy(Hierarchy hierarchy);
+
+    public void OnUpdate(GameMaster m);
+    public void OnDraw(GameMaster m);
 }
