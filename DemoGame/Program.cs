@@ -107,7 +107,7 @@ internal class Game : GameMaster
             fpsText,
             userNameText,
         ];
-
+        
         RegisterHierarchy(objects);
         RegisterHierarchy(canvas);
 

@@ -1,17 +1,24 @@
 ﻿using WFGL.Core;
 namespace WFGL;
-
-public abstract class Transform : IObject
+public interface IObject 
 {
-    public Vector2 Scale { get; set; } = Vector2.One;
-    public Vector2 Position { get; set; } = Vector2.Zero;
+    public Layer Layer { get; set; }
+    public void Create(Hierarchy hierarchy);
+    public void Destroy(Hierarchy hierarchy);
 
-    public Point RealPosition => Position.ToPoint(GetMaster().VirtualScale);
-    public float Rotation { get; set; }
+    public void OnUpdate(GameMaster m);
+    public void OnDraw(GameMaster m);
+}
+
+public abstract class TransformBase<T> : IObject where T : struct, IVector<T>
+{
+    public virtual T Scale { get; set; } = default;
+    public T Position { get; set; } = default;
+
     public Layer Layer { get; set; } = Layer.Defalut;
 
     protected GameMaster? master;
-    protected GameMaster GetMaster() => master ?? throw new WFGLNullInstanceError("Null game master instance in transform");
+    public GameMaster GetMaster() => master ?? throw new WFGLNullInstanceError("Null game master instance in transform");
 
     public void Create(Hierarchy hierarchy)
     {
@@ -28,12 +35,12 @@ public abstract class Transform : IObject
     public virtual void OnUpdate(GameMaster m) { }
     public virtual void OnDraw(GameMaster m) { }
 }
-public interface IObject
+public abstract class Transform : TransformBase<Vector2>
 {
-    public Layer Layer { get; set; }
-    public void Create(Hierarchy hierarchy);
-    public void Destroy(Hierarchy hierarchy);
-
-    public void OnUpdate(GameMaster m);
-    public void OnDraw(GameMaster m);
+    public override Vector2 Scale { get; set; } = Vector2.One;
+    public Point RealPosition => Position.ToPoint(GetMaster().VirtualScale);
+}
+public abstract class Transform3D : TransformBase<Vector3>
+{
+    public override Vector3 Scale { get; set; } = 1;
 }

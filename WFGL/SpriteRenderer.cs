@@ -3,7 +3,7 @@ namespace WFGL;
 
 public class SpriteRenderer : Transform, IDrawable
 {
-    public Image Source => Sprite.GetSource();
+    public Bitmap Source => Sprite.GetSource();
     public Sprite Sprite { get; set; } = new();
     public Hroup? Hroup { get; set; }
 
@@ -14,12 +14,6 @@ public class SpriteRenderer : Transform, IDrawable
     public Point RealSize => new((int)(Source.Width * Scale.X * Sprite.Scale.X) , (int)(Source.Height * Scale.Y * Sprite.Scale.Y));
 
 
-    public Vector2 GetRealVirtualSize(GameMaster m) //TODO: GetRealVirtualSize
-    {
-        Vector2 sourceSize = Converts.ToVector2(Source.Size,(m.VirtualScale));
-        Vector2 size = new Vector2((int)(sourceSize.X * Scale.X * Sprite.Scale.X), (int)(sourceSize.Y * Scale.Y * Sprite.Scale.Y));
-        return Vector2.Zero;
-    }
     public SpriteRenderer() { }
     public SpriteRenderer(Sprite sprite)
     {
@@ -36,6 +30,7 @@ public class SpriteRenderer : Transform, IDrawable
         if (Hroup != null) return;
         Point pixel = Position.ToPoint(m.VirtualScale);
         Point size = RealSize.VirtualizePixel(m.MainCamera);
+
         r.DrawImage(Source, pixel.X, pixel.Y, size.X, size.Y);
     }
 }

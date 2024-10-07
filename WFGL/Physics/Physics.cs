@@ -4,7 +4,7 @@ public static class Physics
 {
     public static bool IsColliding(this ICollide self, ICollide other)
     {
-        
+        if (self == other) return false; // avoid colliding with yourself
         float leftA = self.ColliderPosition.X;
         float rightA = self.ColliderPosition.X + self.ColliderSize.X;
         float topA = self.ColliderPosition.Y;
@@ -16,7 +16,8 @@ public static class Physics
         float topB = other.ColliderPosition.Y;
         float bottomB = other.ColliderPosition.Y + other.ColliderSize.Y;
 
-        if (rightA < leftB || leftA > rightB || bottomA < topB || topA > bottomB) return false;
+        if (rightA < leftB || leftA > rightB || bottomA < topB || topA > bottomB) 
+            return false;
 
         return true;
     }
@@ -45,17 +46,13 @@ public static class Physics
         float t_max = (right - ray.Origin.X) / ray.Direction.X;
 
         if (t_min > t_max)
-        {
             (t_max, t_min) = (t_min, t_max);
-        }
 
         float t_ymin = (top - ray.Origin.Y) / ray.Direction.Y;
         float t_ymax = (bottom - ray.Origin.Y) / ray.Direction.Y;
 
         if (t_ymin > t_ymax)
-        {
             (t_ymax, t_ymin) = (t_ymin, t_ymax);
-        }
 
         if (t_min > t_ymax || t_ymin > t_max) return false;
 

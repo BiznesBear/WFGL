@@ -1,15 +1,9 @@
 ﻿>> TODO:
-	make rotation work
-	rework object managment (and refs)
 	Camera ⚙️
 	Canvas and more ui ⚙️
-	More Phisics
 	Grid, tiled sprites
-	Optimalizations ⚙️
-	3D transforms, and meshes
-	Materials
+	Very simple 3D transforms, and meshes
 
 >> Don't ask me what I drank
 	Particle system (pre-rendered)
 	Lighting system / PseudoLight (with blending) ⚙️
-	Postprocessing

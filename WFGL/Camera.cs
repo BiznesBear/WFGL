@@ -1,7 +1,7 @@
 ﻿using WFGL.Core;
 namespace WFGL;
 
-public class Camera(GameMaster master,CameraOptions options) : Transform
+public class Camera(GameMaster master,CameraOptions options) : Transform3D
 {
     public const uint DEFALUT_TARGET = 500;
     private readonly GameMaster Master = master;
@@ -17,7 +17,7 @@ public class Camera(GameMaster master,CameraOptions options) : Transform
     /// </summary>
     public uint Target { get; set; } = options.Target; 
     public float Scaler => Master.VirtualScale.FactorX / Target;
-
+    
     public Size GetAspect()
     {
         var GameWindow = Master.GetWindow();
