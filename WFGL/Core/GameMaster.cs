@@ -42,6 +42,11 @@ public class GameMaster
     public Point WindowCenter => new(GameWindow.ClientSize.Width / 2, GameWindow.ClientSize.Height / 2);
     public Size WindowSize => new(GameWindow.ClientSize.Width, GameWindow.ClientSize.Height);
     public Point RenderSize => new((int)VirtualScale.FactorX * VirtualUnit.SCALING, (int)VirtualScale.FactorX * VirtualUnit.SCALING);
+    public Point RenderCenter => new(RenderSize.X/2,RenderSize.Y/2);
+
+    public Vector2 RenderSizeVec2 => new(VirtualScale.FactorX * VirtualUnit.SCALING, VirtualScale.FactorX * VirtualUnit.SCALING);
+    public Vector2 RenderCenterVec2 => new(RenderSizeVec2.X / 2, RenderSizeVec2.Y / 2);
+
 
     #endregion
 

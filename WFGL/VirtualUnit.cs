@@ -1,3 +1,5 @@
+using WFGL.Core;
+
 namespace WFGL;
 
 public struct VirtualUnit(float x, float y)

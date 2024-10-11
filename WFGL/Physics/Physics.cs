@@ -33,14 +33,14 @@ public static class Physics
         return false;
     }
 
-    public static bool IsColliding(this Ray ray, ICollide rect, out RayInfo info)
+    public static bool IsColliding(this Ray ray, ICollide coll, out RayInfo info)
     {
         info = new();
 
-        float left = rect.ColliderPosition.X;
-        float right = rect.ColliderPosition.X + rect.ColliderSize.X;
-        float top = rect.ColliderPosition.Y;
-        float bottom = rect.ColliderPosition.Y + rect.ColliderSize.Y;
+        float left = coll.ColliderPosition.X;
+        float right = coll.ColliderPosition.X + coll.ColliderSize.X;
+        float top = coll.ColliderPosition.Y;
+        float bottom = coll.ColliderPosition.Y + coll.ColliderSize.Y;
 
         float t_min = (left - ray.Origin.X) / ray.Direction.X;
         float t_max = (right - ray.Origin.X) / ray.Direction.X;

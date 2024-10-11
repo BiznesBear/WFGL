@@ -72,6 +72,14 @@ public struct Vector3(float x,float y, float z) : IVector<Vector3>
         return this;
     }
 
+    public Vector2 Project(Vector2 screenCenter,float distance = 5, float scale = 400)
+    {
+        float factor = distance / (distance + Z);
+        float x2d = X * factor * scale + screenCenter.X;
+        float y2d = Y * factor * scale + screenCenter.Y;
+
+        return new Vector2(x2d, y2d);
+    }
 
     public static implicit operator Vector3(float a) => new(a, a, a);
     public static explicit operator Vector3(Vector2 a) => new(a.X, a.Y, 0);

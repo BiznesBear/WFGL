@@ -13,5 +13,9 @@
     <NeutralLanguage>en</NeutralLanguage>
     <RepositoryUrl>https://github.com/BiznesBear/WFGL</RepositoryUrl>
   </PropertyGroup>
+
+  <ItemGroup>
+    <Folder Include="Pseudo\ThridDimension\" />
+  </ItemGroup>
 	
 </Project>

@@ -6,6 +6,7 @@ using WFGL.Physics;
 
 using System.Windows.Forms;
 using System.Drawing;
+
 namespace DemoGame;
 
 internal class Program
@@ -95,9 +96,9 @@ internal class Game : GameMaster
             new SpriteRenderer(maszWypadloCi) { Position = new(0, 3) },
             new SpriteRenderer(maszWypadloCi){ Position = Vector2.Zero },
             new SpriteRenderer(maszWypadloCi) { Position = new(3, 0) },
-        ];
 
-        objects.Objects = [
+        ];
+       objects.Objects = [
             player,
             background,
             myButton
@@ -110,9 +111,9 @@ internal class Game : GameMaster
         
         RegisterHierarchy(objects);
         RegisterHierarchy(canvas);
-
         colliders.Update();
         background.Render();
+
     }
     protected override void OnUpdate()
     {
@@ -150,7 +151,7 @@ internal class GameInput(GameMaster master) : InputHandler(master)
     }
 }
 
-internal class Player : Transform, ICollide 
+internal class Player : Transform, ICollide
 {
     // sub-objects
     internal SpriteRenderer playerSprite = new(Game.playerSprite);

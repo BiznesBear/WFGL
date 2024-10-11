@@ -30,7 +30,7 @@ public abstract class ButtonBase<T> : Transform // TODO: Rework this. Make butto
 
     public override void OnUpdate(GameMaster m)
     {
-        if (Bounds.IntersectsWith(Mouse.Rect) && Mouse.Inside)
+        if (Bounds.IntersectsWithMouse())
         {
             if (Mouse.IsButtonPressed(MouseButtons.Left))
             {

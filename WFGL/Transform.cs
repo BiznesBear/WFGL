@@ -10,7 +10,7 @@ public interface IObject
     public void OnDraw(GameMaster m);
 }
 
-public abstract class TransformBase<T> : IObject where T : struct, IVector<T>
+public abstract class TransformBase<T> : IObject  where T : struct, IVector<T>
 {
     public virtual T Scale { get; set; } = default;
     public T Position { get; set; } = default;

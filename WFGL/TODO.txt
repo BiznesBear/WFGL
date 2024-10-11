@@ -1,8 +1,7 @@
 ﻿>> TODO:
 	Camera ⚙️
-	Canvas and more ui ⚙️
 	Grid, tiled sprites
-	Very simple 3D transforms, and meshes
+	Pseudo 3d (2.5d)
 
 >> Don't ask me what I drank
 	Particle system (pre-rendered)

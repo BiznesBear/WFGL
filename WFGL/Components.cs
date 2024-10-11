@@ -20,5 +20,4 @@ public interface IParentable // TODO: make this work
 public interface IPivotable // TODO: make this work
 {
     public Vector2 Pivot { get; set; } // RealPos -> Position + Size * Pivot | Size is not Scale 
-    public Vector2 RealPosition { get; }
 }

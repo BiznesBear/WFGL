@@ -18,4 +18,6 @@ public static class Mouse
     /// Total amount of mouse presses and releases.
     /// </summary>
     public static int Clicks { get; internal set; }
+
+    public static bool IntersectsWithMouse(this Rectangle rect) => rect.IntersectsWith(Rect) && Inside;
 }

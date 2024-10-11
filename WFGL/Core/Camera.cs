@@ -1,7 +1,6 @@
-﻿using WFGL.Core;
-namespace WFGL;
+﻿namespace WFGL.Core;
 
-public class Camera(GameMaster master,CameraOptions options) : Transform3D
+public class Camera(GameMaster master, CameraOptions options) : Transform3D
 {
     public const uint DEFALUT_TARGET = 500;
     private readonly GameMaster Master = master;
@@ -15,9 +14,9 @@ public class Camera(GameMaster master,CameraOptions options) : Transform3D
     /// <summary>
     /// Refrence size of rendering everything on window.
     /// </summary>
-    public uint Target { get; set; } = options.Target; 
+    public uint Target { get; set; } = options.Target;
     public float Scaler => Master.VirtualScale.FactorX / Target;
-    
+
     public Size GetAspect()
     {
         var GameWindow = Master.GetWindow();
@@ -30,7 +29,7 @@ public class Camera(GameMaster master,CameraOptions options) : Transform3D
             var width = (int)(GameWindow.ClientSize.Height * targetAspectRatio);
             return new Size(width, GameWindow.ClientSize.Height);
         }
-        else if(windowAspectRatio < targetAspectRatio)
+        else if (windowAspectRatio < targetAspectRatio)
         {
             var height = (int)(GameWindow.ClientSize.Width / targetAspectRatio);
             return new Size(GameWindow.ClientSize.Width, height);
@@ -38,11 +37,11 @@ public class Camera(GameMaster master,CameraOptions options) : Transform3D
         return GameWindow.ClientSize;
     }
 }
-public struct CameraOptions(Size aspectRatio,Size resolution,uint target = Camera.DEFALUT_TARGET)
+public struct CameraOptions(Size aspectRatio, Size resolution, uint target = Camera.DEFALUT_TARGET)
 {
     public Size AspectRatio { get; set; } = aspectRatio;
     public Size Resolution { get; set; } = resolution;
     public uint Target { get; set; } = target;
 
-    public readonly static CameraOptions Default = new(new Size(16, 9),new(300, 300));
+    public readonly static CameraOptions Default = new(new Size(16, 9), new(300, 300));
 }
