@@ -43,4 +43,7 @@ public abstract class Transform : TransformBase<Vector2>
 public abstract class Transform3D : TransformBase<Vector3>
 {
     public override Vector3 Scale { get; set; } = 1;
+
+    public Point RealPosition => Position.ToPoint(GetMaster().VirtualScale);
+
 }

@@ -1,8 +1,0 @@
-﻿>> TODO:
-	Camera ⚙️
-	Grid, tiled sprites
-	Pseudo 3d (2.5d)
-
->> Don't ask me what I drank
-	Particle system (pre-rendered)
-	Lighting system / PseudoLight (with blending) ⚙️

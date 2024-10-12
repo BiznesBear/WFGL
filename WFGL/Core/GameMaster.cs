@@ -1,8 +1,8 @@
 ﻿using System.Drawing.Drawing2D;
 using WFGL.Input;
 namespace WFGL.Core;
-
-public class GameMaster
+// TODO: REWORK GAME MASTER AND INSTANTATING GAMEMASTER AND DRAWING AND CAMERA
+public class GameMaster 
 {
 
     #region Settings
@@ -78,14 +78,26 @@ public class GameMaster
         renderBuffer = new Bitmap(RenderSize.X, RenderSize.Y);
         Renderer = Graphics.FromImage(renderBuffer);
 
-        TimeMaster.SetFps();
 
         ResetRenderBuffer();
 
         MainHierarchy = new Hierarchy(this);
         WhenUpdate += MainHierarchy.OnUpdate;
         WhenDraw += MainHierarchy.OnDraw;
+
+
+      
     }
+
+    public void Load()
+    {
+        TimeMaster.Start();
+        OnLoad();
+        GameWindow.ShowDialog();
+        if (inputHandler == null) WDO.Info("Some of WFGL functions won't work, because no InputHandler is assigned. ");
+    }
+
+
     private void ResetRenderBuffer()
     {
         renderBuffer.Dispose();
@@ -99,15 +111,10 @@ public class GameMaster
         OnRenderBufferReset();
     }
 
-    public void Load()
-    {
-        TimeMaster.Start();
-        OnLoad();
-        GameWindow.ShowDialog();
-    }
 
     #region Window
 
+    // full screen window
     public void FullScreen() 
     {
         windowSizeTemp = GameWindow.ClientSize;
@@ -118,6 +125,8 @@ public class GameMaster
         ResetRenderBuffer() ;
         OnResized();
     }
+
+    // make window normal again
     public void NormalScreen()
     {
         GameWindow.FormBorderStyle = GameWindow.BorderStyle;
@@ -153,7 +162,7 @@ public class GameMaster
     #region Logic
     private void Update(object? sender, EventArgs e)
     {
-        GameWindow.Invalidate(new Rectangle(0, 0, RenderSize.X, RenderSize.Y));
+        GameWindow.Invalidate(new Rectangle(MainCamera.RealPosition.X, MainCamera.RealPosition.Y, RenderSize.X, RenderSize.Y));
         OnUpdate();
         WhenUpdate?.Invoke(this);
     }
@@ -163,13 +172,13 @@ public class GameMaster
         WhenDraw?.Invoke(this);
         OnAfterDraw();
 
-        e.Graphics.SetClip((new Rectangle(0, 0, RenderSize.X, RenderSize.Y)));
-        e.Graphics.DrawImageUnscaled(renderBuffer, new Rectangle(0, 0, RenderSize.X, RenderSize.Y));
+        e.Graphics.SetClip((new Rectangle(MainCamera.RealPosition.X, MainCamera.RealPosition.Y, RenderSize.X, RenderSize.Y)));
+        e.Graphics.DrawImageUnscaled(renderBuffer, new Rectangle(MainCamera.RealPosition.X, MainCamera.RealPosition.Y, RenderSize.X, RenderSize.Y));
     }
 
     #endregion
 
-    #region Drawing
+    #region ScreenDrawing
 
     public readonly Pen defaultPen = new(Color.Red, 1);
     public readonly SolidBrush defaultBrush = new(Color.DarkSlateGray);
@@ -268,5 +277,6 @@ public class GameMaster
     /// Called when render buffer is reseted.
     /// </summary>
     protected virtual void OnRenderBufferReset() { }
+
     #endregion
 }

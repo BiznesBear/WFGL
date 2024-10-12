@@ -8,12 +8,16 @@ public enum ButtonState
     Pointed,
     Pressed
 }
-public abstract class ButtonBase<T> : Transform // TODO: Rework this. Make button once clickable.
+public abstract class ButtonBase<T> : Transform
 {
     public ButtonState State { get; private set; }
     public Vector2 RectSize { get; set; } = new(1.5f, 0.5f);
     public Size RealRectSize => RectSize.ToSize(GetMaster().VirtualScale);
     public Rectangle Bounds => new(RealPosition.X, RealPosition.Y, RealRectSize.Width, RealRectSize.Height);
+
+    public event Action? OnClick;
+    public event Action? OnRelease;
+    public event Action? OnPoint;
 
     public T displayed;
     public T Defalut;
@@ -30,6 +34,11 @@ public abstract class ButtonBase<T> : Transform // TODO: Rework this. Make butto
 
     public override void OnUpdate(GameMaster m)
     {
+        if (!Mouse.Inside)
+        {
+            ChangeState(ButtonState.Defalut);
+            return;
+        }
         if (Bounds.IntersectsWithMouse())
         {
             if (Mouse.IsButtonPressed(MouseButtons.Left))
@@ -57,6 +66,18 @@ public abstract class ButtonBase<T> : Transform // TODO: Rework this. Make butto
             ButtonState.Pressed => Clicked,
             _ => Defalut
         };
+        switch (newState)
+        {
+            case ButtonState.Defalut:
+                OnRelease?.Invoke();
+                break;
+            case ButtonState.Pointed:
+                OnPoint?.Invoke();
+                break;
+            case ButtonState.Pressed:
+                OnClick?.Invoke();
+                break;
+        }
     }
 }
 public class RectangleButton : ButtonBase<Color>

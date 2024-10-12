@@ -1,25 +1,37 @@
 ﻿namespace WFGL.Core;
 
-public class Camera(GameMaster master, CameraOptions options) : Transform3D
+public class Camera : Transform3D
 {
+    public Camera(GameMaster m, CameraOptions options)
+    {
+        master = m;
+        AspectRatio = options.AspectRatio;
+        Resolution= options.Resolution;
+        Target = options.Target;
+    }
+
+
     public const uint DEFALUT_TARGET = 500;
-    private readonly GameMaster Master = master;
 
     /// <summary>
     /// Target aspect ratio of viewed render (for to do not resizing world space)
     /// </summary>
-    public Size AspectRatio { get; set; } = options.AspectRatio;
-    public Size Resolution { get; set; } = options.Resolution;
+    public Size AspectRatio { get; set; } 
+    public Size Resolution { get; set; } 
 
     /// <summary>
     /// Refrence size of rendering everything on window.
     /// </summary>
-    public uint Target { get; set; } = options.Target;
-    public float Scaler => Master.VirtualScale.FactorX / Target;
+    public uint Target { get; set; } 
+    public float Scaler => GetMaster().VirtualScale.FactorX / Target;
+
+
+
+
 
     public Size GetAspect()
     {
-        var GameWindow = Master.GetWindow();
+        var GameWindow = GetMaster().GetWindow();
 
         var windowAspectRatio = (float)GameWindow.ClientSize.Width / GameWindow.ClientSize.Height;
         var targetAspectRatio = (float)AspectRatio.Width / AspectRatio.Height;

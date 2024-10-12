@@ -29,6 +29,7 @@ public class Time
 
         frameStopwatch = new Stopwatch();
         frameStopwatch.Start();
+        SetFps();
     }
    
     private void Tick(object? sender, EventArgs e)

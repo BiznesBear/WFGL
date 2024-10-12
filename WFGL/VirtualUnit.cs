@@ -43,10 +43,12 @@ public struct VirtualUnit(float x, float y)
 }
 public static class Converts
 {
+    #region Vec2
     #region Push
 
     public static Point PushToPoint(this Size size) => new(size.Width, size.Height);
     public static Size PushToSize(this Point pixel) => new(pixel.X, pixel.Y);
+    public static Rectangle PushToRect(this Point pixel) => new(0,0, pixel.X, pixel.Y);
 
     #endregion
 
@@ -56,7 +58,21 @@ public static class Converts
     public static Point ToPoint(this Vector2 vector2, VirtualUnit vunit) => new((int)(vector2.X * vunit.FactorX), (int)(vector2.Y * vunit.FactorY));
     public static Size ToSize(this Vector2 vector2, VirtualUnit vunit) => vector2.ToPoint(vunit).PushToSize();
     #endregion
+    #endregion
 
+    #region Vec3
+
+
+
+    public static Vector3 ToVector3(this Point point, VirtualUnit vunit) => new(point.X / vunit.FactorX, point.Y / vunit.FactorY, 0); //TODO: Here add persepctive
+    public static Vector3 ToVector3(this Size size, VirtualUnit vunit) => size.PushToPoint().ToVector3(vunit);
+    public static Point ToPoint(this Vector3 vector2, VirtualUnit vunit) => new((int)(vector2.X * vunit.FactorX), (int)(vector2.Y * vunit.FactorY));
+    public static Size ToSize(this Vector3 vector2, VirtualUnit vunit) => vector2.ToPoint(vunit).PushToSize();
+
+    #endregion
+
+
+    #region Virtualization
     /// <summary>
     /// Used for rescaling 
     /// </summary>
@@ -66,4 +82,5 @@ public static class Converts
     /// 
     /// </summary>
     public static Size VirtualizePixel(this Size pixel, Camera camera) => pixel.PushToPoint().VirtualizePixel(camera).PushToSize();
+    #endregion
 }
