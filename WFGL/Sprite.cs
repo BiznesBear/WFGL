@@ -3,7 +3,7 @@
 public class Sprite : IAsset<Bitmap>
 {
     private Bitmap? source { get; set; } 
-    public Vector2 Scale { get; set; } = Vector2.One;
+    public Vec2 Scale { get; set; } = Vec2.One;
     // TODO: add more properties 
 
     

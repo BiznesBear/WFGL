@@ -10,7 +10,7 @@ public interface IObject
     public void OnDraw(GameMaster m);
 }
 
-public abstract class TransformBase<T> : IObject  where T : struct, IVector<T>
+public abstract class TransformBase<T> : IObject  where T : struct, IVec<T>
 {
     public virtual T Scale { get; set; } = default;
     public T Position { get; set; } = default;
@@ -35,15 +35,8 @@ public abstract class TransformBase<T> : IObject  where T : struct, IVector<T>
     public virtual void OnUpdate(GameMaster m) { }
     public virtual void OnDraw(GameMaster m) { }
 }
-public abstract class Transform : TransformBase<Vector2>
+public abstract class Transform : TransformBase<Vec2>
 {
-    public override Vector2 Scale { get; set; } = Vector2.One;
-    public Point RealPosition => Position.ToPoint(GetMaster().VirtualScale);
-}
-public abstract class Transform3D : TransformBase<Vector3>
-{
-    public override Vector3 Scale { get; set; } = 1;
-
-    public Point RealPosition => Position.ToPoint(GetMaster().VirtualScale);
-
+    public override Vec2 Scale { get; set; } = Vec2.One;
+    public Point RealPosition => Position.ToPoint(GetMaster());
 }

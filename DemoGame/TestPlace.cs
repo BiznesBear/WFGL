@@ -78,7 +78,7 @@ public class TestPlaceMaster : GameMaster
             new SpriteRenderer(maszWypadloCi) { Position = 4 },
             new SpriteRenderer(maszWypadloCi) { Position = new(0, 4) },
             new SpriteRenderer(maszWypadloCi) { Position = new(0, 3) },
-            new SpriteRenderer(maszWypadloCi){ Position = Vector2.Zero },
+            new SpriteRenderer(maszWypadloCi){ Position = Vec2.Zero },
             new SpriteRenderer(maszWypadloCi) { Position = new(3, 0) },
 
         ];
@@ -102,20 +102,20 @@ public class TestPlaceMaster : GameMaster
     }
     protected override void OnUpdate()
     {
-        userNameText.Position = player.Position + new Vector2(0.33f, -0.15f);
+        userNameText.Position = player.Position + new Vec2(0.33f, -0.15f);
         fpsText.Content = $"FPS: {TimeMaster.Fps}";
 
         var input = InputMaster;
 
-        if (input.IsKeyPressed(Keys.Left)) MainCamera.Position -= (Vector3)new Vector2(0.07f, 0f);
-        if (input.IsKeyPressed(Keys.Right)) MainCamera.Position += (Vector3)new Vector2(0.07f, 0f);
-        if (input.IsKeyPressed(Keys.Up)) MainCamera.Position -= (Vector3)new Vector2(0f, 0.07f);
-        if (input.IsKeyPressed(Keys.Down)) MainCamera.Position += (Vector3)new Vector2(0f, 0.07f);
+        if (input.IsKeyPressed(Keys.Left)) MainCamera.Position -= new Vec2(0.07f, 0f);
+        if (input.IsKeyPressed(Keys.Right)) MainCamera.Position += new Vec2(0.07f, 0f);
+        if (input.IsKeyPressed(Keys.Up)) MainCamera.Position -= new Vec2(0f, 0.07f);
+        if (input.IsKeyPressed(Keys.Down)) MainCamera.Position += new Vec2(0f, 0.07f);
     }
     protected override void OnDraw()
     {
         // drawing background 
-        DrawRectangle(new(new Point(), RenderSize.PushToSize()));
+        DrawRectangle(new(MainCamera.RealPosition, RenderSize.PushToSize()));
     }
     protected override void OnAfterDraw()
     {
@@ -125,7 +125,6 @@ public class TestPlaceMaster : GameMaster
 
     protected override void OnResized()
     {
-        // groups need to be rendered by hand 
         background.Render();
     }
 }
@@ -156,15 +155,15 @@ internal class TestPlacePlayer : Transform, ICollide
     float speed = normalSpeed;
     const float normalSpeed = 2.5f;
     const float sprintSpeed = 4;
-    internal Vector2 dir;
+    internal Vec2 dir;
 
 
     // colliders 
     internal RayInfo hitInfo;
-    public Vector2 ColliderSize => playerSprite.RealSize.VirtualizePixel(GetMaster().MainCamera).ToVector2(GetMaster().VirtualScale);
-    public Vector2 ColliderPosition => playerSprite.Position + dir;
+    public Vec2 ColliderSize => playerSprite.RealSize.VirtualizePixel(GetMaster().MainCamera).ToVector2(GetMaster());
+    public Vec2 ColliderPosition => playerSprite.Position + dir;
 
-    private Vector2 inP;
+    private Vec2 inP;
 
     public TestPlacePlayer(GameMaster m) { master = m; }
     public override void OnCreate(Hierarchy h, GameMaster m)
@@ -178,11 +177,11 @@ internal class TestPlacePlayer : Transform, ICollide
         var input = m.InputMaster;
         speed = input.IsKeyPressed(Keys.Space) ? sprintSpeed : normalSpeed;
 
-        Vector2 direction = Vector2.Zero;
-        if (input.IsKeyPressed(Keys.A)) direction -= new Vector2(speed, 0f);
-        if (input.IsKeyPressed(Keys.D)) direction += new Vector2(speed, 0f);
-        if (input.IsKeyPressed(Keys.W)) direction -= new Vector2(0f, speed);
-        if (input.IsKeyPressed(Keys.S)) direction += new Vector2(0f, speed);
+        Vec2 direction = Vec2.Zero;
+        if (input.IsKeyPressed(Keys.A)) direction -= new Vec2(speed, 0f);
+        if (input.IsKeyPressed(Keys.D)) direction += new Vec2(speed, 0f);
+        if (input.IsKeyPressed(Keys.W)) direction -= new Vec2(0f, speed);
+        if (input.IsKeyPressed(Keys.S)) direction += new Vec2(0f, speed);
 
 
 
@@ -202,7 +201,7 @@ internal class TestPlacePlayer : Transform, ICollide
     public override void OnDraw(GameMaster m)
     {
         // updating not registred object manually
-        playerSprite.OnDraw(m);
+        playerSprite.Draw(m,m.Renderer);
 
         // drawing ray gizmos
         hitInfo.ray.DrawGizmos(m, inP);

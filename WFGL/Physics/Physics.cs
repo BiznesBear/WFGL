@@ -72,6 +72,6 @@ public static class Physics
     }
     public static void DrawColliderBounds(this ICollide self, Core.GameMaster m)
     {
-        m.DrawRect(new(self.ColliderPosition.ToPoint(m.VirtualScale), self.ColliderSize.ToSize(m.VirtualScale)));
+        m.DrawRect(new(self.ColliderPosition.ToPoint(m), self.ColliderSize.ToSize(m)));
     }
 }

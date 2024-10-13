@@ -5,6 +5,7 @@ public abstract class InputHandler(Core.GameMaster master)
     protected Core.GameMaster Master { get; } = master;
     protected readonly HashSet<Keys> pressedKeys = new();
     public bool enabled = true;
+    public bool MouseInside { get; private set; }
     internal void KeyDown(object? sender, KeyEventArgs e)
     {
         if(!enabled) return;
@@ -23,26 +24,26 @@ public abstract class InputHandler(Core.GameMaster master)
     internal void MouseMoved(object? sender, MouseEventArgs e)
     {
         Mouse.Position = e.Location;
-
     }
     internal void MouseDown(object? sender, MouseEventArgs e)
     {
         OnMouseDown(e.Button);
-        Mouse.Clicks++;
         Mouse.pressedButtons.Add(e.Button);
     }
     internal void MouseUp(object? sender, MouseEventArgs e)
     {
         OnMouseUp(e.Button);
-        Mouse.Clicks++;
         Mouse.pressedButtons.Remove(e.Button);
     }
     internal void MouseDoubleClicked(object? sender, MouseEventArgs e)
     {
         OnMouseDoubleClicked(e.Button);
     }
-    internal void MouseEnter(object? sender, EventArgs e) { Mouse.Inside = true; }
-    internal void MouseLeave(object? sender, EventArgs e) { Mouse.Inside = false; }
+    internal void MouseEnter(object? sender, EventArgs e) { MouseInside = true; }
+    internal void MouseLeave(object? sender, EventArgs e) { MouseInside = false; }
+
+    internal void MouseWheel(object? sender, MouseEventArgs e) { OnMouseWheel(e.Delta); }
+
 
 
     public bool IsKeyPressed(Keys key) { if (!enabled) return false; return pressedKeys.Contains(key); }
@@ -77,4 +78,11 @@ public abstract class InputHandler(Core.GameMaster master)
     /// </summary>
     /// <param name="key">Last realesed key</param>
     protected virtual void OnMouseDoubleClicked(MouseButtons buttons) { }
+
+
+    /// <summary>
+    /// Called when mouse wheel moved.
+    /// </summary>
+    /// <param name="key">Last realesed key</param>
+    protected virtual void OnMouseWheel(int delta) { }
 }

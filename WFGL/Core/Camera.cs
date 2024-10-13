@@ -1,6 +1,5 @@
 ﻿namespace WFGL.Core;
-
-public class Camera : Transform3D
+public class Camera : Transform
 {
     public Camera(GameMaster m, CameraOptions options)
     {
@@ -25,14 +24,12 @@ public class Camera : Transform3D
     public uint Target { get; set; } 
     public float Scaler => GetMaster().VirtualScale.FactorX / Target;
 
-
-
-
+    public float ViewDistance { get; set; } = 4;
+    public float Fov { get; set; } = 500;
 
     public Size GetAspect()
     {
         var GameWindow = GetMaster().GetWindow();
-
         var windowAspectRatio = (float)GameWindow.ClientSize.Width / GameWindow.ClientSize.Height;
         var targetAspectRatio = (float)AspectRatio.Width / AspectRatio.Height;
 

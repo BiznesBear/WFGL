@@ -1,24 +1,24 @@
 ﻿namespace WFGL;
-public interface IVector<T> where T : struct, IVector<T>
+public interface IVec<T> where T : struct, IVec<T>
 {
     public float Magnitude();
     public T Normalize();
 }
-public struct Vector2(float x, float y) : IVector<Vector2>
+public struct Vec2(float x, float y) : IVec<Vec2>
 {
-    public readonly static Vector2 Zero = new(0, 0);
-    public readonly static Vector2 One = new(1,1);
+    public readonly static Vec2 Zero = new(0, 0);
+    public readonly static Vec2 One = new(1,1);
 
-    public readonly static Vector2 Left = new(-1,0);
-    public readonly static Vector2 Right = new(1,0);
-    public readonly static Vector2 Up = new(0,-1);
-    public readonly static Vector2 Down = new(0,1);
+    public readonly static Vec2 Left = new(-1,0);
+    public readonly static Vec2 Right = new(1,0);
+    public readonly static Vec2 Up = new(0,-1);
+    public readonly static Vec2 Down = new(0,1);
 
     public float X = x;
     public float Y = y;
 
     public float Magnitude() => (float)Math.Sqrt(X * X + Y * Y);
-    public Vector2 Normalize()
+    public Vec2 Normalize()
     {
         float magnitude = Magnitude();
         if (magnitude > 0)
@@ -29,29 +29,29 @@ public struct Vector2(float x, float y) : IVector<Vector2>
         return this;
     }
 
-    public static implicit operator Vector2(float a) => new(a, a);
-    public static explicit operator Vector2(Vector3 a) => new(a.X,a.Y);
-    public static Vector2 operator +(Vector2 a, Vector2 b) => new(a.X + b.X, a.Y + b.Y);
-    public static Vector2 operator -(Vector2 a, Vector2 b) => new(a.X - b.X, a.Y - b.Y);
-    public static Vector2 operator *(Vector2 a, Vector2 b) => new(a.X * b.X, a.Y * b.Y);
-    public static Vector2 operator /(Vector2 a, Vector2 b) => new(a.X / b.X, a.Y / b.Y);
-    public static Vector2 operator %(Vector2 a, Vector2 b) => new(a.X % b.X, a.Y % b.Y);
+    public static implicit operator Vec2(float a) => new(a, a);
+    public static explicit operator Vec2(Vec3 a) => new(a.X,a.Y);
+    public static Vec2 operator +(Vec2 a, Vec2 b) => new(a.X + b.X, a.Y + b.Y);
+    public static Vec2 operator -(Vec2 a, Vec2 b) => new(a.X - b.X, a.Y - b.Y);
+    public static Vec2 operator *(Vec2 a, Vec2 b) => new(a.X * b.X, a.Y * b.Y);
+    public static Vec2 operator /(Vec2 a, Vec2 b) => new(a.X / b.X, a.Y / b.Y);
+    public static Vec2 operator %(Vec2 a, Vec2 b) => new(a.X % b.X, a.Y % b.Y);
 
 
-    public static Vector2 operator +(Vector2 a, float b) => new(a.X + b, a.Y + b);
-    public static Vector2 operator -(Vector2 a, float b) => new(a.X - b, a.Y - b);
-    public static Vector2 operator *(Vector2 a, float b) => new(a.X * b, a.Y * b);
-    public static Vector2 operator /(Vector2 a, float b) => new(a.X / b, a.Y / b);
-    public static Vector2 operator %(Vector2 a, float b) => new(a.X % b, a.Y % b);
+    public static Vec2 operator +(Vec2 a, float b) => new(a.X + b, a.Y + b);
+    public static Vec2 operator -(Vec2 a, float b) => new(a.X - b, a.Y - b);
+    public static Vec2 operator *(Vec2 a, float b) => new(a.X * b, a.Y * b);
+    public static Vec2 operator /(Vec2 a, float b) => new(a.X / b, a.Y / b);
+    public static Vec2 operator %(Vec2 a, float b) => new(a.X % b, a.Y % b);
 
     public readonly override string ToString() => $"V2({X};{Y})";
 }
 
 
-public struct Vector3(float x,float y, float z) : IVector<Vector3>
+public struct Vec3(float x,float y, float z) : IVec<Vec3>
 {
-    public readonly static Vector2 Zero = new(0, 0);
-    public readonly static Vector2 One = new(1, 1);
+    public readonly static Vec2 Zero = new(0, 0);
+    public readonly static Vec2 One = new(1, 1);
 
 
     public float X = x;
@@ -60,7 +60,7 @@ public struct Vector3(float x,float y, float z) : IVector<Vector3>
 
     public float Magnitude() => (float)Math.Sqrt(X * X + Y * Y + Z * Z);
 
-    public Vector3 Normalize()
+    public Vec3 Normalize()
     {
         float magnitude = Magnitude();
         if (magnitude > 0)
@@ -72,30 +72,30 @@ public struct Vector3(float x,float y, float z) : IVector<Vector3>
         return this;
     }
 
-    public Vector2 Project(Vector2 screenCenter,float distance = 5, float scale = 400)
+    public Vec2 Project(Vec2 screenCenter,float distance = 5, float scale = 400)
     {
         float factor = distance / (distance + Z);
         float x2d = X * factor * scale + screenCenter.X;
         float y2d = Y * factor * scale + screenCenter.Y;
 
-        return new Vector2(x2d, y2d);
+        return new Vec2(x2d, y2d);
     }
 
-    public static implicit operator Vector3(float a) => new(a, a, a);
-    public static explicit operator Vector3(Vector2 a) => new(a.X, a.Y, 0);
+    public static implicit operator Vec3(float a) => new(a, a, a);
+    public static explicit operator Vec3(Vec2 a) => new(a.X, a.Y, 0);
 
-    public static Vector3 operator +(Vector3 a, Vector3 b) => new(a.X + b.X, a.Y + b.Y, a.Z + b.Z);
-    public static Vector3 operator -(Vector3 a, Vector3 b) => new(a.X - b.X, a.Y - b.Y, a.Z - b.Z);
-    public static Vector3 operator *(Vector3 a, Vector3 b) => new(a.X * b.X, a.Y * b.Y, a.Z * b.Z);
-    public static Vector3 operator /(Vector3 a, Vector3 b) => new(a.X / b.X, a.Y / b.Y, a.Z / b.Z);
-    public static Vector3 operator %(Vector3 a, Vector3 b) => new(a.X % b.X, a.Y % b.Y, a.Z % b.Z);
+    public static Vec3 operator +(Vec3 a, Vec3 b) => new(a.X + b.X, a.Y + b.Y, a.Z + b.Z);
+    public static Vec3 operator -(Vec3 a, Vec3 b) => new(a.X - b.X, a.Y - b.Y, a.Z - b.Z);
+    public static Vec3 operator *(Vec3 a, Vec3 b) => new(a.X * b.X, a.Y * b.Y, a.Z * b.Z);
+    public static Vec3 operator /(Vec3 a, Vec3 b) => new(a.X / b.X, a.Y / b.Y, a.Z / b.Z);
+    public static Vec3 operator %(Vec3 a, Vec3 b) => new(a.X % b.X, a.Y % b.Y, a.Z % b.Z);
 
 
-    public static Vector3 operator +(Vector3 a, float b) => new(a.X + b, a.Y + b, a.Z + b);
-    public static Vector3 operator -(Vector3 a, float b) => new(a.X - b, a.Y - b, a.Z - b);
-    public static Vector3 operator *(Vector3 a, float b) => new(a.X * b, a.Y * b, a.Z * b);
-    public static Vector3 operator /(Vector3 a, float b) => new(a.X / b, a.Y / b, a.Z / b);
-    public static Vector3 operator %(Vector3 a, float b) => new(a.X % b, a.Y % b, a.Z % b);
+    public static Vec3 operator +(Vec3 a, float b) => new(a.X + b, a.Y + b, a.Z + b);
+    public static Vec3 operator -(Vec3 a, float b) => new(a.X - b, a.Y - b, a.Z - b);
+    public static Vec3 operator *(Vec3 a, float b) => new(a.X * b, a.Y * b, a.Z * b);
+    public static Vec3 operator /(Vec3 a, float b) => new(a.X / b, a.Y / b, a.Z / b);
+    public static Vec3 operator %(Vec3 a, float b) => new(a.X % b, a.Y % b, a.Z % b);
 
     public readonly override string ToString() => $"V3({X};{Y},{Z})";
 }

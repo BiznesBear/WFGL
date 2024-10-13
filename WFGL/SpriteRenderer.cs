@@ -22,13 +22,13 @@ public class SpriteRenderer : Transform, IDrawable
     public SpriteRenderer(string filePath) : this(new Sprite(filePath)) { }
     public override void OnDraw(GameMaster m)
     {
-        Draw(m,m.Renderer);
+        //Draw(m,m.Renderer);
     }
 
     public void Draw(GameMaster m,Graphics r)
     {
         if (Hroup != null) return;
-        Point pixel = Position.ToPoint(m.VirtualScale);
+        Point pixel = Position.ToPoint(m);
         Point size = RealSize.VirtualizePixel(m.MainCamera);
 
         r.DrawImage(Source, pixel.X, pixel.Y, size.X, size.Y);
@@ -36,8 +36,8 @@ public class SpriteRenderer : Transform, IDrawable
 }
 public class CollidingSprite : SpriteRenderer, Physics.ICollide
 {
-    public Vector2 ColliderSize => RealSize.VirtualizePixel(GetMaster().MainCamera).ToVector2(GetMaster().VirtualScale);
-    public Vector2 ColliderPosition => Position;
+    public Vec2 ColliderSize => RealSize.VirtualizePixel(GetMaster().MainCamera).ToVector2(GetMaster());
+    public Vec2 ColliderPosition => Position;
 
     public CollidingSprite() : base() { }
     public CollidingSprite(string filePath) : base(filePath) { }

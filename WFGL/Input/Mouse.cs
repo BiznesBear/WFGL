@@ -8,16 +8,5 @@ public static class Mouse
     internal static HashSet<MouseButtons> pressedButtons = new();
 
     public static bool IsButtonPressed(MouseButtons button) => pressedButtons.Contains(button);
-
-    /// <summary>
-    /// Is mouse cursor inside window.
-    /// </summary>
-    public static bool Inside { get; internal set; }
-
-    /// <summary>
-    /// Total amount of mouse presses and releases.
-    /// </summary>
-    public static int Clicks { get; internal set; }
-
-    public static bool IntersectsWithMouse(this Rectangle rect) => rect.IntersectsWith(Rect) && Inside;
+    public static bool IntersectsWithMouse(this Rectangle rect, InputHandler handler) => rect.IntersectsWith(Rect) && handler.MouseInside;
 }

@@ -2,7 +2,7 @@
 
 namespace WFGL.Pseudo;
 
-public class PseduoLight : Transform
+public class PseduoLight : Transform, IDrawable
 {
     public float intensity = 1;
 
@@ -13,6 +13,8 @@ public class PseduoLight : Transform
 
     private Bitmap? bitmap;
     private bool needsRedraw = true;
+
+    public Hroup? Hroup { get; set; }
 
     private void GenerateLightBitmap(GameMaster m)
     {
@@ -32,14 +34,14 @@ public class PseduoLight : Transform
         needsRedraw = false;
     }
 
-    public override void OnDraw(GameMaster m)
+    public void Draw(GameMaster m, Graphics r)
     {
         if (needsRedraw || bitmap == null)
         {
             GenerateLightBitmap(m);
             return;
         }
-        Point pos = Position.ToPoint(m.VirtualScale);
+        Point pos = Position.ToPoint(m);
 
         m.Renderer.DrawImage(bitmap, pos.X - (int)radius, pos.Y - (int)radius);
     }

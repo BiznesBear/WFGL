@@ -34,18 +34,14 @@ public class GameMaster
     public Bitmap renderBuffer;
     private Size windowSizeTemp;
 
+
     #region Getters
     public VirtualUnit VirtualScale => new VirtualUnit(RealVirtualScaleX, RealVirtualScaleY).Normalize();
     public float RealVirtualScaleX => VirtualUnit.VirtualizeToFactor(GameWindow.ClientSize.Width);
     public float RealVirtualScaleY => VirtualUnit.VirtualizeToFactor(GameWindow.ClientSize.Height);
 
     public Point WindowCenter => new(GameWindow.ClientSize.Width / 2, GameWindow.ClientSize.Height / 2);
-    public Size WindowSize => new(GameWindow.ClientSize.Width, GameWindow.ClientSize.Height);
     public Point RenderSize => new((int)VirtualScale.FactorX * VirtualUnit.SCALING, (int)VirtualScale.FactorX * VirtualUnit.SCALING);
-    public Point RenderCenter => new(RenderSize.X/2,RenderSize.Y/2);
-
-    public Vector2 RenderSizeVec2 => new(VirtualScale.FactorX * VirtualUnit.SCALING, VirtualScale.FactorX * VirtualUnit.SCALING);
-    public Vector2 RenderCenterVec2 => new(RenderSizeVec2.X / 2, RenderSizeVec2.Y / 2);
 
 
     #endregion
@@ -66,7 +62,6 @@ public class GameMaster
         GameWindow.Paint += Draw;
         GameWindow.ResizeEnd += Resized;
 
-        
 
         float aspectRatio = (float)GameWindow.ClientSize.Width / GameWindow.ClientSize.Height;
         CameraOptions options = new(new Size((int)aspectRatio,(int)aspectRatio),GameWindow.ClientSize);
@@ -84,9 +79,6 @@ public class GameMaster
         MainHierarchy = new Hierarchy(this);
         WhenUpdate += MainHierarchy.OnUpdate;
         WhenDraw += MainHierarchy.OnDraw;
-
-
-      
     }
 
     public void Load()
@@ -104,8 +96,8 @@ public class GameMaster
         renderBuffer = new Bitmap(RenderSize.X, RenderSize.Y);
 
         Renderer = Graphics.FromImage(renderBuffer);
-       
-        Renderer.SetClip(new Rectangle(0, 0, RenderSize.X, RenderSize.Y));
+
+        Renderer.SetClip((new Rectangle(MainCamera.RealPosition.X, MainCamera.RealPosition.Y, RenderSize.X, RenderSize.Y)));
         Renderer.SmoothingMode = Smoothing;
         Renderer.InterpolationMode = Interpolation;
         OnRenderBufferReset();
@@ -173,7 +165,7 @@ public class GameMaster
         OnAfterDraw();
 
         e.Graphics.SetClip((new Rectangle(MainCamera.RealPosition.X, MainCamera.RealPosition.Y, RenderSize.X, RenderSize.Y)));
-        e.Graphics.DrawImageUnscaled(renderBuffer, new Rectangle(MainCamera.RealPosition.X, MainCamera.RealPosition.Y, RenderSize.X, RenderSize.Y));
+        e.Graphics.DrawImageUnscaled(renderBuffer, new Rectangle(0,0, RenderSize.X, RenderSize.Y));
     }
 
     #endregion
@@ -187,7 +179,6 @@ public class GameMaster
 
     public void DrawLine(Color color, Point pos1, Point pos2) => DrawLine(new Pen(color, 1), pos1, pos2);
     public void DrawLine(Point pos1, Point pos2) => DrawLine(defaultPen, pos1, pos2);
-
 
     public void DrawRect(Pen pen, Rectangle rect) => Renderer.DrawRectangle(pen, rect);
     public void DrawRect(Color color, Rectangle rect)
@@ -229,6 +220,8 @@ public class GameMaster
         GameWindow.MouseDoubleClick += handler.MouseDoubleClicked;
         GameWindow.MouseEnter += handler.MouseEnter;
         GameWindow.MouseLeave += handler.MouseLeave;
+
+        GameWindow.MouseWheel += handler.MouseWheel;
     }
     public void RemoveInput(InputHandler handler)
     {
@@ -241,9 +234,12 @@ public class GameMaster
         GameWindow.MouseDoubleClick -= handler.MouseDoubleClicked;
         GameWindow.MouseEnter -= handler.MouseEnter;
         GameWindow.MouseLeave -= handler.MouseLeave;
+
+        GameWindow.MouseWheel -= handler.MouseWheel;
+
     }
 
-    
+
     #endregion
 
     #region EventFunctions

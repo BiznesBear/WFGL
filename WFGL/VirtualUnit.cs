@@ -1,5 +1,4 @@
 using WFGL.Core;
-
 namespace WFGL;
 
 public struct VirtualUnit(float x, float y)
@@ -53,10 +52,10 @@ public static class Converts
     #endregion
 
     #region Converts
-    public static Vector2 ToVector2(this Point point, VirtualUnit vunit) => new(point.X / vunit.FactorX, point.Y / vunit.FactorY);
-    public static Vector2 ToVector2(this Size size, VirtualUnit vunit) => size.PushToPoint().ToVector2(vunit);
-    public static Point ToPoint(this Vector2 vector2, VirtualUnit vunit) => new((int)(vector2.X * vunit.FactorX), (int)(vector2.Y * vunit.FactorY));
-    public static Size ToSize(this Vector2 vector2, VirtualUnit vunit) => vector2.ToPoint(vunit).PushToSize();
+    public static Vec2 ToVector2(this Point point, GameMaster m) => new(point.X / m.VirtualScale.FactorX, point.Y / m.VirtualScale.FactorY);
+    public static Vec2 ToVector2(this Size size, GameMaster m) => size.PushToPoint().ToVector2(m);
+    public static Point ToPoint(this Vec2 vector2, GameMaster m) => new((int)(vector2.X * m.VirtualScale.FactorX), (int)(vector2.Y * m.VirtualScale.FactorY));
+    public static Size ToSize(this Vec2 vector2, GameMaster m) => vector2.ToPoint(m).PushToSize();
     #endregion
     #endregion
 
@@ -64,10 +63,10 @@ public static class Converts
 
 
 
-    public static Vector3 ToVector3(this Point point, VirtualUnit vunit) => new(point.X / vunit.FactorX, point.Y / vunit.FactorY, 0); //TODO: Here add persepctive
-    public static Vector3 ToVector3(this Size size, VirtualUnit vunit) => size.PushToPoint().ToVector3(vunit);
-    public static Point ToPoint(this Vector3 vector2, VirtualUnit vunit) => new((int)(vector2.X * vunit.FactorX), (int)(vector2.Y * vunit.FactorY));
-    public static Size ToSize(this Vector3 vector2, VirtualUnit vunit) => vector2.ToPoint(vunit).PushToSize();
+    public static Vec3 ToVector3(this Point point, GameMaster m) => new(point.X / m.VirtualScale.FactorX, point.Y / m.VirtualScale.FactorY, 0); //TODO: Here add persepctive
+    public static Vec3 ToVector3(this Size size, GameMaster m) => size.PushToPoint().ToVector3(m);
+    public static Point ToPoint(this Vec3 vector3, GameMaster m) => new((int)(vector3.X * m.VirtualScale.FactorX), (int)(vector3.Y * m.VirtualScale.FactorY));
+    public static Size ToSize(this Vec3 vector3, GameMaster m) => vector3.ToPoint(m).PushToSize();
 
     #endregion
 

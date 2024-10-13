@@ -64,6 +64,8 @@ public class Hierarchy : Transform
         foreach (IObject obj in GetObjects())
         {
             obj.OnDraw(GetMaster());
+            if(obj is IDrawable d)
+                d.Draw(GetMaster(), GetMaster().Renderer);
         }
     }
     public IEnumerable<T> GetAllObjectsWithType<T>()

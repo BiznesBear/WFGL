@@ -11,8 +11,8 @@ public enum ButtonState
 public abstract class ButtonBase<T> : Transform
 {
     public ButtonState State { get; private set; }
-    public Vector2 RectSize { get; set; } = new(1.5f, 0.5f);
-    public Size RealRectSize => RectSize.ToSize(GetMaster().VirtualScale);
+    public Vec2 RectSize { get; set; } = new(1.5f, 0.5f);
+    public Size RealRectSize => RectSize.ToSize(GetMaster());
     public Rectangle Bounds => new(RealPosition.X, RealPosition.Y, RealRectSize.Width, RealRectSize.Height);
 
     public event Action? OnClick;
@@ -34,12 +34,12 @@ public abstract class ButtonBase<T> : Transform
 
     public override void OnUpdate(GameMaster m)
     {
-        if (!Mouse.Inside)
+        if (!m.InputMaster.MouseInside)
         {
             ChangeState(ButtonState.Defalut);
             return;
         }
-        if (Bounds.IntersectsWithMouse())
+        if (Bounds.IntersectsWithMouse(m.InputMaster))
         {
             if (Mouse.IsButtonPressed(MouseButtons.Left))
             {

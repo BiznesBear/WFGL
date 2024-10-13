@@ -1,26 +1,26 @@
 using WFGL.Core;
 namespace WFGL.Physics;
 // TODO: Fix this. It ray's in infinite range. 
-public struct Ray(Vector2 origin, Vector2 direction)
+public struct Ray(Vec2 origin, Vec2 direction)
 {
-    public Vector2 Origin { get; set; } = origin;
-    public Vector2 Direction { get; set; } = direction;
+    public Vec2 Origin { get; set; } = origin;
+    public Vec2 Direction { get; set; } = direction;
     public float? maxRange = null;
-    public Ray(Vector2 origin, Vector2 direction, float range) : this(origin, direction) { maxRange = range; }
+    public Ray(Vec2 origin, Vec2 direction, float range) : this(origin, direction) { maxRange = range; }
     public void DrawGizmos(GameMaster m)
     {
-        m.DrawLine(Origin.ToPoint(m.VirtualScale), Direction.ToPoint(m.VirtualScale));
+        m.DrawLine(Origin.ToPoint(m), Direction.ToPoint(m));
     }
-    public void DrawGizmos(GameMaster m, Vector2 intersectionPoint)
+    public void DrawGizmos(GameMaster m, Vec2 intersectionPoint)
     {
-        m.DrawLine(Origin.ToPoint(m.VirtualScale), intersectionPoint.ToPoint(m.VirtualScale));
+        m.DrawLine(Origin.ToPoint(m), intersectionPoint.ToPoint(m));
     }
     public override string ToString() => $"{Origin} => {Direction}";
 }
 public readonly struct RayInfo
 {
     public readonly Ray ray;
-    public readonly Vector2 intersectionPoint;
+    public readonly Vec2 intersectionPoint;
     public readonly bool anyIntersects;
     public RayInfo(Ray r, float t_hit)
     {
