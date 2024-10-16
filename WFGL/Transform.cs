@@ -13,12 +13,12 @@ public interface IObject
 public abstract class TransformBase<T> : IObject  where T : struct, IVec<T>
 {
     public virtual T Scale { get; set; } = default;
-    public T Position { get; set; } = default;
+    public T Position { get; set; }
 
     public Layer Layer { get; set; } = Layer.Defalut;
 
     protected GameMaster? master;
-    public GameMaster GetMaster() => master ?? throw new WFGLNullInstanceError("Null game master instance in transform");
+    public GameMaster GetMaster() => master ?? throw new ArgumentNullException("Null game master instance in transform");
 
     public void Create(Hierarchy hierarchy)
     {
@@ -28,7 +28,7 @@ public abstract class TransformBase<T> : IObject  where T : struct, IVec<T>
     public void Destroy(Hierarchy hierarchy)
     {
         OnDestroy(hierarchy, hierarchy.GetMaster());
-        hierarchy.Unregister(this);
+        hierarchy.Deregister(this);
     }
     public virtual void OnCreate(Hierarchy h, GameMaster m) { master = m; }
     public virtual void OnDestroy(Hierarchy h, GameMaster m) { }

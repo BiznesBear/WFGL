@@ -20,23 +20,17 @@ public class SpriteRenderer : Transform, IDrawable
         Sprite = sprite;
     }
     public SpriteRenderer(string filePath) : this(new Sprite(filePath)) { }
-    public override void OnDraw(GameMaster m)
-    {
-        //Draw(m,m.Renderer);
-    }
-
     public void Draw(GameMaster m,Graphics r)
     {
         if (Hroup != null) return;
-        Point pixel = Position.ToPoint(m);
         Point size = RealSize.VirtualizePixel(m.MainCamera);
-
-        r.DrawImage(Source, pixel.X, pixel.Y, size.X, size.Y);
+        Point pos = Position.ToPoint(m);
+        r.DrawImage(Source, pos.X, pos.Y, size.X, size.Y);
     }
 }
 public class CollidingSprite : SpriteRenderer, Physics.ICollide
 {
-    public Vec2 ColliderSize => RealSize.VirtualizePixel(GetMaster().MainCamera).ToVector2(GetMaster());
+    public Vec2 ColliderSize => RealSize.VirtualizePixel(GetMaster().MainCamera).ToVec2(GetMaster());
     public Vec2 ColliderPosition => Position;
 
     public CollidingSprite() : base() { }

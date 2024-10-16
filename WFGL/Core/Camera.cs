@@ -10,7 +10,7 @@ public class Camera : Transform
     }
 
 
-    public const uint DEFALUT_TARGET = 500;
+    public const uint DEFALUT_TARGET = 500; // defalut target for window is 500x500
 
     /// <summary>
     /// Target aspect ratio of viewed render (for to do not resizing world space)
@@ -21,8 +21,8 @@ public class Camera : Transform
     /// <summary>
     /// Refrence size of rendering everything on window.
     /// </summary>
-    public uint Target { get; set; } 
-    public float Scaler => GetMaster().VirtualScale.FactorX / Target;
+    public uint Target { get; set; } // refrence size for scaling 
+    public float Scaler => GetMaster().VirtualScale.FactorX / Target; // dividing virtual unit by refrence target to get real virtual unit 
 
     public float ViewDistance { get; set; } = 4;
     public float Fov { get; set; } = 500;

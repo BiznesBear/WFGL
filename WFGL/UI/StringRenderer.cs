@@ -4,6 +4,7 @@ namespace WFGL.UI;
 
 public class StringRenderer : Transform, IDrawable
 {
+    public const string DEFALUT_FONT_NAME = "Consolas";
     public float BaseSize { get; private set; } = 12;
     public Font Font { get; private set; }
     public string Content { get; set; } = "";

@@ -98,3 +98,39 @@ public class SpriteButton : ButtonBase<Sprite>
         m.DrawSprite(displayed, Bounds.Location);
     }
 }
+public class TextRectButton : RectangleButton
+{
+    public Font font = new(StringRenderer.DEFALUT_FONT_NAME,12);
+    public readonly StringRenderer stringRenderer;
+    public TextRectButton(string text,Color defalut, Color pointed, Color clicked) : base(defalut, pointed, clicked) { stringRenderer = new(font, text); }
+    public TextRectButton(string text,Color color) : this(text,color, color, color) { }
+
+    public override void OnUpdate(GameMaster m)
+    {
+        base.OnUpdate(m);
+        stringRenderer.OnUpdate(m);
+    }
+    public override void OnDraw(GameMaster m)
+    {
+        base.OnDraw(m);
+        stringRenderer.Draw(m,m.Renderer);
+    }
+}
+public class TextSpriteButton : SpriteButton
+{
+    public Font font = new(StringRenderer.DEFALUT_FONT_NAME, 12);
+    public readonly StringRenderer stringRenderer;
+    public TextSpriteButton(string text,Sprite defalutSprite, Sprite pointedSprite, Sprite clickedSprite) : base(defalutSprite, pointedSprite, clickedSprite) { stringRenderer = new(font, text);}
+    public TextSpriteButton(string text,Sprite sprite) : this(text,sprite, sprite, sprite) { }
+
+    public override void OnUpdate(GameMaster m)
+    {
+        base.OnUpdate(m);
+        stringRenderer.OnUpdate(m);
+    }
+    public override void OnDraw(GameMaster m)
+    {
+        base.OnDraw(m);
+        stringRenderer.Draw(m, m.Renderer);
+    }
+}

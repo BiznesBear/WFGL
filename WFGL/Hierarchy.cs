@@ -25,8 +25,7 @@ public class Hierarchy : Transform
         }
     }
 
-    public Hierarchy(GameMaster master) { ChangedList += UpdateOrder; AssignMaster(master); }
-    public void AssignMaster(GameMaster m) => master = m;
+    public Hierarchy(GameMaster m) { ChangedList += UpdateOrder; master = m; }
 
     public void Register(IObject obj)
     {
@@ -35,7 +34,7 @@ public class Hierarchy : Transform
         ChangedList.Invoke();
         WhenUpdate += obj.OnUpdate;
     }
-    public void Unregister(IObject obj)
+    public void Deregister(IObject obj)
     {
         WhenUpdate -= obj.OnUpdate;
         objects.Remove(obj);

@@ -1,4 +1,5 @@
-﻿namespace WFGL;
+﻿using System.Numerics;
+namespace WFGL;
 public interface IVec<T> where T : struct, IVec<T>
 {
     public float Magnitude();
@@ -31,6 +32,8 @@ public struct Vec2(float x, float y) : IVec<Vec2>
 
     public static implicit operator Vec2(float a) => new(a, a);
     public static explicit operator Vec2(Vec3 a) => new(a.X,a.Y);
+    public static explicit operator Vec2(Vector2 a) => new(a.X,a.Y);
+    public static explicit operator Vec2(Vector3 a) => new(a.X,a.Y);
     public static Vec2 operator +(Vec2 a, Vec2 b) => new(a.X + b.X, a.Y + b.Y);
     public static Vec2 operator -(Vec2 a, Vec2 b) => new(a.X - b.X, a.Y - b.Y);
     public static Vec2 operator *(Vec2 a, Vec2 b) => new(a.X * b.X, a.Y * b.Y);
@@ -44,7 +47,7 @@ public struct Vec2(float x, float y) : IVec<Vec2>
     public static Vec2 operator /(Vec2 a, float b) => new(a.X / b, a.Y / b);
     public static Vec2 operator %(Vec2 a, float b) => new(a.X % b, a.Y % b);
 
-    public readonly override string ToString() => $"V2({X};{Y})";
+    public readonly override string ToString() => $"Vec2({X};{Y})";
 }
 
 
@@ -83,6 +86,7 @@ public struct Vec3(float x,float y, float z) : IVec<Vec3>
 
     public static implicit operator Vec3(float a) => new(a, a, a);
     public static explicit operator Vec3(Vec2 a) => new(a.X, a.Y, 0);
+    public static explicit operator Vec3(Vector3 a) => new(a.X, a.Y,a.Z);
 
     public static Vec3 operator +(Vec3 a, Vec3 b) => new(a.X + b.X, a.Y + b.Y, a.Z + b.Z);
     public static Vec3 operator -(Vec3 a, Vec3 b) => new(a.X - b.X, a.Y - b.Y, a.Z - b.Z);
@@ -97,5 +101,5 @@ public struct Vec3(float x,float y, float z) : IVec<Vec3>
     public static Vec3 operator /(Vec3 a, float b) => new(a.X / b, a.Y / b, a.Z / b);
     public static Vec3 operator %(Vec3 a, float b) => new(a.X % b, a.Y % b, a.Z % b);
 
-    public readonly override string ToString() => $"V3({X};{Y},{Z})";
+    public readonly override string ToString() => $"Vec3({X};{Y},{Z})";
 }

@@ -13,9 +13,9 @@ internal class Program
     private static void Main(string[] args)
     {
         GameWindow window = new(GameWindowOptions.Default);
-        //renderTestInstance = new(window);
-        //renderTestInstance.Load();
-        testPlaceInstance = new(window);
-        testPlaceInstance.Load();
+        renderTestInstance = new(window);
+        renderTestInstance.Load();
+        //testPlaceInstance = new(window);
+        //testPlaceInstance.Load();
     }
 }

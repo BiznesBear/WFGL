@@ -17,9 +17,9 @@ public class TestPlaceMaster : GameMaster
     public readonly static Sprite playerSprite = new("furniture.png");
 
     // layers
-    readonly static Layer canvasLayer = new(300);
-    readonly static Layer topLayer = new(100);
-    readonly static Layer underTopLayer = new(99);
+    public readonly static Layer canvasLayer = new(300);
+    public readonly static Layer topLayer = new(100);
+    public readonly static Layer underTopLayer = new(99);
 
     // hroups, groups & hierarchys
     internal Group<ICollide> colliders;
@@ -36,7 +36,7 @@ public class TestPlaceMaster : GameMaster
     StringRenderer fpsText;
     StringRenderer userNameText = new(font, Environment.UserName);
 
-    RectangleButton myButton = new(Color.Wheat, Color.Blue, Color.Red) { Layer = canvasLayer };
+    TextRectButton myButton = new("__________",Color.Wheat, Color.Blue, Color.Red) { Layer = canvasLayer };
 
     public TestPlaceMaster(GameWindow window) : base(window)
     {
@@ -48,7 +48,7 @@ public class TestPlaceMaster : GameMaster
         objects = new(this);
         canvas = new(this) { Layer = canvasLayer };
         fpsText = new(font, $"FPS: {TimeMaster.Fps}");
-        player = new(this) { Layer = topLayer };
+        player = new() { Layer = topLayer };
         background = new(this);
         colliders = new(background);
     }
@@ -69,7 +69,7 @@ public class TestPlaceMaster : GameMaster
         //sprite9.Create(objects);
 
         // use this instead
-
+        
         background.Objects = [
             sprite,
             new SpriteRenderer(maszWypadloCi) { Position = 1 },
@@ -80,13 +80,11 @@ public class TestPlaceMaster : GameMaster
             new SpriteRenderer(maszWypadloCi) { Position = new(0, 3) },
             new SpriteRenderer(maszWypadloCi){ Position = Vec2.Zero },
             new SpriteRenderer(maszWypadloCi) { Position = new(3, 0) },
-
         ];
         objects.Objects = [
-             player,
+            player,
             background,
             myButton
-
          ];
 
         canvas.Objects = [
@@ -98,7 +96,6 @@ public class TestPlaceMaster : GameMaster
         RegisterHierarchy(canvas);
         colliders.Update();
         background.Render();
-
     }
     protected override void OnUpdate()
     {
@@ -111,7 +108,9 @@ public class TestPlaceMaster : GameMaster
         if (input.IsKeyPressed(Keys.Right)) MainCamera.Position += new Vec2(0.07f, 0f);
         if (input.IsKeyPressed(Keys.Up)) MainCamera.Position -= new Vec2(0f, 0.07f);
         if (input.IsKeyPressed(Keys.Down)) MainCamera.Position += new Vec2(0f, 0.07f);
+        ResetRenderClip();
     }
+
     protected override void OnDraw()
     {
         // drawing background 
@@ -160,12 +159,12 @@ internal class TestPlacePlayer : Transform, ICollide
 
     // colliders 
     internal RayInfo hitInfo;
-    public Vec2 ColliderSize => playerSprite.RealSize.VirtualizePixel(GetMaster().MainCamera).ToVector2(GetMaster());
+    public Vec2 ColliderSize => playerSprite.RealSize.VirtualizePixel(GetMaster().MainCamera).ToVec2(GetMaster());
     public Vec2 ColliderPosition => playerSprite.Position + dir;
 
     private Vec2 inP;
 
-    public TestPlacePlayer(GameMaster m) { master = m; }
+    public TestPlacePlayer() { }
     public override void OnCreate(Hierarchy h, GameMaster m)
     {
         base.OnCreate(h, m);
@@ -182,8 +181,6 @@ internal class TestPlacePlayer : Transform, ICollide
         if (input.IsKeyPressed(Keys.D)) direction += new Vec2(speed, 0f);
         if (input.IsKeyPressed(Keys.W)) direction -= new Vec2(0f, speed);
         if (input.IsKeyPressed(Keys.S)) direction += new Vec2(0f, speed);
-
-
 
 
         dir = direction.Normalize() * speed * m.TimeMaster.DeltaTime;

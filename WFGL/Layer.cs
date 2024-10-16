@@ -28,10 +28,10 @@ public sealed class LayerMaster
         UpdateList();
     }
     /// <summary>
-    /// Unregisters layer
+    /// Deregisters layer
     /// </summary>
     /// <param name="layer">Layer to unregister</param>
-    public void Unregister(Layer layer)
+    public void Deregister(Layer layer)
     {
         layers.Remove(layer);
         UpdateList();
@@ -56,7 +56,7 @@ public sealed class LayerMaster
         }
     }
 }
-public sealed class Layer(short drawWeight)
+public class Layer(short drawWeight)
 {
     public readonly static Layer Defalut = new(0);
     public short DrawWeight { get; } = drawWeight;

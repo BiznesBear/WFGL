@@ -35,7 +35,7 @@ public abstract class Hroup : Hierarchy
 }
 
 /// <summary>
-/// Need to be rendered manually. Perfect for drawing backgrounds and static objects.
+/// Need to be rendered manually. 
 /// </summary>
 /// <param name="m"></param>
 public class StaticRenderHroup(GameMaster m) : Hroup(m), IDrawable
@@ -44,7 +44,7 @@ public class StaticRenderHroup(GameMaster m) : Hroup(m), IDrawable
     private Graphics? renderer;
     public Hroup? Hroup { get; set; }
 
-    public Bitmap GetRender() => finRender ?? throw new WFGLNullInstanceError("Null group render");
+    public Bitmap GetRender() => finRender ?? throw new ArgumentNullException("Null group render");
     public void Render()
     {
         finRender = new(GetMaster().RenderSize.X, GetMaster().RenderSize.Y);
@@ -53,9 +53,7 @@ public class StaticRenderHroup(GameMaster m) : Hroup(m), IDrawable
         foreach (var obj in LayerMaster.GetObjectsFrom(GetMaster().LayerMaster, LayerMaster.SortObjectList(Objects)))
         {
             if (obj is IDrawable idraw)
-            {
                 idraw.Draw(GetMaster(), renderer);
-            }
         }
     }
     public override void OnDraw(GameMaster m)

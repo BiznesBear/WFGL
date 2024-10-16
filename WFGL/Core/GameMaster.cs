@@ -1,7 +1,7 @@
 ﻿using System.Drawing.Drawing2D;
 using WFGL.Input;
 namespace WFGL.Core;
-// TODO: REWORK GAME MASTER AND INSTANTATING GAMEMASTER AND DRAWING AND CAMERA
+
 public class GameMaster 
 {
 
@@ -22,7 +22,7 @@ public class GameMaster
     public Graphics Renderer { get; private set; }
 
     private InputHandler? inputHandler;
-    public InputHandler InputMaster => inputHandler ?? throw new WFGLNullInstanceError("Cannot use unregistered input handler");
+    public InputHandler InputMaster => inputHandler ?? throw new ArgumentNullException("Cannot use unregistered input handler");
 
     #endregion
 
@@ -67,7 +67,6 @@ public class GameMaster
         CameraOptions options = new(new Size((int)aspectRatio,(int)aspectRatio),GameWindow.ClientSize);
         MainCamera = new(this, options);
 
-
         TimeMaster.Timer.Tick += Update;
 
         renderBuffer = new Bitmap(RenderSize.X, RenderSize.Y);
@@ -81,28 +80,33 @@ public class GameMaster
         WhenDraw += MainHierarchy.OnDraw;
     }
 
+    #region Start
     public void Load()
     {
         TimeMaster.Start();
         OnLoad();
         GameWindow.ShowDialog();
-        if (inputHandler == null) WDO.Info("Some of WFGL functions won't work, because no InputHandler is assigned. ");
+        if (inputHandler == null) WDO.Info("Some of WFGL functions won't work, because no InputHandler is assigned.");
     }
 
 
-    private void ResetRenderBuffer()
+    public void ResetRenderBuffer()
     {
         renderBuffer.Dispose();
         renderBuffer = new Bitmap(RenderSize.X, RenderSize.Y);
 
         Renderer = Graphics.FromImage(renderBuffer);
 
-        Renderer.SetClip((new Rectangle(MainCamera.RealPosition.X, MainCamera.RealPosition.Y, RenderSize.X, RenderSize.Y)));
         Renderer.SmoothingMode = Smoothing;
         Renderer.InterpolationMode = Interpolation;
+        ResetRenderClip();
         OnRenderBufferReset();
     }
-
+    public void ResetRenderClip()
+    {
+        Renderer.SetClip((new Rectangle(MainCamera.RealPosition.X, MainCamera.RealPosition.Y, RenderSize.X, RenderSize.Y)));
+    }
+    #endregion
 
     #region Window
 
@@ -117,6 +121,7 @@ public class GameMaster
         ResetRenderBuffer() ;
         OnResized();
     }
+
 
     // make window normal again
     public void NormalScreen()
@@ -133,7 +138,8 @@ public class GameMaster
     {
         if(WindowAspectLock) GameWindow.ClientSize = MainCamera.GetAspect();
         ResetRenderBuffer();
-        OnResized();  
+        OnResized();
+        ResetRenderClip();
     }
 
     public GameWindow GetWindow() => GameWindow;
@@ -145,13 +151,14 @@ public class GameMaster
     {
         MainHierarchy.Register(hierarchy);
     }
-    public void UnregisterHierarchy(Hierarchy hierarchy)
+    public void DeregisterHierarchy(Hierarchy hierarchy)
     {
-        MainHierarchy.Unregister(hierarchy);
+        MainHierarchy.Deregister(hierarchy);
     }
     #endregion
 
     #region Logic
+
     private void Update(object? sender, EventArgs e)
     {
         GameWindow.Invalidate(new Rectangle(MainCamera.RealPosition.X, MainCamera.RealPosition.Y, RenderSize.X, RenderSize.Y));
@@ -175,27 +182,20 @@ public class GameMaster
     public readonly Pen defaultPen = new(Color.Red, 1);
     public readonly SolidBrush defaultBrush = new(Color.DarkSlateGray);
 
-    public void DrawLine(Pen pen, Point pos1, Point pos2) => Renderer.DrawLine(pen, pos1, pos2);
+    public void DrawLine(Color color, Point pos1, Point pos2) => Renderer.DrawLine(new Pen(color, 1), pos1, pos2);
+    public void DrawLine(Point pos1, Point pos2) => DrawLine(defaultPen.Color, pos1, pos2);
 
-    public void DrawLine(Color color, Point pos1, Point pos2) => DrawLine(new Pen(color, 1), pos1, pos2);
-    public void DrawLine(Point pos1, Point pos2) => DrawLine(defaultPen, pos1, pos2);
-
-    public void DrawRect(Pen pen, Rectangle rect) => Renderer.DrawRectangle(pen, rect);
     public void DrawRect(Color color, Rectangle rect)
     {
-        var pen = new Pen(color, 1);
-        DrawRect(pen, rect);
+        using (var p = new Pen(color))
+            Renderer.DrawRectangle(p, rect);
     }
-    public void DrawRect(Rectangle rect) => DrawRect(defaultPen, rect);
+    public void DrawRect(Rectangle rect) => DrawRect(defaultPen.Color, rect);
 
-    public void DrawRectangle(Pen pen, Rectangle rect)
-    {
-        Renderer.FillRectangle(pen.Brush, rect);
-    }
     public void DrawRectangle(Color color, Rectangle rect)
     {
-        var pen = new Pen(color, 1);
-        DrawRectangle(pen, rect);
+        using (var b = new SolidBrush(color)) 
+            Renderer.FillRectangle(b, rect);
     }
     public void DrawRectangle(Rectangle rect) => DrawRectangle(defaultBrush.Color, rect);
     public void DrawSprite(Sprite sprite, Point position)
@@ -209,7 +209,7 @@ public class GameMaster
     #region Input
     public void RegisterInput(InputHandler handler)
     {
-        if(inputHandler != null) RemoveInput(inputHandler);
+        if(inputHandler != null) DeregisterInput(inputHandler);
         inputHandler = handler;
         GameWindow.KeyDown += handler.KeyDown;
         GameWindow.KeyUp += handler.KeyUp;
@@ -223,7 +223,7 @@ public class GameMaster
 
         GameWindow.MouseWheel += handler.MouseWheel;
     }
-    public void RemoveInput(InputHandler handler)
+    public void DeregisterInput(InputHandler handler)
     {
         inputHandler = null;
         GameWindow.KeyDown -= handler.KeyDown;
@@ -236,21 +236,18 @@ public class GameMaster
         GameWindow.MouseLeave -= handler.MouseLeave;
 
         GameWindow.MouseWheel -= handler.MouseWheel;
-
     }
-
-
     #endregion
 
     #region EventFunctions
 
     /// <summary>
-    /// When game is first loaded. Load every thing here.
+    /// When game is first loaded. 
     /// </summary>
     protected virtual void OnLoad() { }
 
     /// <summary>
-    /// Called every frame. Here update game logic.
+    /// Called every frame. Update game logic here.
     /// </summary>
     protected virtual void OnUpdate() { }
 

@@ -22,5 +22,5 @@ public class Sprite : IAsset<Bitmap>
     {
         source = new(filePath);
     }
-    public Bitmap GetSource() => source ?? throw new WFGLNullInstanceError("Null image source");
+    public Bitmap GetSource() => source ?? throw new ArgumentNullException("Null bitmap source");
 }
