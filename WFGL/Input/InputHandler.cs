@@ -44,8 +44,6 @@ public abstract class InputHandler(Core.GameMaster master)
 
     internal void MouseWheel(object? sender, MouseEventArgs e) { OnMouseWheel(e.Delta); }
 
-
-
     public bool IsKeyPressed(Keys key) { if (!enabled) return false; return pressedKeys.Contains(key); }
 
     /// <summary>

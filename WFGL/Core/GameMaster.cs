@@ -14,7 +14,6 @@ public class GameMaster
     #endregion
 
     #region Masters
-
     private GameWindow GameWindow { get; set; }
     public Camera MainCamera { get; set; }
     public Time TimeMaster { get; } = new();
@@ -247,7 +246,7 @@ public class GameMaster
     protected virtual void OnLoad() { }
 
     /// <summary>
-    /// Called every frame. Update game logic here.
+    /// Called every frame. Calculate game logic here.
     /// </summary>
     protected virtual void OnUpdate() { }
 
