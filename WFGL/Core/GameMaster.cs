@@ -85,7 +85,7 @@ public class GameMaster
         TimeMaster.Start();
         OnLoad();
         GameWindow.ShowDialog();
-        if (inputHandler == null) WDO.Info("Some of WFGL functions won't work, because no InputHandler is assigned.");
+        if (inputHandler == null) Wrint.Info("Some of WFGL functions won't work, because no InputHandler is assigned.");
     }
 
 

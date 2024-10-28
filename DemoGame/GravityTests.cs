@@ -1,5 +1,6 @@
 ﻿using System.Drawing;
 using System.Windows.Forms;
+
 using WFGL;
 using WFGL.Core;
 using WFGL.Input;
@@ -11,7 +12,7 @@ namespace DemoGame;
 public class GravityTestsMaster : GameMaster
 {
     // assets
-    public readonly static Font font = new("Cascadia Mono Light", 12);
+    public readonly static Font font = new("Consolas", 12);
     public readonly static Sprite maszWypadloCi = new("mozg-masz-wypadlo-ci.jpg");
     public readonly static Sprite playerSprite = new("furniture.png");
 
@@ -30,6 +31,7 @@ public class GravityTestsMaster : GameMaster
     // objects
 
     internal CollidingSprite sprite = new("aushf.jpg") { Position = new(0, 4f), Layer = underTopLayer };
+    internal CollidingSprite sprite2 = new("aushf.jpg") { Position = new(3.5f, 4f), Layer = underTopLayer };
     internal RigidPlayer player;
 
     StringRenderer fpsText;
@@ -55,13 +57,14 @@ public class GravityTestsMaster : GameMaster
     {
         background.Objects = [
             sprite,
+            sprite2,
             new SpriteRenderer(maszWypadloCi) { Position = 1 },
             new SpriteRenderer(maszWypadloCi) { Position = 3 },
             new SpriteRenderer(maszWypadloCi) { Position = 2 },
             new SpriteRenderer(maszWypadloCi) { Position = 4 },
             new SpriteRenderer(maszWypadloCi) { Position = new(0, 4) },
             new SpriteRenderer(maszWypadloCi) { Position = new(0, 3) },
-            new SpriteRenderer(maszWypadloCi){ Position = Vec2.Zero },
+            new SpriteRenderer(maszWypadloCi) { Position = Vec2.Zero },
             new SpriteRenderer(maszWypadloCi) { Position = new(3, 0) },
         ];
         objects.Objects = [
@@ -90,6 +93,8 @@ public class GravityTestsMaster : GameMaster
         if (input.IsKeyPressed(Keys.Right)) MainCamera.Position += new Vec2(0.07f, 0f);
         if (input.IsKeyPressed(Keys.Up)) MainCamera.Position -= new Vec2(0f, 0.07f);
         if (input.IsKeyPressed(Keys.Down)) MainCamera.Position += new Vec2(0f, 0.07f);
+
+
         ResetRenderClip();
     }
 
@@ -120,10 +125,12 @@ internal class GravityTestsInput(GameMaster master) : InputHandler(master)
             if (!Master.IsFullScreen) Master.FullScreen();
             else Master.NormalScreen();
         }
+
         if(key == Keys.C)
         {
             Program.gravityTestsInstance.player.grav.AddForce(1, Vec2.Up);
         }
+
         if (key == Keys.P)
         {
             Master.MainCamera.Position = 0;
@@ -163,22 +170,19 @@ internal class RigidPlayer : Transform, ICollide
             grav.AddForce(grav.Strenght * 2, Vec2.Up);
         }
 
+        if (input.IsKeyPressed(Keys.A)) direction -= new Vec2(speed, 0f);
+        if (input.IsKeyPressed(Keys.D)) direction += new Vec2(speed, 0f);
 
         if (this.IsColliding(Program.gravityTestsInstance.colliders, out ICollide? coll)) // to avoid player clipping
         {
+            dir += Vec2.Up * grav.Strenght;
             grav.ResetVelocity();
         }
         else
         {
             Position = grav.Calculate(Position);
+            dir = direction.Normalize() * speed * m.TimeMaster.DeltaTime;
         }
-
-        
-
-        if (input.IsKeyPressed(Keys.A)) direction -= new Vec2(speed, 0f);
-        if (input.IsKeyPressed(Keys.D)) direction += new Vec2(speed, 0f);
-
-        dir = direction.Normalize() * speed * m.TimeMaster.DeltaTime;
 
         Position += dir;
 

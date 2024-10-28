@@ -18,7 +18,7 @@ internal class Program
 
         //testPlaceInstance = new(window);
         //testPlaceInstance.Load();
-
+        
         gravityTestsInstance = new(window);
         gravityTestsInstance.Load();
     }

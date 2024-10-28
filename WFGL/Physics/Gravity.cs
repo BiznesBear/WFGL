@@ -3,7 +3,7 @@
 public class Gravity
 {
     public Vec2 Velocity { get; set; }
-    public float MaxVelocity { get; set; } = 0.05f; //TODO: Add more max velocitys for diffrent directions 
+    public float MaxVelocity { get; set; } = 0.1f; //TODO: Add more max velocitys for diffrent directions 
     public float Strenght { get; set; } = 0.003f;
     public Vec2 Direction { get; set; } = Vec2.Down;
 
@@ -28,6 +28,6 @@ public class Gravity
         Velocity = CheckVelocityLimit(this);
     }
 
-    public void ResetVelocity() => Velocity = Direction * Strenght;
+    public void ResetVelocity() => Velocity = 0;
     public static Vec2 CheckVelocityLimit(Gravity grav) => new(Math.Clamp(grav.Velocity.X,-grav.MaxVelocity, grav.MaxVelocity), Math.Clamp(grav.Velocity.Y, -grav.MaxVelocity, grav.MaxVelocity));
 }
