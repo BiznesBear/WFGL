@@ -1,11 +1,11 @@
-using WFGL;
 using WFGL.Core;
 using WFGL.Input;
-using WFGL.Fun;
 using WFGL.ThirdDimension;
 
 using System.Drawing;
 using System.Windows.Forms;
+using WFGL.Objects;
+using WFGL.Physics;
 
 namespace DemoGame;
 

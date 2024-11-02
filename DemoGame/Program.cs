@@ -1,4 +1,5 @@
 ﻿using WFGL.Core;
+using WFGL.Rendering;
 namespace DemoGame;
 
 internal class Program
@@ -13,6 +14,7 @@ internal class Program
     private static void Main(string[] args)
     {
         GameWindow window = new(GameWindowOptions.Default);
+
         //renderTestInstance = new(window);
         //renderTestInstance.Load();
 

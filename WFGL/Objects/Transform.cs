@@ -1,6 +1,8 @@
 ﻿using WFGL.Core;
-namespace WFGL;
-public interface IObject 
+using WFGL.Physics;
+using WFGL.Rendering;
+namespace WFGL.Objects;
+public interface IObject
 {
     public Layer Layer { get; set; }
     public void Create(Hierarchy hierarchy);
@@ -10,7 +12,7 @@ public interface IObject
     public void OnDraw(GameMaster m);
 }
 
-public abstract class TransformBase<T> : IObject  where T : struct, IVec<T>
+public abstract class TransformBase<T> : IObject where T : struct, IVec<T>
 {
     public virtual T Scale { get; set; } = default;
     public T Position { get; set; }

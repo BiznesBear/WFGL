@@ -1,4 +1,6 @@
-﻿namespace WFGL.Physics;
+﻿using WFGL.Rendering;
+
+namespace WFGL.Physics;
 
 public static class Physics
 {

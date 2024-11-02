@@ -1,5 +1,8 @@
 ﻿using WFGL.Core;
 using WFGL.Input;
+using WFGL.Objects;
+using WFGL.Physics;
+using WFGL.Rendering;
 namespace WFGL.UI;
 
 public enum ButtonState
@@ -89,10 +92,10 @@ public class RectangleButton : ButtonBase<Color>
         m.DrawRectangle(displayed,Bounds);
     }
 }
-public class SpriteButton : ButtonBase<Sprite>
+public class BitmapButton : ButtonBase<Bitmap>
 {
-    public SpriteButton(Sprite defalutSprite, Sprite pointedSprite,Sprite clickedSprite) : base(defalutSprite, pointedSprite, clickedSprite) { }
-    public SpriteButton(Sprite sprite) : this(sprite,sprite,sprite) { }
+    public BitmapButton(Bitmap defalutBitmap, Bitmap pointedBitmap, Bitmap clickedBitmap) : base(defalutBitmap, pointedBitmap, clickedBitmap) { }
+    public BitmapButton(Bitmap bmp) : this(bmp,bmp,bmp) { }
     public override void OnDraw(GameMaster m)
     {
         m.DrawSprite(displayed, Bounds.Location);
@@ -116,12 +119,12 @@ public class TextRectButton : RectangleButton
         stringRenderer.Draw(m,m.Renderer);
     }
 }
-public class TextSpriteButton : SpriteButton
+public class TextSpriteButton : BitmapButton
 {
     public Font font = new(StringRenderer.DEFALUT_FONT_NAME, 12);
     public readonly StringRenderer stringRenderer;
-    public TextSpriteButton(string text,Sprite defalutSprite, Sprite pointedSprite, Sprite clickedSprite) : base(defalutSprite, pointedSprite, clickedSprite) { stringRenderer = new(font, text);}
-    public TextSpriteButton(string text,Sprite sprite) : this(text,sprite, sprite, sprite) { }
+    public TextSpriteButton(string text,Bitmap defalutBmp, Bitmap pointedBmp, Bitmap clickedBmp) : base(defalutBmp, pointedBmp, clickedBmp) { stringRenderer = new(font, text);}
+    public TextSpriteButton(string text, Bitmap bmp) : this(text,bmp, bmp, bmp) { }
 
     public override void OnUpdate(GameMaster m)
     {

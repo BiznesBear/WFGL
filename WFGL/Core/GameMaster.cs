@@ -1,10 +1,12 @@
 ﻿using System.Drawing.Drawing2D;
 using WFGL.Input;
+using WFGL.Objects;
+using WFGL.Rendering;
+using WFGL.Utilities;
 namespace WFGL.Core;
 
-public class GameMaster 
+public abstract class GameMaster 
 {
-
     #region Settings
     public bool IsFullScreen { get; private set; }
     public bool WindowAspectLock { get; set; } = false;
@@ -42,6 +44,8 @@ public class GameMaster
     public Point WindowCenter => new(GameWindow.ClientSize.Width / 2, GameWindow.ClientSize.Height / 2);
     public Point RenderSize => new((int)VirtualScale.FactorX * VirtualUnit.SCALING, (int)VirtualScale.FactorX * VirtualUnit.SCALING);
 
+    public readonly Pen defaultPen = new(Color.Red, 1);
+    public readonly SolidBrush defaultBrush = new(Color.DarkSlateGray);
 
     #endregion
 
@@ -176,11 +180,8 @@ public class GameMaster
 
     #endregion
 
-    #region ScreenDrawing
-
-    public readonly Pen defaultPen = new(Color.Red, 1);
-    public readonly SolidBrush defaultBrush = new(Color.DarkSlateGray);
-
+    #region OnScreenDrawing
+    
     public void DrawLine(Color color, Point pos1, Point pos2) => Renderer.DrawLine(new Pen(color, 1), pos1, pos2);
     public void DrawLine(Point pos1, Point pos2) => DrawLine(defaultPen.Color, pos1, pos2);
 
@@ -197,10 +198,10 @@ public class GameMaster
             Renderer.FillRectangle(b, rect);
     }
     public void DrawRectangle(Rectangle rect) => DrawRectangle(defaultBrush.Color, rect);
-    public void DrawSprite(Sprite sprite, Point position)
+    public void DrawSprite(Bitmap bitmap, Point position)
     {
-        Point size = new Point(sprite.GetSource().Width, sprite.GetSource().Height).VirtualizePixel(MainCamera);
-        Renderer.DrawImage(sprite.GetSource(), position.X, position.Y, size.X, size.Y);
+        Point size = new Point(bitmap.Width, bitmap.Height).VirtualizePixel(MainCamera);
+        Renderer.DrawImage(bitmap, position.X, position.Y, size.X, size.Y);
     }
    
     #endregion
@@ -219,7 +220,6 @@ public class GameMaster
         GameWindow.MouseDoubleClick += handler.MouseDoubleClicked;
         GameWindow.MouseEnter += handler.MouseEnter;
         GameWindow.MouseLeave += handler.MouseLeave;
-
         GameWindow.MouseWheel += handler.MouseWheel;
     }
     public void DeregisterInput(InputHandler handler)
@@ -233,7 +233,6 @@ public class GameMaster
         GameWindow.MouseDoubleClick -= handler.MouseDoubleClicked;
         GameWindow.MouseEnter -= handler.MouseEnter;
         GameWindow.MouseLeave -= handler.MouseLeave;
-
         GameWindow.MouseWheel -= handler.MouseWheel;
     }
     #endregion

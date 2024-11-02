@@ -1,13 +1,14 @@
 ﻿using WFGL.Core;
-namespace WFGL;
+using WFGL.Rendering;
+namespace WFGL.Objects;
 
 public class Group<T> : HashSet<T>
 {
     public HashSet<Hierarchy> Hierarchys { get; } = new();
 
     public Group(params Hierarchy[] hierarchys)
-    { 
-        foreach(Hierarchy hierarchy in hierarchys) 
+    {
+        foreach (Hierarchy hierarchy in hierarchys)
             Hierarchys.Add(hierarchy);
         Update();
     }
@@ -15,9 +16,9 @@ public class Group<T> : HashSet<T>
     public void Update()
     {
         Clear();
-        foreach(var hierarchy in Hierarchys)
+        foreach (var hierarchy in Hierarchys)
         {
-            foreach(IObject obj in hierarchy.Objects)
+            foreach (IObject obj in hierarchy.Objects)
             {
                 if (obj is not T t) continue;
                 Add(t);

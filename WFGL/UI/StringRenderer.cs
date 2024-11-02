@@ -1,4 +1,6 @@
 using WFGL.Core;
+using WFGL.Objects;
+using WFGL.Rendering;
 
 namespace WFGL.UI;
 

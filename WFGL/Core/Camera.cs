@@ -1,4 +1,6 @@
-﻿namespace WFGL.Core;
+﻿using WFGL.Objects;
+
+namespace WFGL.Core;
 public class Camera : Transform
 {
     public Camera(GameMaster m, CameraOptions options)

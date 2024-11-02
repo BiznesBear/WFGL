@@ -1,10 +1,10 @@
 ﻿using System.Drawing;
 using System.Windows.Forms;
-
-using WFGL;
 using WFGL.Core;
 using WFGL.Input;
+using WFGL.Objects;
 using WFGL.Physics;
+using WFGL.Rendering;
 using WFGL.UI;
 
 namespace DemoGame;
@@ -13,8 +13,8 @@ public class GravityTestsMaster : GameMaster
 {
     // assets
     public readonly static Font font = new("Consolas", 12);
-    public readonly static Sprite maszWypadloCi = new("mozg-masz-wypadlo-ci.jpg");
-    public readonly static Sprite playerSprite = new("furniture.png");
+    public readonly static Bitmap maszWypadloCi = new("mozg-masz-wypadlo-ci.jpg");
+    public readonly static Bitmap playerSprite = new("furniture.png");
 
     // layers
     public readonly static Layer canvasLayer = new(300);
@@ -58,14 +58,14 @@ public class GravityTestsMaster : GameMaster
         background.Objects = [
             sprite,
             sprite2,
-            new SpriteRenderer(maszWypadloCi) { Position = 1 },
-            new SpriteRenderer(maszWypadloCi) { Position = 3 },
-            new SpriteRenderer(maszWypadloCi) { Position = 2 },
-            new SpriteRenderer(maszWypadloCi) { Position = 4 },
-            new SpriteRenderer(maszWypadloCi) { Position = new(0, 4) },
-            new SpriteRenderer(maszWypadloCi) { Position = new(0, 3) },
-            new SpriteRenderer(maszWypadloCi) { Position = Vec2.Zero },
-            new SpriteRenderer(maszWypadloCi) { Position = new(3, 0) },
+            new BitmapRenderer(maszWypadloCi) { Position = 1 },
+            new BitmapRenderer(maszWypadloCi) { Position = 3 },
+            new BitmapRenderer(maszWypadloCi) { Position = 2 },
+            new BitmapRenderer(maszWypadloCi) { Position = 4 },
+            new BitmapRenderer(maszWypadloCi) { Position = new(0, 4) },
+            new BitmapRenderer(maszWypadloCi) { Position = new(0, 3) },
+            new BitmapRenderer(maszWypadloCi) { Position = Vec2.Zero },
+            new BitmapRenderer(maszWypadloCi) { Position = new(3, 0) },
         ];
         objects.Objects = [
             player,
@@ -141,7 +141,7 @@ internal class GravityTestsInput(GameMaster master) : InputHandler(master)
 internal class RigidPlayer : Transform, ICollide
 {
     // sub-objects
-    internal SpriteRenderer playerSprite = new(GravityTestsMaster.playerSprite);
+    internal BitmapRenderer playerSprite = new(GravityTestsMaster.playerSprite);
 
     // movement
     float speed = normalSpeed;
@@ -156,7 +156,7 @@ internal class RigidPlayer : Transform, ICollide
     public override void OnCreate(Hierarchy h, GameMaster m)
     {
         base.OnCreate(h, m);
-        playerSprite.Sprite.Scale = new(1f, 0.6f);
+        playerSprite.Scale = new(1f, 0.6f);
     }
     public override void OnUpdate(GameMaster m)
     {

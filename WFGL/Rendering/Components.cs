@@ -1,11 +1,6 @@
 using WFGL.Core;
-namespace WFGL;
-public interface IAsset<T> 
-{
-    T GetSource();
-    void Load(string filePath);
-}
-
+using WFGL.Objects;
+namespace WFGL.Rendering;
 public interface IDrawable
 {
     public Hroup? Hroup { get; set; }

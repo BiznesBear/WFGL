@@ -1,4 +1,5 @@
 using WFGL.Core;
+using WFGL.Rendering;
 namespace WFGL.Physics;
 // TODO: Fix this. It ray's in infinite range. 
 public struct Ray(Vec2 origin, Vec2 direction)

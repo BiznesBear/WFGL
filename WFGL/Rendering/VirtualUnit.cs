@@ -1,6 +1,7 @@
 using System.Numerics;
 using WFGL.Core;
-namespace WFGL;
+using WFGL.Physics;
+namespace WFGL.Rendering;
 
 public struct VirtualUnit(float x, float y)
 {
@@ -29,7 +30,7 @@ public struct VirtualUnit(float x, float y)
         FactorY = average;
         return this;
     }
-    
+
     public static float VirtualizeToFactor(int pixels) => pixels / SCALING; // get number of virtual units on the screen
     public static float DevirtualizeFactor(int units) => units * SCALING; // reverse operation above
 
@@ -70,7 +71,7 @@ public static class Converts
 
     #region Vec3
 
-    public static Vec3 ToVec3(this Point point, GameMaster m) => new(point.X / m.VirtualScale.FactorX, point.Y / m.VirtualScale.FactorY, 0); 
+    public static Vec3 ToVec3(this Point point, GameMaster m) => new(point.X / m.VirtualScale.FactorX, point.Y / m.VirtualScale.FactorY, 0);
     public static Vec3 ToVec3(this Size size, GameMaster m) => size.PushToPoint().ToVec3(m);
     public static Point ToPoint(this Vec3 vec3, GameMaster m) => new((int)(vec3.X * m.VirtualScale.FactorX), (int)(vec3.Y * m.VirtualScale.FactorY));
     public static Size ToSize(this Vec3 vec3, GameMaster m) => vec3.ToPoint(m).PushToSize();

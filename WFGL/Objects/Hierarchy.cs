@@ -1,6 +1,7 @@
 ﻿using WFGL.Core;
+using WFGL.Rendering;
 
-namespace WFGL;
+namespace WFGL.Objects;
 
 public class Hierarchy : Transform
 {
@@ -18,7 +19,7 @@ public class Hierarchy : Transform
         get => objects;
         set
         {
-            foreach(IObject obj in value)
+            foreach (IObject obj in value)
             {
                 obj.Create(this);
             }
@@ -45,7 +46,7 @@ public class Hierarchy : Transform
     {
         Order = LayerMaster.SortObjectList(objects);
     }
-    public IEnumerable<IObject> GetObjects() => LayerMaster.GetObjectsFrom(GetMaster().LayerMaster,Order);
+    public IEnumerable<IObject> GetObjects() => LayerMaster.GetObjectsFrom(GetMaster().LayerMaster, Order);
     public void DestroyAll()
     {
         foreach (IObject obj in objects) obj.Destroy(this);
@@ -63,7 +64,7 @@ public class Hierarchy : Transform
         foreach (IObject obj in GetObjects())
         {
             obj.OnDraw(GetMaster());
-            if(obj is IDrawable d)
+            if (obj is IDrawable d)
                 d.Draw(GetMaster(), GetMaster().Renderer);
         }
     }

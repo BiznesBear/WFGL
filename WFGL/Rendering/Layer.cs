@@ -1,19 +1,21 @@
-﻿namespace WFGL;
+﻿using WFGL.Objects;
+
+namespace WFGL.Rendering;
 
 public sealed class LayerMaster
 {
-    private List<Layer> layers { get; set; } = [Layer.Defalut];
+    private List<Layer> LayersList { get; set; } = [Layer.Defalut];
 
     /// <summary>
     /// Sets, and updates list of layers (with defalut, layer)
     /// </summary>
     public List<Layer> Layers
     {
-        get => layers;
+        get => LayersList;
         set
         {
-            layers = [Layer.Defalut];
-            layers.AddRange(value);
+            LayersList = [Layer.Defalut];
+            LayersList.AddRange(value);
             UpdateList();
         }
     }
@@ -24,7 +26,7 @@ public sealed class LayerMaster
     /// <param name="layer">Layer to register</param>
     public void Register(Layer layer)
     {
-        layers.Add(layer);
+        LayersList.Add(layer);
         UpdateList();
     }
     /// <summary>
@@ -33,20 +35,20 @@ public sealed class LayerMaster
     /// <param name="layer">Layer to unregister</param>
     public void Deregister(Layer layer)
     {
-        layers.Remove(layer);
+        LayersList.Remove(layer);
         UpdateList();
     }
 
     /// <summary>
     /// Sorts layers list by draw weight
     /// </summary> 
-    public void UpdateList() => layers.Sort((a, b) => a.DrawWeight.CompareTo(b.DrawWeight));
+    public void UpdateList() => LayersList.Sort((a, b) => a.DrawWeight.CompareTo(b.DrawWeight));
 
     public static Dictionary<Layer, List<IObject>> SortObjectList(List<IObject> list) => list.GroupBy(o => o.Layer).ToDictionary(g => g.Key, g => g.ToList());
 
-    public static IEnumerable<IObject> GetObjectsFrom(LayerMaster lm,Dictionary<Layer, List<IObject>> order)
+    public static IEnumerable<IObject> GetObjectsFrom(LayerMaster lm, Dictionary<Layer, List<IObject>> order)
     {
-        foreach (Layer layer in lm.layers)
+        foreach (Layer layer in lm.LayersList)
         {
             if (order.TryGetValue(layer, out var objects))
             {
@@ -60,4 +62,4 @@ public class Layer(short drawWeight)
 {
     public readonly static Layer Defalut = new(0);
     public short DrawWeight { get; } = drawWeight;
-}   
+}

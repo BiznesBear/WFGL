@@ -1,10 +1,12 @@
 ﻿using System.Drawing;
 using System.Windows.Forms;
+
 using WFGL.Core;
 using WFGL.Input;
 using WFGL.Physics;
 using WFGL.UI;
-using WFGL;
+using WFGL.Rendering;
+using WFGL.Objects;
 
 namespace DemoGame;
 
@@ -13,8 +15,8 @@ public class TestPlaceMaster : GameMaster
 {
     // assets
     public readonly static Font font = new("Cascadia Mono Light", 12);
-    public readonly static Sprite maszWypadloCi = new("mozg-masz-wypadlo-ci.jpg");
-    public readonly static Sprite playerSprite = new("furniture.png");
+    public readonly static Bitmap maszWypadloCi = new("mozg-masz-wypadlo-ci.jpg");
+    public readonly static Bitmap playerSprite = new("furniture.png");
 
     // layers
     public readonly static Layer canvasLayer = new(300);
@@ -72,14 +74,14 @@ public class TestPlaceMaster : GameMaster
         
         background.Objects = [
             sprite,
-            new SpriteRenderer(maszWypadloCi) { Position = 1 },
-            new SpriteRenderer(maszWypadloCi) { Position = 3 },
-            new SpriteRenderer(maszWypadloCi) { Position = 2 },
-            new SpriteRenderer(maszWypadloCi) { Position = 4 },
-            new SpriteRenderer(maszWypadloCi) { Position = new(0, 4) },
-            new SpriteRenderer(maszWypadloCi) { Position = new(0, 3) },
-            new SpriteRenderer(maszWypadloCi){ Position = Vec2.Zero },
-            new SpriteRenderer(maszWypadloCi) { Position = new(3, 0) },
+            new BitmapRenderer(maszWypadloCi) { Position = 1 },
+            new BitmapRenderer(maszWypadloCi) { Position = 3 },
+            new BitmapRenderer(maszWypadloCi) { Position = 2 },
+            new BitmapRenderer(maszWypadloCi) { Position = 4 },
+            new BitmapRenderer(maszWypadloCi) { Position = new(0, 4) },
+            new BitmapRenderer(maszWypadloCi) { Position = new(0, 3) },
+            new BitmapRenderer(maszWypadloCi){ Position = Vec2.Zero },
+            new BitmapRenderer(maszWypadloCi) { Position = new(3, 0) },
         ];
         objects.Objects = [
             player,
@@ -148,7 +150,7 @@ internal class TestPlaceInput(GameMaster master) : InputHandler(master)
 internal class TestPlacePlayer : Transform, ICollide
 {
     // sub-objects
-    internal SpriteRenderer playerSprite = new(TestPlaceMaster.playerSprite);
+    internal BitmapRenderer playerSprite = new(TestPlaceMaster.playerSprite);
 
     // movement
     float speed = normalSpeed;
@@ -168,7 +170,7 @@ internal class TestPlacePlayer : Transform, ICollide
     public override void OnCreate(Hierarchy h, GameMaster m)
     {
         base.OnCreate(h, m);
-        playerSprite.Sprite.Scale = new(1f, 0.6f);
+        playerSprite.Scale = new(1f, 0.6f);
     }
     public override void OnUpdate(GameMaster m)
     {

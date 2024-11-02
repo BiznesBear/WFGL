@@ -1,4 +1,6 @@
-﻿namespace WFGL.Physics;
+﻿using WFGL.Objects;
+
+namespace WFGL.Physics;
 public interface ICollide
 {
     public Vec2 ColliderSize { get; }

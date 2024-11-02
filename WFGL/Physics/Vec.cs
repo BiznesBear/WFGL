@@ -1,5 +1,5 @@
 ﻿using System.Numerics;
-namespace WFGL;
+namespace WFGL.Physics;
 public interface IVec<T> where T : struct, IVec<T>
 {
     public float Magnitude();
@@ -8,12 +8,12 @@ public interface IVec<T> where T : struct, IVec<T>
 public struct Vec2(float x, float y) : IVec<Vec2>
 {
     public readonly static Vec2 Zero = new(0, 0);
-    public readonly static Vec2 One = new(1,1);
+    public readonly static Vec2 One = new(1, 1);
 
-    public readonly static Vec2 Left = new(-1,0);
-    public readonly static Vec2 Right = new(1,0);
-    public readonly static Vec2 Up = new(0,-1);
-    public readonly static Vec2 Down = new(0,1);
+    public readonly static Vec2 Left = new(-1, 0);
+    public readonly static Vec2 Right = new(1, 0);
+    public readonly static Vec2 Up = new(0, -1);
+    public readonly static Vec2 Down = new(0, 1);
 
     public float X = x;
     public float Y = y;
@@ -31,9 +31,9 @@ public struct Vec2(float x, float y) : IVec<Vec2>
     }
 
     public static implicit operator Vec2(float a) => new(a, a);
-    public static explicit operator Vec2(Vec3 a) => new(a.X,a.Y);
-    public static explicit operator Vec2(Vector2 a) => new(a.X,a.Y);
-    public static explicit operator Vec2(Vector3 a) => new(a.X,a.Y);
+    public static explicit operator Vec2(Vec3 a) => new(a.X, a.Y);
+    public static explicit operator Vec2(Vector2 a) => new(a.X, a.Y);
+    public static explicit operator Vec2(Vector3 a) => new(a.X, a.Y);
     public static Vec2 operator +(Vec2 a, Vec2 b) => new(a.X + b.X, a.Y + b.Y);
     public static Vec2 operator -(Vec2 a, Vec2 b) => new(a.X - b.X, a.Y - b.Y);
     public static Vec2 operator *(Vec2 a, Vec2 b) => new(a.X * b.X, a.Y * b.Y);
@@ -51,7 +51,7 @@ public struct Vec2(float x, float y) : IVec<Vec2>
 }
 
 
-public struct Vec3(float x,float y, float z) : IVec<Vec3>
+public struct Vec3(float x, float y, float z) : IVec<Vec3>
 {
     public readonly static Vec2 Zero = new(0, 0);
     public readonly static Vec2 One = new(1, 1);
@@ -75,7 +75,7 @@ public struct Vec3(float x,float y, float z) : IVec<Vec3>
         return this;
     }
 
-    public Vec2 Project(Vec2 screenCenter,float distance = 5, float scale = 400)
+    public Vec2 Project(Vec2 screenCenter, float distance = 5, float scale = 400)
     {
         float factor = distance / (distance + Z);
         float x2d = X * factor * scale + screenCenter.X;
@@ -86,7 +86,7 @@ public struct Vec3(float x,float y, float z) : IVec<Vec3>
 
     public static implicit operator Vec3(float a) => new(a, a, a);
     public static explicit operator Vec3(Vec2 a) => new(a.X, a.Y, 0);
-    public static explicit operator Vec3(Vector3 a) => new(a.X, a.Y,a.Z);
+    public static explicit operator Vec3(Vector3 a) => new(a.X, a.Y, a.Z);
 
     public static Vec3 operator +(Vec3 a, Vec3 b) => new(a.X + b.X, a.Y + b.Y, a.Z + b.Z);
     public static Vec3 operator -(Vec3 a, Vec3 b) => new(a.X - b.X, a.Y - b.Y, a.Z - b.Z);
