@@ -10,7 +10,8 @@
 > WFGL uses GDI+ graphics which may result in low fps if there are too many bitmaps on scene. 
 
 ## ⚙️ TODO list
-- General clean up 
+- General clean up
+- Camera
 - Separate rendering from logic and vice versa 
 - 3d logic (e.g. rotating bitmaps)
 - 2.5D
@@ -18,3 +19,6 @@
 - Optimalizations
 - More ui
 - Object pivots and parenting
+## ⭐ Showcase
+https://github.com/user-attachments/assets/a8b30b77-9fb4-4d3d-88e3-1df1ebba3904
+
