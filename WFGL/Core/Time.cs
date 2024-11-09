@@ -7,31 +7,31 @@ public class Time
     public const int DEFALUT_INTERVAL = 1000 / DEFALUT_FPS;
     public const int DEFALUT_FPS = 100;
 
-    internal Timer Timer { get; } = new();
+    public Timer Timer { get; } = new();
+
+    // Getters 
+    public float DeltaTime => (float)deltaTime;
+    public float Fps => framesPerSecond;
 
 
-    private static Time? Instance { get; set; }
 
     private DateTime previousTime = DateTime.Now;
     private double deltaTime;
     private float framesPerSecond;
 
-    private Stopwatch frameStopwatch;
+    private readonly Stopwatch frameStopwatch;
     private int frames;
-
-    public float DeltaTime => (float)deltaTime;
-    public float Fps => framesPerSecond;
 
     public Time()
     {
-        Instance = this;
         Timer.Tick += Tick;
 
         frameStopwatch = new Stopwatch();
         frameStopwatch.Start();
         SetFps();
     }
-   
+    
+    // TODO: Rework if possible 
     private void Tick(object? sender, EventArgs e)
     {
         frames++;
@@ -42,6 +42,7 @@ public class Time
         }
         if (frames > 0 || frameStopwatch.ElapsedMilliseconds > 0) 
             framesPerSecond = frames / (frameStopwatch.ElapsedMilliseconds / 1000f);
+
         DateTime currentTime = DateTime.Now;
         deltaTime = (currentTime - previousTime).TotalSeconds;
         previousTime = currentTime;

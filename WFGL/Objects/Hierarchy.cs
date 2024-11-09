@@ -3,7 +3,7 @@ using WFGL.Rendering;
 
 namespace WFGL.Objects;
 
-public class Hierarchy : Transform
+public class Hierarchy : Entity
 {
     private Dictionary<Layer, List<IObject>> Order = [];
 
@@ -12,6 +12,7 @@ public class Hierarchy : Transform
     public event Action ChangedList;
     public event ObjectEventHandler? AddedObject;
     public event ObjectEventHandler? RemovedObject;
+
     internal event GameMasterEventHandler? WhenUpdate;
 
     public List<IObject> Objects
@@ -26,7 +27,7 @@ public class Hierarchy : Transform
         }
     }
 
-    public Hierarchy(GameMaster m) { ChangedList += UpdateOrder; master = m; }
+    public Hierarchy(GameMaster m) { ChangedList += UpdateOrder; Master = m; }
 
     public void Register(IObject obj)
     {
@@ -35,6 +36,7 @@ public class Hierarchy : Transform
         ChangedList.Invoke();
         WhenUpdate += obj.OnUpdate;
     }
+
     public void Deregister(IObject obj)
     {
         WhenUpdate -= obj.OnUpdate;
@@ -46,19 +48,25 @@ public class Hierarchy : Transform
     {
         Order = LayerMaster.SortObjectList(objects);
     }
+
     public IEnumerable<IObject> GetObjects() => LayerMaster.GetObjectsFrom(GetMaster().LayerMaster, Order);
+
     public void DestroyAll()
     {
-        foreach (IObject obj in objects) obj.Destroy(this);
+        foreach (IObject obj in objects) 
+            obj.Destroy(this);
     }
+
     public override void OnUpdate(GameMaster m)
     {
         WhenUpdate?.Invoke(m);
     }
+
     public override void OnDraw(GameMaster m)
     {
         DrawAll();
     }
+
     protected void DrawAll()
     {
         foreach (IObject obj in GetObjects())

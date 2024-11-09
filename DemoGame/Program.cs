@@ -1,5 +1,4 @@
 ﻿using WFGL.Core;
-using WFGL.Rendering;
 namespace DemoGame;
 
 internal class Program

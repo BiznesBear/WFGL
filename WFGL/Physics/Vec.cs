@@ -1,10 +1,12 @@
 ﻿using System.Numerics;
 namespace WFGL.Physics;
+
 public interface IVec<T> where T : struct, IVec<T>
 {
     public float Magnitude();
     public T Normalize();
 }
+
 public struct Vec2(float x, float y) : IVec<Vec2>
 {
     public readonly static Vec2 Zero = new(0, 0);
@@ -50,11 +52,10 @@ public struct Vec2(float x, float y) : IVec<Vec2>
     public readonly override string ToString() => $"Vec2({X};{Y})";
 }
 
-
 public struct Vec3(float x, float y, float z) : IVec<Vec3>
 {
-    public readonly static Vec2 Zero = new(0, 0);
-    public readonly static Vec2 One = new(1, 1);
+    public readonly static Vec3 Zero = new(0, 0, 0);
+    public readonly static Vec3 One = new(1, 1, 1);
 
 
     public float X = x;

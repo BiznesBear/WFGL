@@ -6,6 +6,7 @@ using WFGL.Objects;
 using WFGL.Physics;
 using WFGL.Rendering;
 using WFGL.UI;
+using WFGL.Utilities;
 
 namespace DemoGame;
 
@@ -30,8 +31,8 @@ public class GravityTestsMaster : GameMaster
 
     // objects
 
-    internal CollidingSprite sprite = new("aushf.jpg") { Position = new(0, 4f), Layer = underTopLayer };
-    internal CollidingSprite sprite2 = new("aushf.jpg") { Position = new(3.5f, 4f), Layer = underTopLayer };
+    internal CollidingBitmap sprite = new("aushf.jpg") { Position = new(0, 4f), Layer = underTopLayer };
+    internal CollidingBitmap sprite2 = new("aushf.jpg") { Position = new(3.5f, 4f), Layer = underTopLayer };
     internal RigidPlayer player;
 
     StringRenderer fpsText;
@@ -172,6 +173,7 @@ internal class RigidPlayer : Transform, ICollide
 
         if (input.IsKeyPressed(Keys.A)) direction -= new Vec2(speed, 0f);
         if (input.IsKeyPressed(Keys.D)) direction += new Vec2(speed, 0f);
+        
 
         if (this.IsColliding(Program.gravityTestsInstance.colliders, out ICollide? coll)) // to avoid player clipping
         {

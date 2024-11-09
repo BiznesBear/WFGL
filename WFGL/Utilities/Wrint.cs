@@ -13,7 +13,7 @@ internal enum TextColor
 }
 
 /// <summary>
-/// Wfgl printer - Wrint
+/// Wfgl printer - Wrint. 
 /// </summary>
 public static class Wrint
 {
@@ -30,13 +30,9 @@ public static class Wrint
     internal static string FromEnum(this TextColor color) { return $"\u001b[{(int)color}m"; }
     internal static string SetColor(this string message, TextColor color) => $"{FromEnum(color)}{message}{DEFAULT}";
 
-
-    public static void Info(object message) => Console.WriteLine($"[INFO] ".SetColor(TextColor.Cyan) + message);
-    public static void Warring(object message) => Console.WriteLine($"[WARRING] ".SetColor(TextColor.Yellow) + message);
-    public static void Error(object message) => Console.WriteLine($"[ERROR] ".SetColor(TextColor.Red) + message);
-    public static string Command() 
-    {
-        Console.Write($"{Application.ProductName}.console> ");
-        return Console.ReadLine() ?? "";
-    }
+    internal static void Print(string prefix, TextColor color, object message) => Console.WriteLine($"[{prefix}] ".SetColor(color) + message);
+    public static void Info(object message) => Print("INFO",TextColor.Cyan, message);
+    public static void Warring(object message) => Print("WARRING", TextColor.Yellow, message);
+    public static void Error(object message) => Print("ERROR", TextColor.Red, message);
+    public static void Collection<T>(IEnumerable<T> collection) => Print("COLLECTION",TextColor.Magneta,string.Join("; ",collection));
 }

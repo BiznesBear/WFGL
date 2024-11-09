@@ -1,5 +1,8 @@
 ﻿namespace WFGL.Input;
-
+/// <summary>
+/// Handle input in more accessible way.
+/// </summary>
+/// <param name="master"></param>
 public abstract class InputHandler(Core.GameMaster master)
 {
     protected Core.GameMaster Master { get; } = master;

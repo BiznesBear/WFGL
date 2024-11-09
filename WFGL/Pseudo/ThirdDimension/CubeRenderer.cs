@@ -2,15 +2,16 @@
 using WFGL.Core;
 using WFGL.Objects;
 using WFGL.Rendering;
-namespace WFGL.ThirdDimension;
+
+namespace WFGL.Pseudo.ThirdDimension;
 
 // THIS IS STILL DANGER ZONE WITH EXPERIMENTAL FUNCTIONS
 public class CubeRenderer : Transform, IDrawable
 {
     public Hroup? Hroup { get; set; }
     public Vector3 Cube = new(1, 1, 1);
-    public Vector3 Rot = new(0.7f, 0.7f, 0.7f); 
-    public Vector3 Pos3D => new(Position.X,Position.Y,0); 
+    public Vector3 Rot = new(0.7f, 0.7f, 0.7f);
+    public Vector3 Pos3D => new(Position.X, Position.Y, 0);
     public Vector3[] Verticles { get; set; } = [];
     public Pen pen = new(Color.Blue, 3);
 
@@ -19,7 +20,7 @@ public class CubeRenderer : Transform, IDrawable
     {
         float factor = fov / (viewDistance + point.Z);
         float x = point.X * factor + viewWidth / 2;
-        float y = -point.Y * factor + viewHeight / 2; 
+        float y = -point.Y * factor + viewHeight / 2;
         return new PointF(x, y);
     }
     public override void OnCreate(Hierarchy h, GameMaster m)

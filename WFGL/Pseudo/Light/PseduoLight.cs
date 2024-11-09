@@ -2,7 +2,7 @@
 using WFGL.Objects;
 using WFGL.Rendering;
 
-namespace WFGL.Pseudo;
+namespace WFGL.Pseudo.Light;
 
 public class PseduoLight : Transform, IDrawable
 {

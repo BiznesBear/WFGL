@@ -1,7 +1,11 @@
 using WFGL.Core;
 using WFGL.Rendering;
 namespace WFGL.Physics;
-// TODO: Fix this. It ray's in infinite range. 
+/// <summary>
+/// 
+/// </summary>
+/// <param name="origin">Start position of ray</param>
+/// <param name="direction">Look direction of ray</param>
 public struct Ray(Vec2 origin, Vec2 direction)
 {
     public Vec2 Origin { get; set; } = origin;
@@ -18,12 +22,13 @@ public struct Ray(Vec2 origin, Vec2 direction)
     }
     public override string ToString() => $"{Origin} => {Direction}";
 }
-public readonly struct RayInfo
+
+public readonly struct RaycastInfo
 {
     public readonly Ray ray;
     public readonly Vec2 intersectionPoint;
     public readonly bool anyIntersects;
-    public RayInfo(Ray r, float t_hit)
+    public RaycastInfo(Ray r, float t_hit)
     {
         ray = r;
         intersectionPoint = ray.Origin + t_hit * ray.Direction;

@@ -32,7 +32,7 @@ public class TestPlaceMaster : GameMaster
 
     // objects
 
-    internal CollidingSprite sprite = new("aushf.jpg") { Position = new(2.5f, 0), Layer = underTopLayer };
+    internal CollidingBitmap sprite = new("aushf.jpg") { Position = new(2.5f, 0), Layer = underTopLayer };
     internal TestPlacePlayer player;
 
     StringRenderer fpsText;
@@ -160,7 +160,7 @@ internal class TestPlacePlayer : Transform, ICollide
 
 
     // colliders 
-    internal RayInfo hitInfo;
+    internal RaycastInfo hitInfo;
     public Vec2 ColliderSize => playerSprite.RealSize.VirtualizePixel(GetMaster().MainCamera).ToVec2(GetMaster());
     public Vec2 ColliderPosition => playerSprite.Position + dir;
 

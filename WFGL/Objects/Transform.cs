@@ -1,41 +1,11 @@
-﻿using WFGL.Core;
-using WFGL.Physics;
+﻿using WFGL.Physics;
 using WFGL.Rendering;
 namespace WFGL.Objects;
-public interface IObject
-{
-    public Layer Layer { get; set; }
-    public void Create(Hierarchy hierarchy);
-    public void Destroy(Hierarchy hierarchy);
 
-    public void OnUpdate(GameMaster m);
-    public void OnDraw(GameMaster m);
-}
-
-public abstract class TransformBase<T> : IObject where T : struct, IVec<T>
+public abstract class TransformBase<T> : Entity where T : struct, IVec<T>
 {
     public virtual T Scale { get; set; } = default;
     public T Position { get; set; }
-
-    public Layer Layer { get; set; } = Layer.Defalut;
-
-    protected GameMaster? master;
-    public GameMaster GetMaster() => master ?? throw new ArgumentNullException("Null game master instance in transform");
-
-    public void Create(Hierarchy hierarchy)
-    {
-        hierarchy.Register(this);
-        OnCreate(hierarchy, hierarchy.GetMaster());
-    }
-    public void Destroy(Hierarchy hierarchy)
-    {
-        OnDestroy(hierarchy, hierarchy.GetMaster());
-        hierarchy.Deregister(this);
-    }
-    public virtual void OnCreate(Hierarchy h, GameMaster m) { master = m; }
-    public virtual void OnDestroy(Hierarchy h, GameMaster m) { }
-    public virtual void OnUpdate(GameMaster m) { }
-    public virtual void OnDraw(GameMaster m) { }
 }
 public abstract class Transform : TransformBase<Vec2>
 {

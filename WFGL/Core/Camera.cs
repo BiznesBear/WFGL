@@ -5,7 +5,7 @@ public class Camera : Transform
 {
     public Camera(GameMaster m, CameraOptions options)
     {
-        master = m;
+        Master = m;
         AspectRatio = options.AspectRatio;
         Resolution= options.Resolution;
         Target = options.Target;
@@ -15,7 +15,7 @@ public class Camera : Transform
     public const uint DEFALUT_TARGET = 500; // defalut target for window is 500x500
 
     /// <summary>
-    /// Target aspect ratio of viewed render (for to do not resizing world space)
+    /// Target aspect ratio of viewed render (to not resizing world space)
     /// </summary>
     public Size AspectRatio { get; set; } 
     public Size Resolution { get; set; } 

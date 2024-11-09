@@ -3,6 +3,7 @@ using WFGL.Input;
 using WFGL.Objects;
 using WFGL.Rendering;
 using WFGL.Utilities;
+
 namespace WFGL.Core;
 
 public abstract class GameMaster 
@@ -109,6 +110,7 @@ public abstract class GameMaster
     {
         Renderer.SetClip((new Rectangle(MainCamera.RealPosition.X, MainCamera.RealPosition.Y, RenderSize.X, RenderSize.Y)));
     }
+
     #endregion
 
     #region Window

@@ -44,8 +44,19 @@ public sealed class LayerMaster
     /// </summary> 
     public void UpdateList() => LayersList.Sort((a, b) => a.DrawWeight.CompareTo(b.DrawWeight));
 
+    /// <summary>
+    /// Sorts objects by priority of drawing.
+    /// </summary>
+    /// <param name="list"></param>
+    /// <returns></returns>
     public static Dictionary<Layer, List<IObject>> SortObjectList(List<IObject> list) => list.GroupBy(o => o.Layer).ToDictionary(g => g.Key, g => g.ToList());
 
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="lm"></param>
+    /// <param name="order"></param>
+    /// <returns></returns>
     public static IEnumerable<IObject> GetObjectsFrom(LayerMaster lm, Dictionary<Layer, List<IObject>> order)
     {
         foreach (Layer layer in lm.LayersList)
@@ -58,6 +69,10 @@ public sealed class LayerMaster
         }
     }
 }
+/// <summary>
+/// Specifies the priority of drawing the object.
+/// </summary>
+/// <param name="drawWeight">Priority of drawing the object</param>
 public class Layer(short drawWeight)
 {
     public readonly static Layer Defalut = new(0);

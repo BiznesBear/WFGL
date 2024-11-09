@@ -35,7 +35,7 @@ public static class Physics
         return false;
     }
 
-    public static bool IsColliding(this Ray ray, ICollide coll, out RayInfo info)
+    public static bool IsColliding(this Ray ray, ICollide coll, out RaycastInfo info)
     {
         info = new();
 

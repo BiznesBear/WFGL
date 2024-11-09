@@ -2,33 +2,8 @@
 using WFGL.Rendering;
 namespace WFGL.Objects;
 
-public class Group<T> : HashSet<T>
-{
-    public HashSet<Hierarchy> Hierarchys { get; } = new();
-
-    public Group(params Hierarchy[] hierarchys)
-    {
-        foreach (Hierarchy hierarchy in hierarchys)
-            Hierarchys.Add(hierarchy);
-        Update();
-    }
-
-    public void Update()
-    {
-        Clear();
-        foreach (var hierarchy in Hierarchys)
-        {
-            foreach (IObject obj in hierarchy.Objects)
-            {
-                if (obj is not T t) continue;
-                Add(t);
-            }
-        }
-    }
-}
-
 /// <summary>
-/// This is hierarchy, but also group.
+/// Group and hierarchy in one.
 /// </summary>
 public abstract class Hroup : Hierarchy
 {
@@ -36,7 +11,7 @@ public abstract class Hroup : Hierarchy
 }
 
 /// <summary>
-/// Need to be rendered manually. 
+/// Renders multiple bitmaps at once. Need to be rendered manually. 
 /// </summary>
 /// <param name="m"></param>
 public class StaticRenderHroup(GameMaster m) : Hroup(m), IDrawable
@@ -51,7 +26,7 @@ public class StaticRenderHroup(GameMaster m) : Hroup(m), IDrawable
         finRender = new(GetMaster().RenderSize.X, GetMaster().RenderSize.Y);
         renderer = Graphics.FromImage(finRender);
 
-        foreach (var obj in LayerMaster.GetObjectsFrom(GetMaster().LayerMaster, LayerMaster.SortObjectList(Objects)))
+        foreach (var obj in GetObjects())
         {
             if (obj is IDrawable idraw)
                 idraw.Draw(GetMaster(), renderer);
@@ -63,6 +38,6 @@ public class StaticRenderHroup(GameMaster m) : Hroup(m), IDrawable
     }
     public void Draw(GameMaster m, Graphics r)
     {
-        r.DrawImage(GetRender(), Position.X, Position.Y);
+        r.DrawImage(GetRender(), 0, 0);
     }
 }

@@ -1,8 +1,13 @@
 using System.Numerics;
 using WFGL.Core;
 using WFGL.Physics;
-namespace WFGL.Rendering;
 
+namespace WFGL.Rendering;
+/// <summary>
+/// Defines refrence for drawing objects in appropriate scale.
+/// </summary>
+/// <param name="x"></param>
+/// <param name="y"></param>
 public struct VirtualUnit(float x, float y)
 {
     public const int SCALING = 5; // one vec = (1/5 ,1/5) of screen size 

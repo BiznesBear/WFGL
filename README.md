@@ -1,24 +1,20 @@
 ﻿# WFGL
-Windows forms game liblary. 
+"Windows forms game library" allows you to create small 2D games faster and simpler. 
+
 > [!NOTE]
-> WFGL was created as a 4fun project. This *library* was not created with the intention of creatin large games in it (or even anything in it). Treat this project as a kind of joke/meme. 
+> WFGL was created as a 4fun project. This *library* was not created with the intention of creatin large games in it (or even anything in it). 
+> Treat this project as a kind of joke/meme. 
 > The structure of this project is more like game engine than actually game library.
 
 > [!IMPORTANT]
-> WFGL uses GDI+ graphics which may result in low fps if there are too many sprites on scene. 
-
-
-## ✨ Features
-- Collisions, raycasts and pseudo gravity
-- Layers, Hierarchys and UI
-- Let's be serious. This is a badly done 'liblrary'.
+> WFGL uses GDI+ graphics which may result in low fps if there are too many bitmaps on scene. 
 
 ## ⚙️ TODO list
-- General clean up and separate rendering from logic
+- General clean up 
+- Separate rendering from logic and vice versa 
 - 3d logic (e.g. rotating bitmaps)
-- Pseudo 3d render
-- Pseudo light
-- Time manipulation 
+- 2.5D
+- Pseudo (2D) light
 - Optimalizations
 - More ui
-
+- Object pivots and parenting

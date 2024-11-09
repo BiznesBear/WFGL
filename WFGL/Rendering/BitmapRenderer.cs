@@ -4,6 +4,9 @@ using WFGL.Physics;
 
 namespace WFGL.Rendering;
 
+/// <summary>
+/// Bitmap rendered directly on renderer.
+/// </summary>
 public class BitmapRenderer : Transform, IDrawable
 {
     public Bitmap Source { get; set; }
@@ -29,11 +32,14 @@ public class BitmapRenderer : Transform, IDrawable
         r.DrawImage(Source, pos.X, pos.Y, size.X, size.Y);
     }
 }
-public class CollidingSprite : BitmapRenderer, Physics.ICollide
+/// <summary>
+/// Bitmap with built-in collider.
+/// </summary>
+public class CollidingBitmap : BitmapRenderer, ICollide
 {
     public Vec2 ColliderSize => RealSize.VirtualizePixel(GetMaster().MainCamera).ToVec2(GetMaster());
     public Vec2 ColliderPosition => Position;
 
-    public CollidingSprite(string filePath) : base(filePath) { }
-    public CollidingSprite(Bitmap bitmap) : base(bitmap) { }
+    public CollidingBitmap(string filePath) : base(filePath) { }
+    public CollidingBitmap(Bitmap bitmap) : base(bitmap) { }
 }
