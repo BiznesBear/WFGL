@@ -86,7 +86,7 @@ public class GravityTestsMaster : GameMaster
     protected override void OnUpdate()
     {
         userNameText.Position = player.Position + new Vec2(0.33f, -0.15f);
-        fpsText.Content = $"Velocity: {player.grav.Velocity}";
+        fpsText.Content = $"Velocity: {player.Velocity}";
 
         var input = InputMaster;
 
@@ -129,7 +129,8 @@ internal class GravityTestsInput(GameMaster master) : InputHandler(master)
 
         if(key == Keys.C)
         {
-            Program.gravityTestsInstance.player.grav.AddForce(1, Vec2.Up);
+            Program.gravityTestsInstance.player.ResetVelocity();
+            Program.gravityTestsInstance.player.AddForce(new(5, Vec2.Up));
         }
 
         if (key == Keys.P)
@@ -139,7 +140,7 @@ internal class GravityTestsInput(GameMaster master) : InputHandler(master)
     }
 }
 
-internal class RigidPlayer : Transform, ICollide
+internal class RigidPlayer : GravityTransform, ICollide
 {
     // sub-objects
     internal BitmapRenderer playerSprite = new(GravityTestsMaster.playerSprite);
@@ -152,7 +153,7 @@ internal class RigidPlayer : Transform, ICollide
     // physics
     public Vec2 ColliderSize => playerSprite.RealSize.VirtualizePixel(GetMaster().MainCamera).ToVec2(GetMaster());
     public Vec2 ColliderPosition => playerSprite.Position + dir;
-    public Gravity grav = new();
+
     public RigidPlayer() { }
     public override void OnCreate(Hierarchy h, GameMaster m)
     {
@@ -161,6 +162,7 @@ internal class RigidPlayer : Transform, ICollide
     }
     public override void OnUpdate(GameMaster m)
     {
+        base.OnUpdate(m);
         // movement
         Vec2 direction = Vec2.Zero;
 
@@ -168,7 +170,7 @@ internal class RigidPlayer : Transform, ICollide
 
         if (input.IsKeyPressed(Keys.Space))
         {
-            grav.AddForce(grav.Strenght * 2, Vec2.Up);
+            AddForce(new(0.3f, Vec2.Up));
         }
 
         if (input.IsKeyPressed(Keys.A)) direction -= new Vec2(speed, 0f);
@@ -177,12 +179,11 @@ internal class RigidPlayer : Transform, ICollide
 
         if (this.IsColliding(Program.gravityTestsInstance.colliders, out ICollide? coll)) // to avoid player clipping
         {
-            dir += Vec2.Up * grav.Strenght;
-            grav.ResetVelocity();
+            dir += Vec2.Up * 0.01f;
+            ResetVelocity();
         }
         else
         {
-            Position = grav.Calculate(Position);
             dir = direction.Normalize() * speed * m.TimeMaster.DeltaTime;
         }
 

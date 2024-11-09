@@ -22,6 +22,7 @@ public abstract class Entity : IObject
 
     protected GameMaster? Master { get; set; }
     public GameMaster GetMaster() => Master ?? throw new ArgumentNullException("Null game master instance in transform");
+    public void SetMaster(GameMaster master) => Master = master;
 
     public void Create(Hierarchy hierarchy)
     {

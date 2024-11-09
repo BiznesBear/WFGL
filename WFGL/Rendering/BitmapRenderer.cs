@@ -18,20 +18,27 @@ public class BitmapRenderer : Transform, IDrawable
     /// </summary>
     public Point RealSize => new((int)(Source.Width * Scale.X), (int)(Source.Height * Scale.Y));
 
-
     public BitmapRenderer(Bitmap bitmap)
     {
-        Source = bitmap;
+        Source = bitmap;       
     }
     public BitmapRenderer(string filePath) : this(new Bitmap(filePath)) { }
+    public override void OnCreate(Hierarchy h, GameMaster m)
+    {
+        base.OnCreate(h, m);
+
+    }
     public void Draw(GameMaster m, Graphics r)
     {
         if (Hroup != null) return;
         Point size = RealSize.VirtualizePixel(m.MainCamera);
         Point pos = Position.ToPoint(m);
-        r.DrawImage(Source, pos.X, pos.Y, size.X, size.Y);
+
+        r.DrawImage(Source, pos.X,pos.Y,size.X,size.Y);
+
     }
 }
+
 /// <summary>
 /// Bitmap with built-in collider.
 /// </summary>

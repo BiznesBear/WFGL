@@ -11,4 +11,5 @@ public abstract class Transform : TransformBase<Vec2>
 {
     public override Vec2 Scale { get; set; } = Vec2.One;
     public Point RealPosition => Position.ToPoint(GetMaster());
+    public float Rotation { get; set; }
 }
