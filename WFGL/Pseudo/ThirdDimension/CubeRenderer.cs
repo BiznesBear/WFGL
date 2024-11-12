@@ -63,10 +63,10 @@ public class CubeRenderer : Transform, IDrawable
             Vector3 point1 = Verticles[edges[i, 0]];
             Vector3 point2 = Verticles[edges[i, 1]];
 
-            PointF p1 = Project(point1, viewWidth, viewHeight, m.MainCamera.Fov, m.MainCamera.ViewDistance);
-            PointF p2 = Project(point2, viewWidth, viewHeight, m.MainCamera.Fov, m.MainCamera.ViewDistance);
-            using var p = new Pen(pen.Color, m.MainCamera.Scaler * pen.Width);
-            m.Renderer.DrawLine(p, p1.VirtualizePixel(m.MainCamera), p2.VirtualizePixel(m.MainCamera));
+            PointF p1 = Project(point1, viewWidth, viewHeight, m.MainView.Fov, m.MainView.ViewDistance);
+            PointF p2 = Project(point2, viewWidth, viewHeight, m.MainView.Fov, m.MainView.ViewDistance);
+            using var p = new Pen(pen.Color, m.MainView.Scaler * pen.Width);
+            m.Renderer.DrawLine(p, p1.VirtualizePixel(m.MainView), p2.VirtualizePixel(m.MainView));
         }
     }
 }

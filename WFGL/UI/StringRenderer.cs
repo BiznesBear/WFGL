@@ -35,7 +35,7 @@ public class StringRenderer : Transform, IDrawable
 
     public void Draw(GameMaster m, Graphics r)
     {
-        float dynamicFontSize = BaseSize * m.MainCamera.Scaler * VirtualUnit.SCALING;
+        float dynamicFontSize = BaseSize * m.MainView.Scaler * VirtualUnit.SCALING;
         if (dynamicFontSize < 0.02) return;
         using Font dynamicFont = new(Font.FontFamily, dynamicFontSize);
         Point pos = Position.ToPoint(m);

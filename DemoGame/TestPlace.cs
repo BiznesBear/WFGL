@@ -32,14 +32,13 @@ public class TestPlaceMaster : GameMaster
 
     // objects
 
-    internal CollidingBitmap sprite = new("aushf.jpg") { Position = new(2.5f, 0), Layer = underTopLayer };
+    internal CollidingBitmapRenderer sprite = new("aushf.jpg") { Position = new(2.5f, 0), Layer = underTopLayer };
     internal TestPlacePlayer player;
 
     StringRenderer fpsText;
     StringRenderer userNameText = new(font, Environment.UserName);
 
     TextRectButton myButton = new("__________",Color.Wheat, Color.Blue, Color.Red) { Layer = canvasLayer };
-
     public TestPlaceMaster(GameWindow window) : base(window)
     {
         RegisterInput(new TestPlaceInput(this));
@@ -99,6 +98,7 @@ public class TestPlaceMaster : GameMaster
         colliders.Update();
         background.Render();
     }
+    
     protected override void OnUpdate()
     {
         userNameText.Position = player.Position + new Vec2(0.33f, -0.15f);
@@ -106,17 +106,17 @@ public class TestPlaceMaster : GameMaster
 
         var input = InputMaster;
 
-        if (input.IsKeyPressed(Keys.Left)) MainCamera.Position -= new Vec2(0.07f, 0f);
-        if (input.IsKeyPressed(Keys.Right)) MainCamera.Position += new Vec2(0.07f, 0f);
-        if (input.IsKeyPressed(Keys.Up)) MainCamera.Position -= new Vec2(0f, 0.07f);
-        if (input.IsKeyPressed(Keys.Down)) MainCamera.Position += new Vec2(0f, 0.07f);
+        if (input.IsKeyPressed(Keys.Left)) MainView.Position -= new Vec2(0.07f, 0f);
+        if (input.IsKeyPressed(Keys.Right)) MainView.Position += new Vec2(0.07f, 0f);
+        if (input.IsKeyPressed(Keys.Up)) MainView.Position -= new Vec2(0f, 0.07f);
+        if (input.IsKeyPressed(Keys.Down)) MainView.Position += new Vec2(0f, 0.07f);
         ResetRenderClip();
     }
 
     protected override void OnDraw()
     {
         // drawing background 
-        DrawRectangle(new(MainCamera.RealPosition, RenderSize.PushToSize()));
+        DrawRectangle(new(MainView.RealPosition, RenderSize.PushToSize()));
     }
     protected override void OnAfterDraw()
     {
@@ -142,7 +142,7 @@ internal class TestPlaceInput(GameMaster master) : InputHandler(master)
         }
         if (key == Keys.P)
         {
-            Master.MainCamera.Position = 0;
+            Master.MainView.Position = 0;
         }
     }
 }
@@ -161,7 +161,7 @@ internal class TestPlacePlayer : Transform, ICollide
 
     // colliders 
     internal RaycastInfo hitInfo;
-    public Vec2 ColliderSize => playerSprite.RealSize.VirtualizePixel(GetMaster().MainCamera).ToVec2(GetMaster());
+    public Vec2 ColliderSize => playerSprite.RealSize.VirtualizePixel(GetMaster().MainView).ToVec2(GetMaster());
     public Vec2 ColliderPosition => playerSprite.Position + dir;
 
     private Vec2 inP;
@@ -184,18 +184,18 @@ internal class TestPlacePlayer : Transform, ICollide
         if (input.IsKeyPressed(Keys.W)) direction -= new Vec2(0f, speed);
         if (input.IsKeyPressed(Keys.S)) direction += new Vec2(0f, speed);
 
-
         dir = direction.Normalize() * speed * m.TimeMaster.DeltaTime;
-
+        
         if (!this.IsColliding(Program.testPlaceInstance.colliders, out ICollide? coll)) // to avoid player clipping
             Position += dir;
+
         playerSprite.Position = Position;
 
 
         // raycast
-        Ray ray = new(Position, coll != null ? coll.ColliderPosition : 1, 2);
+        Ray ray = new(Position, coll != null ? coll.ColliderPosition : 1);
         ray.IsColliding(Program.testPlaceInstance.sprite, out hitInfo);
-        inP = hitInfo.intersectionPoint;
+        inP = hitInfo.collisionPoint;
     }
     public override void OnDraw(GameMaster m)
     {

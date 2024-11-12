@@ -6,7 +6,6 @@ using WFGL.Objects;
 using WFGL.Physics;
 using WFGL.Rendering;
 using WFGL.UI;
-using WFGL.Utilities;
 
 namespace DemoGame;
 
@@ -31,8 +30,8 @@ public class GravityTestsMaster : GameMaster
 
     // objects
 
-    internal CollidingBitmap sprite = new("aushf.jpg") { Position = new(0, 4f), Layer = underTopLayer };
-    internal CollidingBitmap sprite2 = new("aushf.jpg") { Position = new(3.5f, 4f), Layer = underTopLayer };
+    internal CollidingBitmapRenderer sprite = new("aushf.jpg") { Position = new(0, 4f), Layer = underTopLayer };
+    internal CollidingBitmapRenderer sprite2 = new("aushf.jpg") { Position = new(3.5f, 4f), Layer = underTopLayer };
     internal RigidPlayer player;
 
     StringRenderer fpsText;
@@ -90,10 +89,10 @@ public class GravityTestsMaster : GameMaster
 
         var input = InputMaster;
 
-        if (input.IsKeyPressed(Keys.Left)) MainCamera.Position -= new Vec2(0.07f, 0f);
-        if (input.IsKeyPressed(Keys.Right)) MainCamera.Position += new Vec2(0.07f, 0f);
-        if (input.IsKeyPressed(Keys.Up)) MainCamera.Position -= new Vec2(0f, 0.07f);
-        if (input.IsKeyPressed(Keys.Down)) MainCamera.Position += new Vec2(0f, 0.07f);
+        if (input.IsKeyPressed(Keys.Left)) MainView.Position -= new Vec2(0.07f, 0f);
+        if (input.IsKeyPressed(Keys.Right)) MainView.Position += new Vec2(0.07f, 0f);
+        if (input.IsKeyPressed(Keys.Up)) MainView.Position -= new Vec2(0f, 0.07f);
+        if (input.IsKeyPressed(Keys.Down)) MainView.Position += new Vec2(0f, 0.07f);
 
 
         ResetRenderClip();
@@ -102,7 +101,7 @@ public class GravityTestsMaster : GameMaster
     protected override void OnDraw()
     {
         // drawing background 
-        DrawRectangle(new(MainCamera.RealPosition, RenderSize.PushToSize()));
+        DrawRectangle(new(MainView.RealPosition, RenderSize.PushToSize()));
     }
     protected override void OnAfterDraw()
     {
@@ -135,7 +134,7 @@ internal class GravityTestsInput(GameMaster master) : InputHandler(master)
 
         if (key == Keys.P)
         {
-            Master.MainCamera.Position = 0;
+            Master.MainView.Position = 0;
         }
     }
 }
@@ -151,7 +150,7 @@ internal class RigidPlayer : GravityTransform, ICollide
     internal Vec2 dir;
 
     // physics
-    public Vec2 ColliderSize => playerSprite.RealSize.VirtualizePixel(GetMaster().MainCamera).ToVec2(GetMaster());
+    public Vec2 ColliderSize => playerSprite.RealSize.VirtualizePixel(GetMaster().MainView).ToVec2(GetMaster());
     public Vec2 ColliderPosition => playerSprite.Position + dir;
 
     public RigidPlayer() { }

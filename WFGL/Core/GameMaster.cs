@@ -18,7 +18,7 @@ public abstract class GameMaster
 
     #region Masters
     private GameWindow GameWindow { get; set; }
-    public Camera MainCamera { get; set; }
+    public View MainView { get; set; }
     public Time TimeMaster { get; } = new();
     public LayerMaster LayerMaster { get; } = new();
     public Graphics Renderer { get; private set; }
@@ -68,14 +68,15 @@ public abstract class GameMaster
 
 
         float aspectRatio = (float)GameWindow.ClientSize.Width / GameWindow.ClientSize.Height;
-        CameraOptions options = new(new Size((int)aspectRatio,(int)aspectRatio),GameWindow.ClientSize);
-        MainCamera = new(this, options);
+        ViewOptions options = new(new Size((int)aspectRatio,(int)aspectRatio),GameWindow.ClientSize);
+        MainView = new(this, options);
 
         TimeMaster.Timer.Tick += Update;
 
         renderBuffer = new Bitmap(RenderSize.X, RenderSize.Y);
         Renderer = Graphics.FromImage(renderBuffer);
 
+        
 
         ResetRenderBuffer();
 
@@ -108,7 +109,7 @@ public abstract class GameMaster
     }
     public void ResetRenderClip()
     {
-        Renderer.SetClip((new Rectangle(MainCamera.RealPosition.X, MainCamera.RealPosition.Y, RenderSize.X, RenderSize.Y)));
+        Renderer.SetClip((new Rectangle(MainView.RealPosition.X, MainView.RealPosition.Y, RenderSize.X, RenderSize.Y)));
     }
 
     #endregion
@@ -141,7 +142,7 @@ public abstract class GameMaster
     }
     private void Resized(object? sender, EventArgs e) 
     {
-        if(WindowAspectLock) GameWindow.ClientSize = MainCamera.GetAspect();
+        if(WindowAspectLock) GameWindow.ClientSize = MainView.GetAspect();
         ResetRenderBuffer();
         OnResized();
         ResetRenderClip();
@@ -166,7 +167,7 @@ public abstract class GameMaster
 
     private void Update(object? sender, EventArgs e)
     {
-        GameWindow.Invalidate(new Rectangle(MainCamera.RealPosition.X, MainCamera.RealPosition.Y, RenderSize.X, RenderSize.Y));
+        GameWindow.Invalidate(new Rectangle(MainView.RealPosition.X, MainView.RealPosition.Y, RenderSize.X, RenderSize.Y));
         OnUpdate();
         WhenUpdate?.Invoke(this);
     }
@@ -176,7 +177,7 @@ public abstract class GameMaster
         WhenDraw?.Invoke(this);
         OnAfterDraw();
 
-        e.Graphics.SetClip((new Rectangle(MainCamera.RealPosition.X, MainCamera.RealPosition.Y, RenderSize.X, RenderSize.Y)));
+        e.Graphics.SetClip((new Rectangle(MainView.RealPosition.X, MainView.RealPosition.Y, RenderSize.X, RenderSize.Y)));
         e.Graphics.DrawImageUnscaled(renderBuffer, new Rectangle(0,0, RenderSize.X, RenderSize.Y));
     }
 
@@ -202,7 +203,7 @@ public abstract class GameMaster
     public void DrawRectangle(Rectangle rect) => DrawRectangle(defaultBrush.Color, rect);
     public void DrawSprite(Bitmap bitmap, Point position)
     {
-        Point size = new Point(bitmap.Width, bitmap.Height).VirtualizePixel(MainCamera);
+        Point size = new Point(bitmap.Width, bitmap.Height).VirtualizePixel(MainView);
         Renderer.DrawImage(bitmap, position.X, position.Y, size.X, size.Y);
     }
    

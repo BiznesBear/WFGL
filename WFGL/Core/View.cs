@@ -1,9 +1,9 @@
 ﻿using WFGL.Objects;
 
 namespace WFGL.Core;
-public class Camera : Transform
+public class View : Transform
 {
-    public Camera(GameMaster m, CameraOptions options)
+    public View(GameMaster m, ViewOptions options)
     {
         Master = m;
         AspectRatio = options.AspectRatio;
@@ -48,11 +48,11 @@ public class Camera : Transform
         return GameWindow.ClientSize;
     }
 }
-public struct CameraOptions(Size aspectRatio, Size resolution, uint target = Camera.DEFALUT_TARGET)
+public struct ViewOptions(Size aspectRatio, Size resolution, uint target = View.DEFALUT_TARGET)
 {
     public Size AspectRatio { get; set; } = aspectRatio;
     public Size Resolution { get; set; } = resolution;
     public uint Target { get; set; } = target;
 
-    public readonly static CameraOptions Default = new(new Size(16, 9), new(300, 300));
+    public readonly static ViewOptions Default = new(new Size(16, 9), new(300, 300));
 }

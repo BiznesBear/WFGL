@@ -9,7 +9,6 @@ public abstract class GravityTransform : Transform
     public float GravityStrenght { get; set; } = 0.15f;
     public Vec2 GravityDirection { get; set; } = Vec2.Down;
 
-
     public override void OnUpdate(GameMaster m)
     {
         base.OnUpdate(m);

@@ -1,6 +1,5 @@
 ﻿using WFGL.Core;
 using WFGL.Objects;
-using WFGL.Physics;
 
 namespace WFGL.Rendering;
 
@@ -12,7 +11,9 @@ public class BitmapRenderer : Transform, IDrawable
     public Bitmap Source { get; set; }
     public Hroup? Hroup { get; set; }
 
-    // TODO: Rework how real size of any object is get
+    public float BitmapRotation { get; set; }
+
+
     /// <summary>
     /// Viewed size of sprite on the screen
     /// </summary>
@@ -23,30 +24,16 @@ public class BitmapRenderer : Transform, IDrawable
         Source = bitmap;       
     }
     public BitmapRenderer(string filePath) : this(new Bitmap(filePath)) { }
-    public override void OnCreate(Hierarchy h, GameMaster m)
-    {
-        base.OnCreate(h, m);
 
-    }
-    public void Draw(GameMaster m, Graphics r)
+    public virtual void Draw(GameMaster m, Graphics r)
     {
         if (Hroup != null) return;
-        Point size = RealSize.VirtualizePixel(m.MainCamera);
+        Point size = RealSize.VirtualizePixel(m.MainView);
         Point pos = Position.ToPoint(m);
 
-        r.DrawImage(Source, pos.X,pos.Y,size.X,size.Y);
-
+        r.TranslateTransform(pos.X, pos.Y);
+        r.RotateTransform(BitmapRotation);
+        r.DrawImage(Source, 0, 0, size.X, size.Y);
+        r.ResetTransform();
     }
-}
-
-/// <summary>
-/// Bitmap with built-in collider.
-/// </summary>
-public class CollidingBitmap : BitmapRenderer, ICollide
-{
-    public Vec2 ColliderSize => RealSize.VirtualizePixel(GetMaster().MainCamera).ToVec2(GetMaster());
-    public Vec2 ColliderPosition => Position;
-
-    public CollidingBitmap(string filePath) : base(filePath) { }
-    public CollidingBitmap(Bitmap bitmap) : base(bitmap) { }
 }

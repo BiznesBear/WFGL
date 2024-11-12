@@ -92,12 +92,12 @@ public static class Converts
     /// <summary>
     /// Final scale for objects 
     /// </summary>
-    public static Point VirtualizePixel(this Point pixel, Camera camera) => new((int)(pixel.X * camera.Scaler), (int)(pixel.Y * camera.Scaler));
-    public static PointF VirtualizePixel(this PointF pixel, Camera camera) => new(pixel.X * camera.Scaler, pixel.Y * camera.Scaler);
+    public static Point VirtualizePixel(this Point pixel, Core.View camera) => new((int)(pixel.X * camera.Scaler), (int)(pixel.Y * camera.Scaler));
+    public static PointF VirtualizePixel(this PointF pixel, Core.View camera) => new(pixel.X * camera.Scaler, pixel.Y * camera.Scaler);
 
     /// <summary>
     /// Final scale for objects 
     /// </summary>
-    public static Size VirtualizePixel(this Size pixel, Camera camera) => pixel.PushToPoint().VirtualizePixel(camera).PushToSize();
+    public static Size VirtualizePixel(this Size pixel, Core.View camera) => pixel.PushToPoint().VirtualizePixel(camera).PushToSize();
     #endregion
 }

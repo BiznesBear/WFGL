@@ -36,10 +36,10 @@ public class TreDeTestMaster : GameMaster
         cube.Position += direction.Normalize() * speed * TimeMaster.DeltaTime;
 
 
-        if (InputMaster.IsKeyPressed(Keys.Left)) MainCamera.Position -= new Vec2(0.07f, 0f);
-        if (InputMaster.IsKeyPressed(Keys.Right)) MainCamera.Position += new Vec2(0.07f, 0f);
-        if (InputMaster.IsKeyPressed(Keys.Up)) MainCamera.Position -= new Vec2(0f, 0.07f);
-        if (InputMaster.IsKeyPressed(Keys.Down)) MainCamera.Position += new Vec2(0f, 0.07f);
+        if (InputMaster.IsKeyPressed(Keys.Left)) MainView.Position -= new Vec2(0.07f, 0f);
+        if (InputMaster.IsKeyPressed(Keys.Right)) MainView.Position += new Vec2(0.07f, 0f);
+        if (InputMaster.IsKeyPressed(Keys.Up)) MainView.Position -= new Vec2(0f, 0.07f);
+        if (InputMaster.IsKeyPressed(Keys.Down)) MainView.Position += new Vec2(0f, 0.07f);
         ResetRenderClip();
     }
     protected override void OnDraw()
@@ -54,6 +54,6 @@ public class TreDeTestInput : InputHandler
     public TreDeTestInput(GameMaster g) : base(g) { }
     protected override void OnMouseWheel(int delta)
     {
-        Program.renderTestInstance.MainCamera.Fov += delta / 4f;
+        Program.renderTestInstance.MainView.Fov += delta / 4f;
     }
 }

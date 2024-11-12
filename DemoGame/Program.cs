@@ -4,7 +4,7 @@ namespace DemoGame;
 internal class Program
 {
     #pragma warning disable
-    public static GravityTestsMaster testPlaceInstance;
+    public static TestPlaceMaster testPlaceInstance;
     public static GravityTestsMaster gravityTestsInstance;
     public static TreDeTestMaster renderTestInstance;
     #pragma warning restore
@@ -17,10 +17,10 @@ internal class Program
         //renderTestInstance = new(window);
         //renderTestInstance.Load();
 
-        //testPlaceInstance = new(window);
-        //testPlaceInstance.Load();
-        
-        gravityTestsInstance = new(window);
-        gravityTestsInstance.Load();
+        testPlaceInstance = new(window);
+        testPlaceInstance.Load();
+
+        //gravityTestsInstance = new(window);
+        //gravityTestsInstance.Load();
     }
 }
