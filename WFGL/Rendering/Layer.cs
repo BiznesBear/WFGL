@@ -49,7 +49,7 @@ public sealed class LayerMaster
     /// </summary>
     /// <param name="list"></param>
     /// <returns></returns>
-    public static Dictionary<Layer, List<IObject>> SortObjectList(List<IObject> list) => list.GroupBy(o => o.Layer).ToDictionary(g => g.Key, g => g.ToList());
+    public static Dictionary<Layer, List<Entity>> SortObjectList(List<Entity> list) => list.GroupBy(o => o.Layer).ToDictionary(g => g.Key, g => g.ToList());
 
     /// <summary>
     /// 
@@ -57,13 +57,13 @@ public sealed class LayerMaster
     /// <param name="lm"></param>
     /// <param name="order"></param>
     /// <returns></returns>
-    public static IEnumerable<IObject> GetObjectsFrom(LayerMaster lm, Dictionary<Layer, List<IObject>> order)
+    public static IEnumerable<Entity> GetObjectsFrom(LayerMaster lm, Dictionary<Layer, List<Entity>> order)
     {
         foreach (Layer layer in lm.LayersList)
         {
             if (order.TryGetValue(layer, out var objects))
             {
-                foreach (IObject obj in objects)
+                foreach (Entity obj in objects)
                     yield return obj;
             }
         }

@@ -38,7 +38,7 @@ public class StringRenderer : Transform, IDrawable
         float dynamicFontSize = BaseSize * m.MainView.Scaler * VirtualUnit.SCALING;
         if (dynamicFontSize < 0.02) return;
         using Font dynamicFont = new(Font.FontFamily, dynamicFontSize);
-        Point pos = Position.ToPoint(m);
+        Point pos = Position.ToPoint(m.VirtualScale);
         Brush brush = new SolidBrush(Color);
         m.Renderer.DrawString(Content, dynamicFont, brush, pos.X, pos.Y);
         brush.Dispose();

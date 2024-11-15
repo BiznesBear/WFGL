@@ -43,7 +43,7 @@ public class PseduoLight : Transform, IDrawable
             GenerateLightBitmap(m);
             return;
         }
-        Point pos = Position.ToPoint(m);
+        Point pos = Position.ToPoint(m.VirtualScale);
 
         m.Renderer.DrawImage(bitmap, pos.X - (int)radius, pos.Y - (int)radius);
     }

@@ -30,8 +30,8 @@ public class CubeRenderer : Transform, IDrawable
     }
     public void Draw(GameMaster m, Graphics r)
     {
-        float viewWidth = m.RenderSize.X;
-        float viewHeight = m.RenderSize.Y;
+        float viewWidth = m.RenderSize.Width;
+        float viewHeight = m.RenderSize.Height;
 
         Verticles =
         [

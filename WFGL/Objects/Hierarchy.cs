@@ -5,55 +5,55 @@ namespace WFGL.Objects;
 
 public class Hierarchy : Entity
 {
-    private Dictionary<Layer, List<IObject>> Order = [];
+    private Dictionary<Layer, List<Entity>> Order = [];
 
-    private readonly List<IObject> objects = new();
+    private readonly List<Entity> objects = new();
 
     public event Action ChangedList;
-    public event ObjectEventHandler? AddedObject;
-    public event ObjectEventHandler? RemovedObject;
+    public event EntityEventHandler? AddedObject;
+    public event EntityEventHandler? RemovedObject;
 
     internal event GameMasterEventHandler? WhenUpdate;
 
-    public List<IObject> Objects
+    public List<Entity> Objects
     {
         get => objects;
         set
         {
-            foreach (IObject obj in value)
-            {
+            foreach (Entity obj in value)
                 obj.Create(this);
-            }
         }
     }
 
     public Hierarchy(GameMaster m) { ChangedList += UpdateOrder; Master = m; }
 
-    public void Register(IObject obj)
+    public void Register(Entity entity)
     {
-        objects.Add(obj);
-        AddedObject?.Invoke(obj);
+        entity.SetHierarchy(this);
+        objects.Add(entity);
+        AddedObject?.Invoke(entity);
         ChangedList.Invoke();
-        WhenUpdate += obj.OnUpdate;
+        WhenUpdate += entity.OnUpdate;
     }
 
-    public void Deregister(IObject obj)
+    public void Deregister(Entity entity)
     {
-        WhenUpdate -= obj.OnUpdate;
-        objects.Remove(obj);
-        RemovedObject?.Invoke(obj);
+        entity.SetHierarchy(null);
+        WhenUpdate -= entity.OnUpdate;
+        objects.Remove(entity);
+        RemovedObject?.Invoke(entity);
         ChangedList.Invoke();
     }
-    public void UpdateOrder()
-    {
+
+
+    public void UpdateOrder() =>
         Order = LayerMaster.SortObjectList(objects);
-    }
 
-    public IEnumerable<IObject> GetObjects() => LayerMaster.GetObjectsFrom(GetMaster().LayerMaster, Order);
+    public IEnumerable<Entity> GetObjects() => LayerMaster.GetObjectsFrom(GetMaster().LayerMaster, Order);
 
     public void DestroyAll()
     {
-        foreach (IObject obj in objects) 
+        foreach (Entity obj in objects) 
             obj.Destroy(this);
     }
 
@@ -69,13 +69,14 @@ public class Hierarchy : Entity
 
     protected void DrawAll()
     {
-        foreach (IObject obj in GetObjects())
+        foreach (Entity entity in GetObjects())
         {
-            obj.OnDraw(GetMaster());
-            if (obj is IDrawable d)
+            entity.OnDraw(GetMaster());
+            if (entity is IDrawable d)
                 d.Draw(GetMaster(), GetMaster().Renderer);
         }
     }
+
     public IEnumerable<T> GetAllObjectsWithType<T>()
     {
         foreach (var item in objects)

@@ -15,6 +15,7 @@
 - Separate rendering from logic and vice versa 
 - 3d logic (e.g. rotating bitmaps)
 - 2.5D
+- Add more usability for VirtualUnit
 - Pseudo (2D) light
 - Optimalizations
 - More ui

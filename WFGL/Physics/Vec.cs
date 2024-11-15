@@ -1,4 +1,5 @@
 ﻿using System.Numerics;
+using WFGL.Core;
 namespace WFGL.Physics;
 
 public interface IVec<T> where T : struct, IVec<T>
@@ -20,7 +21,7 @@ public struct Vec2(float x, float y) : IVec<Vec2>
     public float X = x;
     public float Y = y;
 
-    public float Magnitude() => (float)Math.Sqrt(X * X + Y * Y);
+    public readonly float Magnitude() => (float)Math.Sqrt(X * X + Y * Y);
     public Vec2 Normalize()
     {
         float magnitude = Magnitude();
@@ -50,6 +51,16 @@ public struct Vec2(float x, float y) : IVec<Vec2>
     public static Vec2 operator %(Vec2 a, float b) => new(a.X % b, a.Y % b);
 
     public readonly override string ToString() => $"Vec2({X};{Y})";
+
+    public Point GetPoint()
+    {
+        throw new NotImplementedException();
+    }
+
+    public Size GetSize()
+    {
+        throw new NotImplementedException();
+    }
 }
 
 public struct Vec3(float x, float y, float z) : IVec<Vec3>
@@ -62,7 +73,7 @@ public struct Vec3(float x, float y, float z) : IVec<Vec3>
     public float Y = y;
     public float Z = z;
 
-    public float Magnitude() => (float)Math.Sqrt(X * X + Y * Y + Z * Z);
+    public readonly float Magnitude() => (float)Math.Sqrt(X * X + Y * Y + Z * Z);
 
     public Vec3 Normalize()
     {
@@ -76,7 +87,7 @@ public struct Vec3(float x, float y, float z) : IVec<Vec3>
         return this;
     }
 
-    public Vec2 Project(Vec2 screenCenter, float distance = 5, float scale = 400)
+    public readonly Vec2 Project(Vec2 screenCenter, float distance = 5, float scale = 400)
     {
         float factor = distance / (distance + Z);
         float x2d = X * factor * scale + screenCenter.X;

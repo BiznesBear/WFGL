@@ -6,13 +6,10 @@ namespace WFGL.Rendering;
 /// <summary>
 /// Bitmap rendered directly on renderer.
 /// </summary>
-public class BitmapRenderer : Transform, IDrawable
+public class BitmapRenderer : Renderer
 {
     public Bitmap Source { get; set; }
-    public Hroup? Hroup { get; set; }
-
     public float BitmapRotation { get; set; }
-
 
     /// <summary>
     /// Viewed size of sprite on the screen
@@ -25,11 +22,12 @@ public class BitmapRenderer : Transform, IDrawable
     }
     public BitmapRenderer(string filePath) : this(new Bitmap(filePath)) { }
 
-    public virtual void Draw(GameMaster m, Graphics r)
+    public override void Draw(GameMaster m, Graphics r)
     {
-        if (Hroup != null) return;
+        base.Draw(m, r);
+
         Point size = RealSize.VirtualizePixel(m.MainView);
-        Point pos = Position.ToPoint(m);
+        Point pos = Position.ToPoint(m.VirtualScale);
 
         r.TranslateTransform(pos.X, pos.Y);
         r.RotateTransform(BitmapRotation);

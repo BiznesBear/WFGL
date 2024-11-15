@@ -16,7 +16,7 @@ public abstract class GameMaster
 
     #endregion
 
-    #region Masters
+    #region Core
     private GameWindow GameWindow { get; set; }
     public View MainView { get; set; }
     public Time TimeMaster { get; } = new();
@@ -32,7 +32,7 @@ public abstract class GameMaster
     public event GameMasterEventHandler? WhenUpdate;
     public event GameMasterEventHandler? WhenDraw;
 
-    // other
+    // render view
     public Bitmap renderBuffer;
     private Size windowSizeTemp;
 
@@ -43,10 +43,10 @@ public abstract class GameMaster
     public float RealVirtualScaleY => VirtualUnit.VirtualizeToFactor(GameWindow.ClientSize.Height);
 
     public Point WindowCenter => new(GameWindow.ClientSize.Width / 2, GameWindow.ClientSize.Height / 2);
-    public Point RenderSize => new((int)VirtualScale.FactorX * VirtualUnit.SCALING, (int)VirtualScale.FactorX * VirtualUnit.SCALING);
+    public Size RenderSize => VirtualScale.GetSize();
 
-    public readonly Pen defaultPen = new(Color.Red, 1);
-    public readonly SolidBrush defaultBrush = new(Color.DarkSlateGray);
+    public static readonly Pen defaultPen = new(Color.Red, 1);
+    public static readonly SolidBrush defaultBrush = new(Color.DarkSlateGray);
 
     #endregion
 
@@ -68,12 +68,12 @@ public abstract class GameMaster
 
 
         float aspectRatio = (float)GameWindow.ClientSize.Width / GameWindow.ClientSize.Height;
-        ViewOptions options = new(new Size((int)aspectRatio,(int)aspectRatio),GameWindow.ClientSize);
-        MainView = new(this, options);
+
+        MainView = new(this, ViewOptions.Default);
 
         TimeMaster.Timer.Tick += Update;
 
-        renderBuffer = new Bitmap(RenderSize.X, RenderSize.Y);
+        renderBuffer = new Bitmap(RenderSize.Width, RenderSize.Height);
         Renderer = Graphics.FromImage(renderBuffer);
 
         
@@ -98,7 +98,7 @@ public abstract class GameMaster
     public void ResetRenderBuffer()
     {
         renderBuffer.Dispose();
-        renderBuffer = new Bitmap(RenderSize.X, RenderSize.Y);
+        renderBuffer = new Bitmap(RenderSize.Width, RenderSize.Height);
 
         Renderer = Graphics.FromImage(renderBuffer);
 
@@ -109,7 +109,7 @@ public abstract class GameMaster
     }
     public void ResetRenderClip()
     {
-        Renderer.SetClip((new Rectangle(MainView.RealPosition.X, MainView.RealPosition.Y, RenderSize.X, RenderSize.Y)));
+        Renderer.SetClip((new Rectangle(MainView.RealPosition.X, MainView.RealPosition.Y, RenderSize.Width, RenderSize.Height)));
     }
 
     #endregion
@@ -167,7 +167,7 @@ public abstract class GameMaster
 
     private void Update(object? sender, EventArgs e)
     {
-        GameWindow.Invalidate(new Rectangle(MainView.RealPosition.X, MainView.RealPosition.Y, RenderSize.X, RenderSize.Y));
+        GameWindow.Invalidate(new Rectangle(MainView.RealPosition.X, MainView.RealPosition.Y, RenderSize.Width, RenderSize.Height));
         OnUpdate();
         WhenUpdate?.Invoke(this);
     }
@@ -177,8 +177,8 @@ public abstract class GameMaster
         WhenDraw?.Invoke(this);
         OnAfterDraw();
 
-        e.Graphics.SetClip((new Rectangle(MainView.RealPosition.X, MainView.RealPosition.Y, RenderSize.X, RenderSize.Y)));
-        e.Graphics.DrawImageUnscaled(renderBuffer, new Rectangle(0,0, RenderSize.X, RenderSize.Y));
+        e.Graphics.SetClip((new Rectangle(MainView.RealPosition.X, MainView.RealPosition.Y, RenderSize.Width, RenderSize.Height)));
+        e.Graphics.DrawImageUnscaled(renderBuffer, new Rectangle(0,0, RenderSize.Width, RenderSize.Height));
     }
 
     #endregion

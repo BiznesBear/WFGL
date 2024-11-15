@@ -53,13 +53,13 @@ public struct Ray(Vec2 origin, Vec2 direction)
         return true;
     }
 
-    public void DrawGizmos(GameMaster m) =>
-        m.DrawLine(Origin.ToPoint(m), Direction.ToPoint(m));
+    public readonly void DrawGizmos(GameMaster m) =>
+        m.DrawLine(Origin.ToPoint(m.VirtualScale), Direction.ToPoint(m.VirtualScale));
 
-    public void DrawGizmos(GameMaster m, Vec2 intersectionPoint) =>
-        m.DrawLine(Origin.ToPoint(m), intersectionPoint.ToPoint(m));
+    public readonly void DrawGizmos(GameMaster m, Vec2 intersectionPoint) =>
+        m.DrawLine(Origin.ToPoint(m.VirtualScale), intersectionPoint.ToPoint(m.VirtualScale));
 
-    public override string ToString() => $"{Origin} => {Direction}";
+    public override readonly string ToString() => $"{Origin} => {Direction}";
 }
 
 public readonly struct RaycastInfo

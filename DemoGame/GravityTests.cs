@@ -3,6 +3,7 @@ using System.Windows.Forms;
 using WFGL.Core;
 using WFGL.Input;
 using WFGL.Objects;
+using WFGL.Other.Components;
 using WFGL.Physics;
 using WFGL.Rendering;
 using WFGL.UI;
@@ -101,7 +102,7 @@ public class GravityTestsMaster : GameMaster
     protected override void OnDraw()
     {
         // drawing background 
-        DrawRectangle(new(MainView.RealPosition, RenderSize.PushToSize()));
+        DrawRectangle(new(MainView.RealPosition, RenderSize));
     }
     protected override void OnAfterDraw()
     {
@@ -150,7 +151,7 @@ internal class RigidPlayer : GravityTransform, ICollide
     internal Vec2 dir;
 
     // physics
-    public Vec2 ColliderSize => playerSprite.RealSize.VirtualizePixel(GetMaster().MainView).ToVec2(GetMaster());
+    public Vec2 ColliderSize => playerSprite.RealSize.VirtualizePixel(GetMaster().MainView).ToVec2(GetMaster().VirtualScale);
     public Vec2 ColliderPosition => playerSprite.Position + dir;
 
     public RigidPlayer() { }

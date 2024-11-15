@@ -7,6 +7,7 @@ using WFGL.Physics;
 using WFGL.UI;
 using WFGL.Rendering;
 using WFGL.Objects;
+using WFGL.Other.Components;
 
 namespace DemoGame;
 
@@ -116,7 +117,7 @@ public class TestPlaceMaster : GameMaster
     protected override void OnDraw()
     {
         // drawing background 
-        DrawRectangle(new(MainView.RealPosition, RenderSize.PushToSize()));
+        DrawRectangle(new(MainView.RealPosition, RenderSize));
     }
     protected override void OnAfterDraw()
     {
@@ -161,7 +162,7 @@ internal class TestPlacePlayer : Transform, ICollide
 
     // colliders 
     internal RaycastInfo hitInfo;
-    public Vec2 ColliderSize => playerSprite.RealSize.VirtualizePixel(GetMaster().MainView).ToVec2(GetMaster());
+    public Vec2 ColliderSize => playerSprite.RealSize.VirtualizePixel(GetMaster().MainView).ToVec2(GetMaster().VirtualScale);
     public Vec2 ColliderPosition => playerSprite.Position + dir;
 
     private Vec2 inP;

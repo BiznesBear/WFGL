@@ -3,27 +3,33 @@
 namespace WFGL.Core;
 public class View : Transform
 {
+    public const uint DEFALUT_TARGET = 500; // defalut target for window is 500x500 pixels 
+
     public View(GameMaster m, ViewOptions options)
     {
         Master = m;
-        AspectRatio = options.AspectRatio;
-        Resolution= options.Resolution;
         Target = options.Target;
     }
 
 
-    public const uint DEFALUT_TARGET = 500; // defalut target for window is 500x500
+    /// <summary>
+    /// Target aspect ratio of viewed render 
+    /// </summary>
+    public Size AspectRatio { get; set; }
 
     /// <summary>
-    /// Target aspect ratio of viewed render (to not resizing world space)
+    /// Target resolution of viewed render 
     /// </summary>
-    public Size AspectRatio { get; set; } 
     public Size Resolution { get; set; } 
 
     /// <summary>
     /// Refrence size of rendering everything on window.
     /// </summary>
     public uint Target { get; set; } // refrence size for scaling 
+
+    /// <summary>
+    /// Used in scaling objects 
+    /// </summary>
     public float Scaler => GetMaster().VirtualScale.FactorX / Target; // dividing virtual unit by refrence target to get real virtual unit 
 
     public float ViewDistance { get; set; } = 4;
@@ -50,9 +56,9 @@ public class View : Transform
 }
 public struct ViewOptions(Size aspectRatio, Size resolution, uint target = View.DEFALUT_TARGET)
 {
+    public uint Target { get; set; } = target;
     public Size AspectRatio { get; set; } = aspectRatio;
     public Size Resolution { get; set; } = resolution;
-    public uint Target { get; set; } = target;
 
-    public readonly static ViewOptions Default = new(new Size(16, 9), new(300, 300));
+    public readonly static ViewOptions Default = new(new Size(16, 9), new(700, 700));
 }

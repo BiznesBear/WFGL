@@ -1,4 +1,4 @@
-﻿using WFGL.Rendering;
+﻿using WFGL.Core;
 
 namespace WFGL.Physics;
 public interface ICollide
@@ -28,6 +28,6 @@ public static class Collider
     public static bool IsColliding(this ICollide self, IEnumerable<ICollide> other) =>
         IsColliding(self, other, out ICollide? c);
 
-    public static void DrawColliderBounds(this ICollide self, Core.GameMaster m) =>
-        m.DrawRect(new(self.ColliderPosition.ToPoint(m), self.ColliderSize.ToSize(m)));
+    public static void DrawColliderBounds(this ICollide self, GameMaster m) =>
+        m.DrawRect(new(self.ColliderPosition.ToPoint(m.VirtualScale), self.ColliderSize.ToSize(m.VirtualScale)));
 }

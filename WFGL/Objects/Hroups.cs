@@ -23,7 +23,7 @@ public class StaticRenderHroup(GameMaster m) : Hroup(m), IDrawable
     public Bitmap GetRender() => finRender ?? throw new ArgumentNullException("Null group render");
     public void Render()
     {
-        finRender = new(GetMaster().RenderSize.X, GetMaster().RenderSize.Y);
+        finRender = new(GetMaster().RenderSize.Width, GetMaster().RenderSize.Height);
         renderer = Graphics.FromImage(finRender);
 
         foreach (var obj in GetObjects())

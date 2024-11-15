@@ -45,7 +45,7 @@ public class TreDeTestMaster : GameMaster
     protected override void OnDraw()
     {
         // background
-        DrawRectangle(Color.FromArgb(22,22,22),new(0,0,RenderSize.X,RenderSize.Y));
+        DrawRectangle(Color.FromArgb(22,22,22),new(0,0, RenderSize.Width, RenderSize.Height));
     }
 }
 
