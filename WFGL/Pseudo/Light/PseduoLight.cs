@@ -1,9 +1,9 @@
 ﻿using WFGL.Core;
 using WFGL.Objects;
 using WFGL.Rendering;
-
 namespace WFGL.Pseudo.Light;
 
+// very good example how static render should work 
 public class PseduoLight : Transform, IDrawable
 {
     public float intensity = 1;
@@ -16,7 +16,6 @@ public class PseduoLight : Transform, IDrawable
     private Bitmap? bitmap;
     private bool needsRedraw = true;
 
-    public Hroup? Hroup { get; set; }
 
     private void GenerateLightBitmap(GameMaster m)
     {

@@ -29,7 +29,7 @@ public class TestPlaceMaster : GameMaster
 
     internal Hierarchy objects;
     internal Hierarchy canvas;
-    internal StaticRenderHroup background;
+    internal StaticRenderHierarchy background;
 
     // objects
 

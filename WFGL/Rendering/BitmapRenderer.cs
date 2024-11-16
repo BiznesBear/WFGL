@@ -6,7 +6,7 @@ namespace WFGL.Rendering;
 /// <summary>
 /// Bitmap rendered directly on renderer.
 /// </summary>
-public class BitmapRenderer : Renderer
+public class BitmapRenderer : Transform, IDrawable
 {
     public Bitmap Source { get; set; }
     public float BitmapRotation { get; set; }
@@ -22,9 +22,8 @@ public class BitmapRenderer : Renderer
     }
     public BitmapRenderer(string filePath) : this(new Bitmap(filePath)) { }
 
-    public override void Draw(GameMaster m, Graphics r)
+    public void Draw(GameMaster m, Graphics r)
     {
-        base.Draw(m, r);
 
         Point size = RealSize.VirtualizePixel(m.MainView);
         Point pos = Position.ToPoint(m.VirtualScale);

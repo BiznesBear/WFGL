@@ -8,7 +8,6 @@ namespace WFGL.Pseudo.ThirdDimension;
 // THIS IS STILL DANGER ZONE WITH EXPERIMENTAL FUNCTIONS
 public class CubeRenderer : Transform, IDrawable
 {
-    public Hroup? Hroup { get; set; }
     public Vector3 Cube = new(1, 1, 1);
     public Vector3 Rot = new(0.7f, 0.7f, 0.7f);
     public Vector3 Pos3D => new(Position.X, Position.Y, 0);

@@ -12,7 +12,6 @@ public class StringRenderer : Transform, IDrawable
     public string Content { get; set; } = "";
 
     public Color Color { get; set; } = Color.Black;
-    public Hroup? Hroup { get; set; }
 
     public StringRenderer(Font f) 
     {
@@ -37,9 +36,11 @@ public class StringRenderer : Transform, IDrawable
     {
         float dynamicFontSize = BaseSize * m.MainView.Scaler * VirtualUnit.SCALING;
         if (dynamicFontSize < 0.02) return;
+
         using Font dynamicFont = new(Font.FontFamily, dynamicFontSize);
+        using Brush brush = new SolidBrush(Color);
         Point pos = Position.ToPoint(m.VirtualScale);
-        Brush brush = new SolidBrush(Color);
+        
         m.Renderer.DrawString(Content, dynamicFont, brush, pos.X, pos.Y);
         brush.Dispose();
     }

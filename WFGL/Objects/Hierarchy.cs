@@ -3,7 +3,9 @@ using WFGL.Rendering;
 
 namespace WFGL.Objects;
 
-public class Hierarchy : Entity
+
+// TODO: Make hierarchy drawable
+public class Hierarchy : Entity  
 {
     private Dictionary<Layer, List<Entity>> Order = [];
 
@@ -30,17 +32,21 @@ public class Hierarchy : Entity
     public void Register(Entity entity)
     {
         entity.SetHierarchy(this);
+
         objects.Add(entity);
+        WhenUpdate += entity.OnUpdate;
+
         AddedObject?.Invoke(entity);
         ChangedList.Invoke();
-        WhenUpdate += entity.OnUpdate;
     }
 
     public void Deregister(Entity entity)
     {
         entity.SetHierarchy(null);
+
         WhenUpdate -= entity.OnUpdate;
         objects.Remove(entity);
+
         RemovedObject?.Invoke(entity);
         ChangedList.Invoke();
     }
@@ -72,10 +78,16 @@ public class Hierarchy : Entity
         foreach (Entity entity in GetObjects())
         {
             entity.OnDraw(GetMaster());
-            if (entity is IDrawable d)
-                d.Draw(GetMaster(), GetMaster().Renderer);
+            OnEntityDraw(entity);
         }
     }
+
+    protected virtual void OnEntityDraw(Entity entity)
+    {
+        if (entity is IDrawable d) 
+            d.Draw(GetMaster(), GetMaster().Renderer);
+    }
+
 
     public IEnumerable<T> GetAllObjectsWithType<T>()
     {

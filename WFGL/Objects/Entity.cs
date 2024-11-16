@@ -17,12 +17,12 @@ public abstract class Entity
     public Hierarchy GetHierarchy() => Hierarchy ?? throw new ArgumentNullException("Null hierarchy instance in entity");
     public void SetMaster(GameMaster master) 
     {
-        if (Master != null) throw new Exception($"GameMaster {nameof(Master)} is already assigned for entity.");
+        //if (Master != null) throw new Exception($"GameMaster {nameof(Master)} is already assigned for entity.");
         Master = master; 
     }
     public void SetHierarchy(Hierarchy? hierarchy)
     {
-        if(Hierarchy != null) throw new Exception($"Hierarchy {nameof(Hierarchy)} is already assigned for entity.");
+        //if(Hierarchy != null) throw new Exception($"Hierarchy {nameof(Hierarchy)} is already assigned for entity.");
         Hierarchy = hierarchy;
     }
 
