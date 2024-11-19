@@ -7,7 +7,7 @@ public class View : Transform
 
     public View(GameMaster m, ViewOptions options)
     {
-        Master = m;
+        SetMaster(m);
         Target = options.Target;
     }
 

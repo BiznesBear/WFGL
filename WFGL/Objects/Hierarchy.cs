@@ -7,16 +7,6 @@ namespace WFGL.Objects;
 // TODO: Make hierarchy drawable
 public class Hierarchy : Entity  
 {
-    private Dictionary<Layer, List<Entity>> Order = [];
-
-    private readonly List<Entity> objects = new();
-
-    public event Action ChangedList;
-    public event EntityEventHandler? AddedObject;
-    public event EntityEventHandler? RemovedObject;
-
-    internal event GameMasterEventHandler? WhenUpdate;
-
     public List<Entity> Objects
     {
         get => objects;
@@ -27,7 +17,20 @@ public class Hierarchy : Entity
         }
     }
 
-    public Hierarchy(GameMaster m) { ChangedList += UpdateOrder; Master = m; }
+    public event Action ChangedList;
+    public event EntityEventHandler? AddedObject;
+    public event EntityEventHandler? RemovedObject;
+
+    internal event GameMasterEventHandler? WhenUpdate;
+
+    private Dictionary<Layer, List<Entity>> Order = [];
+
+    private readonly List<Entity> objects = new();
+
+
+    
+
+    public Hierarchy(GameMaster m) { ChangedList += UpdateOrder; SetMaster(m); }
 
     public void Register(Entity entity)
     {
@@ -51,17 +54,18 @@ public class Hierarchy : Entity
         ChangedList.Invoke();
     }
 
+    public void DestroyAll()
+    {
+        foreach (Entity obj in objects)
+            obj.Destroy(this);
+    }
 
     public void UpdateOrder() =>
         Order = LayerMaster.SortObjectList(objects);
 
     public IEnumerable<Entity> GetObjects() => LayerMaster.GetObjectsFrom(GetMaster().LayerMaster, Order);
 
-    public void DestroyAll()
-    {
-        foreach (Entity obj in objects) 
-            obj.Destroy(this);
-    }
+   
 
     public override void OnUpdate(GameMaster m)
     {
@@ -87,7 +91,6 @@ public class Hierarchy : Entity
         if (entity is IDrawable d) 
             d.Draw(GetMaster(), GetMaster().Renderer);
     }
-
 
     public IEnumerable<T> GetAllObjectsWithType<T>()
     {

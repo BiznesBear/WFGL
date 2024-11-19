@@ -8,23 +8,17 @@ namespace WFGL.Objects;
 /// </summary>
 public abstract class Entity  
 {
-    protected Hierarchy? Hierarchy { get; set; }
-    protected GameMaster? Master { get; set; }
+    private Hierarchy? Hierarchy { get; set; }
+    private GameMaster? Master { get; set; }
 
     public Layer Layer { get; set; } = Layer.Defalut;
 
     public GameMaster GetMaster() => Master ?? throw new ArgumentNullException("Null game master instance in entity");
     public Hierarchy GetHierarchy() => Hierarchy ?? throw new ArgumentNullException("Null hierarchy instance in entity");
-    public void SetMaster(GameMaster master) 
-    {
-        //if (Master != null) throw new Exception($"GameMaster {nameof(Master)} is already assigned for entity.");
-        Master = master; 
-    }
-    public void SetHierarchy(Hierarchy? hierarchy)
-    {
-        //if(Hierarchy != null) throw new Exception($"Hierarchy {nameof(Hierarchy)} is already assigned for entity.");
-        Hierarchy = hierarchy;
-    }
+        
+    public void SetMaster(GameMaster master) => Master = master;
+    public void SetHierarchy(Hierarchy? hierarchy) => Hierarchy = hierarchy;
+
 
     public void Create(Hierarchy hierarchy)
     {

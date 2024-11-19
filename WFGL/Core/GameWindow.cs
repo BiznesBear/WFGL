@@ -7,6 +7,7 @@ public class GameWindow : Form
     {
         DoubleBuffered = true;
         MaximizeBox = false;
+        SetStyle(ControlStyles.EnableNotifyMessage, true);
         SetStyle(ControlStyles.OptimizedDoubleBuffer, true);
         SetStyle(ControlStyles.UserPaint, true);
         SetStyle(ControlStyles.AllPaintingInWmPaint, true);

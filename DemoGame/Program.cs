@@ -14,11 +14,11 @@ internal class Program
     {
         GameWindow window = new(GameWindowOptions.Default);
 
-        //renderTestInstance = new(window);
-        //renderTestInstance.Load();
+        renderTestInstance = new(window);
+        renderTestInstance.Load();
 
-        testPlaceInstance = new(window);
-        testPlaceInstance.Load();
+        //testPlaceInstance = new(window);
+        //testPlaceInstance.Load();
 
         //gravityTestsInstance = new(window);
         //gravityTestsInstance.Load();

@@ -7,7 +7,7 @@ using WFGL.Physics;
 using WFGL.UI;
 using WFGL.Rendering;
 using WFGL.Objects;
-using WFGL.Other.Components;
+using WFGL.Components;
 
 namespace DemoGame;
 
@@ -29,7 +29,7 @@ public class TestPlaceMaster : GameMaster
 
     internal Hierarchy objects;
     internal Hierarchy canvas;
-    internal StaticRenderHierarchy background;
+    internal StaticDrawHierarchy background;
 
     // objects
 
@@ -40,6 +40,8 @@ public class TestPlaceMaster : GameMaster
     StringRenderer userNameText = new(font, Environment.UserName);
 
     TextRectButton myButton = new("__________",Color.Wheat, Color.Blue, Color.Red) { Layer = canvasLayer };
+
+
     public TestPlaceMaster(GameWindow window) : base(window)
     {
         RegisterInput(new TestPlaceInput(this));
@@ -83,6 +85,7 @@ public class TestPlaceMaster : GameMaster
             new BitmapRenderer(maszWypadloCi){ Position = Vec2.Zero },
             new BitmapRenderer(maszWypadloCi) { Position = new(3, 0) },
         ];
+
         objects.Objects = [
             player,
             background,
@@ -96,6 +99,7 @@ public class TestPlaceMaster : GameMaster
 
         RegisterHierarchy(objects);
         RegisterHierarchy(canvas);
+
         colliders.Update();
         background.Render();
     }
@@ -105,12 +109,14 @@ public class TestPlaceMaster : GameMaster
         userNameText.Position = player.Position + new Vec2(0.33f, -0.15f);
         fpsText.Content = $"FPS: {TimeMaster.Fps}";
 
+
         var input = InputMaster;
 
         if (input.IsKeyPressed(Keys.Left)) MainView.Position -= new Vec2(0.07f, 0f);
         if (input.IsKeyPressed(Keys.Right)) MainView.Position += new Vec2(0.07f, 0f);
         if (input.IsKeyPressed(Keys.Up)) MainView.Position -= new Vec2(0f, 0.07f);
         if (input.IsKeyPressed(Keys.Down)) MainView.Position += new Vec2(0f, 0.07f);
+
         ResetRenderClip();
     }
 

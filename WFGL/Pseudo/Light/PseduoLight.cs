@@ -16,12 +16,11 @@ public class PseduoLight : Transform, IDrawable
     private Bitmap? bitmap;
     private bool needsRedraw = true;
 
-
     private void GenerateLightBitmap(GameMaster m)
     {
         int size = (int)(radius * 2);
         bitmap = new Bitmap(size, size);
-
+        
         using (Graphics g = Graphics.FromImage(bitmap))
         {
             Point center = new((int)radius, (int)radius);

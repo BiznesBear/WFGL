@@ -1,9 +1,9 @@
 ﻿using System.Drawing;
 using System.Windows.Forms;
+using WFGL.Components;
 using WFGL.Core;
 using WFGL.Input;
 using WFGL.Objects;
-using WFGL.Other.Components;
 using WFGL.Physics;
 using WFGL.Rendering;
 using WFGL.UI;
@@ -27,7 +27,7 @@ public class GravityTestsMaster : GameMaster
 
     internal Hierarchy objects;
     internal Hierarchy canvas;
-    internal StaticRenderHierarchy background;
+    internal StaticDrawHierarchy background;
 
     // objects
 

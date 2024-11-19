@@ -7,7 +7,7 @@ namespace WFGL.Rendering;
 /// Renders multiple bitmaps at once. Need to be rendered manually. 
 /// </summary>
 /// <param name="m"></param>
-public class StaticRenderHierarchy(GameMaster m) : Hierarchy(m), IDrawable
+public class StaticDrawHierarchy(GameMaster m) : Hierarchy(m), IDrawable
 {
     private Bitmap? staticRender;
     public Bitmap GetRender() => staticRender ?? throw new ArgumentNullException("Null group render");

@@ -1,7 +1,7 @@
 ﻿using WFGL.Core;
 using WFGL.Physics;
 using WFGL.Rendering;
-namespace WFGL.Other.Components;
+namespace WFGL.Components;
 
 /// <summary>
 /// Bitmap with built-in collider.
