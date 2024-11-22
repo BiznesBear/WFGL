@@ -4,7 +4,7 @@ using WFGL.Rendering;
 namespace WFGL.Objects;
 
 
-// TODO: Make hierarchy drawable
+// TODO: Make hierarchy drawable?
 public class Hierarchy : Entity  
 {
     public List<Entity> Objects
@@ -21,7 +21,7 @@ public class Hierarchy : Entity
     public event EntityEventHandler? AddedObject;
     public event EntityEventHandler? RemovedObject;
 
-    internal event GameMasterEventHandler? WhenUpdate;
+    internal event Action? WhenUpdate;
 
     private Dictionary<Layer, List<Entity>> Order = [];
 
@@ -67,12 +67,12 @@ public class Hierarchy : Entity
 
    
 
-    public override void OnUpdate(GameMaster m)
+    public override void OnUpdate()
     {
-        WhenUpdate?.Invoke(m);
+        WhenUpdate?.Invoke();
     }
 
-    public override void OnDraw(GameMaster m)
+    public override void OnDraw()
     {
         DrawAll();
     }
@@ -81,7 +81,7 @@ public class Hierarchy : Entity
     {
         foreach (Entity entity in GetObjects())
         {
-            entity.OnDraw(GetMaster());
+            entity.OnDraw();
             OnEntityDraw(entity);
         }
     }

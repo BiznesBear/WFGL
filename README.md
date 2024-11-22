@@ -10,6 +10,8 @@
 > WFGL uses GDI+ graphics which may result in low fps if there are too many bitmaps on view. 
 
 ## ⚙️ TODO list
+- Separate object managment from rendering and other things (it's still a game library!!)
+- Make view can be not only in the square 
 - Camera
 - 3d logic 
 - 2.5D
@@ -17,7 +19,7 @@
 - Pseudo (2D) light
 - Optimalizations
 - More ui
-- Object pivots and parenting
+- Object pivots and parenting - sub-objects 
 
 ## ⭐ Showcase
 https://github.com/user-attachments/assets/a8b30b77-9fb4-4d3d-88e3-1df1ebba3904

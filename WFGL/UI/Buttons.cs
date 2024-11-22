@@ -35,14 +35,14 @@ public abstract class ButtonBase<T> : Transform
         displayed = Defalut;
     }
 
-    public override void OnUpdate(GameMaster m)
+    public override void OnUpdate()
     {
-        if (!m.InputMaster.MouseInside)
+        if (!GetMaster().InputMaster.MouseInside)
         {
             ChangeState(ButtonState.Defalut);
             return;
         }
-        if (Bounds.IntersectsWithMouse(m.InputMaster))
+        if (Bounds.IntersectsWithMouse(GetMaster().InputMaster))
         {
             if (Mouse.IsButtonPressed(MouseButtons.Left))
             {
@@ -85,20 +85,21 @@ public abstract class ButtonBase<T> : Transform
 }
 public class RectangleButton : ButtonBase<Color>
 {
+    private SolidBrush GetBrush() => new(displayed);
     public RectangleButton(Color defalut,Color pointed,Color clicked) : base(defalut, pointed, clicked) { }
     public RectangleButton(Color color) : this(color, color, color) { }
-    public override void OnDraw(GameMaster m)
+    public override void OnDraw()
     {
-        m.DrawRectangle(displayed,Bounds);
+        GetMaster().Renderer.FillRectangle(GetBrush(), Bounds);
     }
 }
 public class BitmapButton : ButtonBase<Bitmap>
 {
     public BitmapButton(Bitmap defalutBitmap, Bitmap pointedBitmap, Bitmap clickedBitmap) : base(defalutBitmap, pointedBitmap, clickedBitmap) { }
     public BitmapButton(Bitmap bmp) : this(bmp,bmp,bmp) { }
-    public override void OnDraw(GameMaster m)
+    public override void OnDraw()
     {
-        m.DrawSprite(displayed, Bounds.Location);
+        GetMaster().DrawBitmap(displayed, Bounds.Location);
     }
 }
 public class TextRectButton : RectangleButton
@@ -108,15 +109,15 @@ public class TextRectButton : RectangleButton
     public TextRectButton(string text,Color defalut, Color pointed, Color clicked) : base(defalut, pointed, clicked) { stringRenderer = new(font, text); }
     public TextRectButton(string text,Color color) : this(text,color, color, color) { }
 
-    public override void OnUpdate(GameMaster m)
+    public override void OnUpdate()
     {
-        base.OnUpdate(m);
-        stringRenderer.OnUpdate(m);
+        base.OnUpdate();
+        stringRenderer.OnUpdate();
     }
-    public override void OnDraw(GameMaster m)
+    public override void OnDraw()
     {
-        base.OnDraw(m);
-        stringRenderer.Draw(m,m.Renderer);
+        base.OnDraw();
+        stringRenderer.Draw(GetMaster(),GetMaster().Renderer);
     }
 }
 public class TextSpriteButton : BitmapButton
@@ -126,14 +127,14 @@ public class TextSpriteButton : BitmapButton
     public TextSpriteButton(string text,Bitmap defalutBmp, Bitmap pointedBmp, Bitmap clickedBmp) : base(defalutBmp, pointedBmp, clickedBmp) { stringRenderer = new(font, text);}
     public TextSpriteButton(string text, Bitmap bmp) : this(text,bmp, bmp, bmp) { }
 
-    public override void OnUpdate(GameMaster m)
+    public override void OnUpdate()
     {
-        base.OnUpdate(m);
-        stringRenderer.OnUpdate(m);
+        base.OnUpdate();
+        stringRenderer.OnUpdate();
     }
-    public override void OnDraw(GameMaster m)
+    public override void OnDraw()
     {
-        base.OnDraw(m);
-        stringRenderer.Draw(m, m.Renderer);
+        base.OnDraw();
+        stringRenderer.Draw(GetMaster(), GetMaster().Renderer);
     }
 }

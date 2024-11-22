@@ -42,6 +42,7 @@ public class Group<T> : HashSet<T>
                 Add(obj);
     }
 }
+
 /// <summary>
 /// Auto updates when new hierarchy or object is added in any hierarchy of group.
 /// </summary>

@@ -1,6 +1,6 @@
 ﻿using WFGL.Core;
 using WFGL.Objects;
-
+using System.Drawing.Imaging.Effects;
 namespace WFGL.Rendering;
 
 /// <summary>
@@ -10,6 +10,7 @@ public class BitmapRenderer : Transform, IDrawable
 {
     public Bitmap Source { get; set; }
     public float BitmapRotation { get; set; }
+    public Effect? Effect { get; } // TODO: add automatization (changing effects over time)
 
     /// <summary>
     /// Viewed size of sprite on the screen
@@ -18,13 +19,18 @@ public class BitmapRenderer : Transform, IDrawable
 
     public BitmapRenderer(Bitmap bitmap)
     {
-        Source = bitmap;       
+        Source = bitmap;
     }
+    public BitmapRenderer(Bitmap bitmap, Effect effect) : this(bitmap)
+    {
+        Effect = effect;
+        Source.ApplyEffect(Effect);
+    }
+
     public BitmapRenderer(string filePath) : this(new Bitmap(filePath)) { }
 
     public void Draw(GameMaster m, Graphics r)
     {
-
         Point size = RealSize.VirtualizePixel(m.MainView);
         Point pos = Position.ToPoint(m.VirtualScale);
 

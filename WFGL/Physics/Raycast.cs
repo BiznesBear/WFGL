@@ -1,7 +1,7 @@
 using WFGL.Core;
-using WFGL.Rendering;
 
 namespace WFGL.Physics;
+
 /// <summary>
 /// Ray used for calculating raycasts
 /// </summary>
@@ -11,6 +11,7 @@ public struct Ray(Vec2 origin, Vec2 direction)
 {
     public Vec2 Origin { get; set; } = origin;
     public Vec2 Direction { get; set; } = direction;
+
     public float? maxRange = null;
     public Ray(Vec2 origin, Vec2 direction, float range) : this(origin, direction) { maxRange = range; }
 
@@ -54,10 +55,10 @@ public struct Ray(Vec2 origin, Vec2 direction)
     }
 
     public readonly void DrawGizmos(GameMaster m) =>
-        m.DrawLine(Origin.ToPoint(m.VirtualScale), Direction.ToPoint(m.VirtualScale));
+        m.DrawLine(Origin, Direction);
 
     public readonly void DrawGizmos(GameMaster m, Vec2 intersectionPoint) =>
-        m.DrawLine(Origin.ToPoint(m.VirtualScale), intersectionPoint.ToPoint(m.VirtualScale));
+        m.DrawLine(Origin, intersectionPoint);
 
     public override readonly string ToString() => $"{Origin} => {Direction}";
 }

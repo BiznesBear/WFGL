@@ -14,8 +14,6 @@ public class GravityTestsMaster : GameMaster
 {
     // assets
     public readonly static Font font = new("Consolas", 12);
-    public readonly static Bitmap maszWypadloCi = new("mozg-masz-wypadlo-ci.jpg");
-    public readonly static Bitmap playerSprite = new("furniture.png");
 
     // layers
     public readonly static Layer canvasLayer = new(300);
@@ -31,8 +29,8 @@ public class GravityTestsMaster : GameMaster
 
     // objects
 
-    internal CollidingBitmapRenderer sprite = new("aushf.jpg") { Position = new(0, 4f), Layer = underTopLayer };
-    internal CollidingBitmapRenderer sprite2 = new("aushf.jpg") { Position = new(3.5f, 4f), Layer = underTopLayer };
+    internal CollidingBitmapRenderer sprite = new(Assets.aushf) { Position = new(0, 4f), Layer = underTopLayer };
+    internal CollidingBitmapRenderer sprite2 = new(Assets.aushf) { Position = new(3.5f, 4f), Layer = underTopLayer };
     internal RigidPlayer player;
 
     StringRenderer fpsText;
@@ -41,7 +39,7 @@ public class GravityTestsMaster : GameMaster
 
     public GravityTestsMaster(GameWindow window) : base(window)
     {
-        RegisterInput(new GravityTestsInput(this));
+        GameWindow.RegisterInput(new GravityTestsInput());
         WindowAspectLock = true;
 
         LayerMaster.Layers = [topLayer, underTopLayer, canvasLayer];
@@ -59,15 +57,16 @@ public class GravityTestsMaster : GameMaster
         background.Objects = [
             sprite,
             sprite2,
-            new BitmapRenderer(maszWypadloCi) { Position = 1 },
-            new BitmapRenderer(maszWypadloCi) { Position = 3 },
-            new BitmapRenderer(maszWypadloCi) { Position = 2 },
-            new BitmapRenderer(maszWypadloCi) { Position = 4 },
-            new BitmapRenderer(maszWypadloCi) { Position = new(0, 4) },
-            new BitmapRenderer(maszWypadloCi) { Position = new(0, 3) },
-            new BitmapRenderer(maszWypadloCi) { Position = Vec2.Zero },
-            new BitmapRenderer(maszWypadloCi) { Position = new(3, 0) },
+            new BitmapRenderer(Assets.maszWypadloCi) { Position = 1 },
+            new BitmapRenderer(Assets.maszWypadloCi) { Position = 3 },
+            new BitmapRenderer(Assets.maszWypadloCi) { Position = 2 },
+            new BitmapRenderer(Assets.maszWypadloCi) { Position = 4 },
+            new BitmapRenderer(Assets.maszWypadloCi) { Position = new(0, 4) },
+            new BitmapRenderer(Assets.maszWypadloCi) { Position = new(0, 3) },
+            new BitmapRenderer(Assets.maszWypadloCi){ Position = Vec2.Zero },
+            new BitmapRenderer(Assets.maszWypadloCi) { Position = new(3, 0) },
         ];
+
         objects.Objects = [
             player,
             background,
@@ -102,7 +101,7 @@ public class GravityTestsMaster : GameMaster
     protected override void OnDraw()
     {
         // drawing background 
-        DrawRectangle(new(MainView.RealPosition, RenderSize));
+        Renderer.FillRectangle(defaultBrush, new(0, 0, VirtualSize.Width, VirtualSize.Height));
     }
     protected override void OnAfterDraw()
     {
@@ -116,15 +115,15 @@ public class GravityTestsMaster : GameMaster
     }
 }
 
-internal class GravityTestsInput(GameMaster master) : InputHandler(master)
+internal class GravityTestsInput : InputHandler
 {
     protected override void OnKeyDown(Keys key)
     {
         if (key == Keys.F11)
         {
             // full screen
-            if (!Master.IsFullScreen) Master.FullScreen();
-            else Master.NormalScreen();
+            if (!Program.gravityTestsInstance.IsFullScreen) Program.gravityTestsInstance.FullScreen();
+            else Program.gravityTestsInstance.NormalScreen();
         }
 
         if(key == Keys.C)
@@ -135,7 +134,7 @@ internal class GravityTestsInput(GameMaster master) : InputHandler(master)
 
         if (key == Keys.P)
         {
-            Master.MainView.Position = 0;
+            Program.gravityTestsInstance.MainView.Position = 0;
         }
     }
 }
@@ -143,7 +142,7 @@ internal class GravityTestsInput(GameMaster master) : InputHandler(master)
 internal class RigidPlayer : GravityTransform, ICollide
 {
     // sub-objects
-    internal BitmapRenderer playerSprite = new(GravityTestsMaster.playerSprite);
+    internal BitmapRenderer playerSprite = new(Assets.player);
 
     // movement
     float speed = normalSpeed;
@@ -160,13 +159,13 @@ internal class RigidPlayer : GravityTransform, ICollide
         base.OnCreate(h, m);
         playerSprite.Scale = new(1f, 0.6f);
     }
-    public override void OnUpdate(GameMaster m)
+    public override void OnUpdate()
     {
-        base.OnUpdate(m);
+        base.OnUpdate();
         // movement
         Vec2 direction = Vec2.Zero;
 
-        var input = m.InputMaster;
+        var input = GetMaster().InputMaster;
 
         if (input.IsKeyPressed(Keys.Space))
         {
@@ -184,16 +183,16 @@ internal class RigidPlayer : GravityTransform, ICollide
         }
         else
         {
-            dir = direction.Normalize() * speed * m.TimeMaster.DeltaTime;
+            dir = direction.Normalize() * speed * GetMaster().TimeMaster.DeltaTime;
         }
 
         Position += dir;
 
         playerSprite.Position = Position;
     }
-    public override void OnDraw(GameMaster m)
+    public override void OnDraw()
     {
         // updating not registred object manually
-        playerSprite.Draw(m, m.Renderer);
+        playerSprite.Draw(GetMaster(), GetMaster().Renderer);
     }
 }

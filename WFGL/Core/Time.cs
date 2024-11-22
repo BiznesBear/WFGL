@@ -2,6 +2,8 @@
 using Timer = System.Windows.Forms.Timer;
 namespace WFGL.Core;
 
+
+// TODO: Maybe rework this? 
 public class Time 
 {
     public const int DEFALUT_INTERVAL = 1000 / DEFALUT_FPS;

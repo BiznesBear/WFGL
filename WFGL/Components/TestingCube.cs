@@ -13,9 +13,9 @@ public class TestingCube : Cube
         Pen = Pens.Red;
     }
 
-    public override void OnUpdate(GameMaster m)
+    public override void OnUpdate()
     {
-        base.OnUpdate(m);
+        base.OnUpdate();
         Rot += rotatingSpeed;
     }
 }

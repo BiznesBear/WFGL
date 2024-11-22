@@ -13,7 +13,7 @@ public class StaticDrawHierarchy(GameMaster m) : Hierarchy(m), IDrawable
     public Bitmap GetRender() => staticRender ?? throw new ArgumentNullException("Null group render");
     public void Render()
     {
-        staticRender = new(GetMaster().RenderSize.Width, GetMaster().RenderSize.Height);
+        staticRender = new(GetMaster().VirtualSize.Width, GetMaster().VirtualSize.Height);
         using var renderer = Graphics.FromImage(staticRender);
         foreach (var obj in GetObjects())
         {

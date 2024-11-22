@@ -9,9 +9,9 @@ public abstract class GravityTransform : Transform
     public float GravityStrenght { get; set; } = 0.15f;
     public Vec2 GravityDirection { get; set; } = Vec2.Down;
 
-    public override void OnUpdate(GameMaster m)
+    public override void OnUpdate()
     {
-        base.OnUpdate(m);
+        base.OnUpdate();
         Velocity += GravityDirection * GravityStrenght * GetMaster().TimeMaster.DeltaTime;
         Velocity = CheckVelocityLimit(Velocity);
         Position += Velocity;

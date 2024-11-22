@@ -32,26 +32,23 @@ public class View : Transform
     /// </summary>
     public float Scaler => GetMaster().VirtualScale.FactorX / Target; // dividing virtual unit by refrence target to get real virtual unit 
 
-    public float ViewDistance { get; set; } = 4;
-    public float Fov { get; set; } = 500;
-
     public Size GetAspect()
     {
-        var GameWindow = GetMaster().GetWindow();
-        var windowAspectRatio = (float)GameWindow.ClientSize.Width / GameWindow.ClientSize.Height;
+        var win = GetMaster().GameWindow;
+        var winAspectRatio = (float)win.ClientSize.Width / win.ClientSize.Height;
         var targetAspectRatio = (float)AspectRatio.Width / AspectRatio.Height;
 
-        if (windowAspectRatio > targetAspectRatio)
+        if (winAspectRatio > targetAspectRatio)
         {
-            var width = (int)(GameWindow.ClientSize.Height * targetAspectRatio);
-            return new Size(width, GameWindow.ClientSize.Height);
+            var width = (int)(win.ClientSize.Height * targetAspectRatio);
+            return new Size(width, win.ClientSize.Height);
         }
-        else if (windowAspectRatio < targetAspectRatio)
+        else if (winAspectRatio < targetAspectRatio)
         {
-            var height = (int)(GameWindow.ClientSize.Width / targetAspectRatio);
-            return new Size(GameWindow.ClientSize.Width, height);
+            var height = (int)(win.ClientSize.Width / targetAspectRatio);
+            return new Size(win.ClientSize.Width, height);
         }
-        return GameWindow.ClientSize;
+        return win.ClientSize;
     }
 }
 public struct ViewOptions(Size aspectRatio, Size resolution, uint target = View.DEFALUT_TARGET)

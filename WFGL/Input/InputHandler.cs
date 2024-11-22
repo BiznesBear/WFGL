@@ -1,24 +1,26 @@
 ﻿namespace WFGL.Input;
+
+// TODO: Find a way to replace all "if(!Enabled) return;" with better system
+
 /// <summary>
 /// Handle input in more accessible way.
 /// </summary>
-/// <param name="master"></param>
-public abstract class InputHandler(Core.GameMaster master)
+public abstract class InputHandler
 {
-    protected Core.GameMaster Master { get; } = master;
-    protected readonly HashSet<Keys> pressedKeys = new();
-    public bool enabled = true;
+    public bool Enabled { get; set; } = true;
     public bool MouseInside { get; private set; }
+
+    protected readonly HashSet<Keys> pressedKeys = new();
     internal void KeyDown(object? sender, KeyEventArgs e)
     {
-        if(!enabled) return;
+        if(!Enabled) return;
         if (!pressedKeys.Contains(e.KeyCode)) OnKeyDown(e.KeyCode);
         pressedKeys.Add(e.KeyCode);
     }
 
     internal void KeyUp(object? sender, KeyEventArgs e)
     {
-        if (!enabled) return;
+        if (!Enabled) return;
 
         pressedKeys.Remove(e.KeyCode);
         OnKeyUp(e.KeyCode);
@@ -26,28 +28,35 @@ public abstract class InputHandler(Core.GameMaster master)
 
     internal void MouseMoved(object? sender, MouseEventArgs e)
     {
+        if (!Enabled) return;
         Mouse.Position = e.Location;
     }
     internal void MouseDown(object? sender, MouseEventArgs e)
     {
+        if (!Enabled) return;
+
         OnMouseDown(e.Button);
         Mouse.pressedButtons.Add(e.Button);
     }
     internal void MouseUp(object? sender, MouseEventArgs e)
     {
+        if (!Enabled) return;
+
         OnMouseUp(e.Button);
         Mouse.pressedButtons.Remove(e.Button);
     }
     internal void MouseDoubleClicked(object? sender, MouseEventArgs e)
     {
+        if (!Enabled) return;
+
         OnMouseDoubleClicked(e.Button);
     }
-    internal void MouseEnter(object? sender, EventArgs e) { MouseInside = true; }
-    internal void MouseLeave(object? sender, EventArgs e) { MouseInside = false; }
-
+        
+    internal void MouseEnter(object? sender, EventArgs e) { if (!Enabled) return; MouseInside = true; }
+    internal void MouseLeave(object? sender, EventArgs e) { if (!Enabled) return; MouseInside = false; }
     internal void MouseWheel(object? sender, MouseEventArgs e) { OnMouseWheel(e.Delta); }
 
-    public bool IsKeyPressed(Keys key) { if (!enabled) return false; return pressedKeys.Contains(key); }
+    public bool IsKeyPressed(Keys key) { if (!Enabled) return false; return pressedKeys.Contains(key); }
 
     /// <summary>
     /// Called when any pressed down any key

@@ -29,5 +29,5 @@ public static class Collider
         IsColliding(self, other, out ICollide? c);
 
     public static void DrawColliderBounds(this ICollide self, GameMaster m) =>
-        m.DrawRect(new(self.ColliderPosition.ToPoint(m.VirtualScale), self.ColliderSize.ToSize(m.VirtualScale)));
+        m.DrawBox(new(self.ColliderPosition, self.ColliderSize));
 }

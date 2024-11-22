@@ -10,13 +10,13 @@ using WFGL.Components;
 namespace DemoGame;
 
 
-public class TreDeTestMaster : GameMaster
+public class OrtographicCubeMaster : GameMaster
 {
     private Hierarchy objects;
     public TestingCube cube = new();
-    public TreDeTestMaster(GameWindow w) : base(w)
+    public OrtographicCubeMaster(GameWindow w) : base(w)
     {
-        RegisterInput(new TreDeTestInput(this));
+        GameWindow.RegisterInput(new OrtographicCubeInput());
 
         objects = new(this);
         objects.Objects = 
@@ -48,14 +48,15 @@ public class TreDeTestMaster : GameMaster
         cube.UpdateRot();
 
     }
+    private SolidBrush backgroundBrush = new SolidBrush(Color.FromArgb(22, 22, 22));
     protected override void OnDraw()
     {
         // background
-        DrawRectangle(Color.FromArgb(22,22,22),new(0,0, RenderSize.Width, RenderSize.Height));
+        Renderer.FillRectangle(backgroundBrush, new(0,0, VirtualSize.Width, VirtualSize.Height));
     }
 }
 
-public class TreDeTestInput(GameMaster g) : InputHandler(g)
+public class OrtographicCubeInput : InputHandler
 {
     protected override void OnMouseDown(MouseButtons buttons)
     {

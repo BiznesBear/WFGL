@@ -8,6 +8,7 @@ using WFGL.UI;
 using WFGL.Rendering;
 using WFGL.Objects;
 using WFGL.Components;
+using System.Drawing.Imaging.Effects;
 
 namespace DemoGame;
 
@@ -16,8 +17,7 @@ public class TestPlaceMaster : GameMaster
 {
     // assets
     public readonly static Font font = new("Cascadia Mono Light", 12);
-    public readonly static Bitmap maszWypadloCi = new("mozg-masz-wypadlo-ci.jpg");
-    public readonly static Bitmap playerSprite = new("furniture.png");
+
 
     // layers
     public readonly static Layer canvasLayer = new(300);
@@ -33,7 +33,7 @@ public class TestPlaceMaster : GameMaster
 
     // objects
 
-    internal CollidingBitmapRenderer sprite = new("aushf.jpg") { Position = new(2.5f, 0), Layer = underTopLayer };
+    internal CollidingBitmapRenderer sprite = new("assets/aushf.jpg") { Position = new(2.5f, 0), Layer = underTopLayer };
     internal TestPlacePlayer player;
 
     StringRenderer fpsText;
@@ -44,7 +44,7 @@ public class TestPlaceMaster : GameMaster
 
     public TestPlaceMaster(GameWindow window) : base(window)
     {
-        RegisterInput(new TestPlaceInput(this));
+        GameWindow.RegisterInput(new TestPlaceInput());
         WindowAspectLock = true;
 
         LayerMaster.Layers = [topLayer, underTopLayer, canvasLayer];
@@ -76,14 +76,14 @@ public class TestPlaceMaster : GameMaster
         
         background.Objects = [
             sprite,
-            new BitmapRenderer(maszWypadloCi) { Position = 1 },
-            new BitmapRenderer(maszWypadloCi) { Position = 3 },
-            new BitmapRenderer(maszWypadloCi) { Position = 2 },
-            new BitmapRenderer(maszWypadloCi) { Position = 4 },
-            new BitmapRenderer(maszWypadloCi) { Position = new(0, 4) },
-            new BitmapRenderer(maszWypadloCi) { Position = new(0, 3) },
-            new BitmapRenderer(maszWypadloCi){ Position = Vec2.Zero },
-            new BitmapRenderer(maszWypadloCi) { Position = new(3, 0) },
+            new BitmapRenderer(Assets.maszWypadloCi) { Position = 1 },
+            new BitmapRenderer(Assets.maszWypadloCi) { Position = 3 },
+            new BitmapRenderer(Assets.maszWypadloCi) { Position = 2 },
+            new BitmapRenderer(Assets.maszWypadloCi) { Position = 4 },
+            new BitmapRenderer(Assets.maszWypadloCi) { Position = new(0, 4) },
+            new BitmapRenderer(Assets.maszWypadloCi) { Position = new(0, 3) },
+            new BitmapRenderer(Assets.maszWypadloCi){ Position = Vec2.Zero },
+            new BitmapRenderer(Assets.maszWypadloCi) { Position = new(3, 0) },
         ];
 
         objects.Objects = [
@@ -119,11 +119,10 @@ public class TestPlaceMaster : GameMaster
 
         ResetRenderClip();
     }
-
     protected override void OnDraw()
     {
         // drawing background 
-        DrawRectangle(new(MainView.RealPosition, RenderSize));
+        Renderer.FillRectangle(defaultBrush, new(0, 0, VirtualSize.Width, VirtualSize.Height));
     }
     protected override void OnAfterDraw()
     {
@@ -137,19 +136,19 @@ public class TestPlaceMaster : GameMaster
     }
 }
 
-internal class TestPlaceInput(GameMaster master) : InputHandler(master)
+internal class TestPlaceInput : InputHandler
 {
     protected override void OnKeyDown(Keys key)
     {
         if (key == Keys.F11)
         {
             // full screen
-            if (!Master.IsFullScreen) Master.FullScreen();
-            else Master.NormalScreen();
+            if (!Program.testPlaceInstance.IsFullScreen) Program.testPlaceInstance.FullScreen();
+            else Program.testPlaceInstance.NormalScreen();
         }
         if (key == Keys.P)
         {
-            Master.MainView.Position = 0;
+            Program.testPlaceInstance.MainView.Position = 0;
         }
     }
 }
@@ -157,7 +156,7 @@ internal class TestPlaceInput(GameMaster master) : InputHandler(master)
 internal class TestPlacePlayer : Transform, ICollide
 {
     // sub-objects
-    internal BitmapRenderer playerSprite = new(TestPlaceMaster.playerSprite);
+    internal BitmapRenderer playerSprite = new(Assets.player);
 
     // movement
     float speed = normalSpeed;
@@ -179,19 +178,19 @@ internal class TestPlacePlayer : Transform, ICollide
         base.OnCreate(h, m);
         playerSprite.Scale = new(1f, 0.6f);
     }
-    public override void OnUpdate(GameMaster m)
+    public override void OnUpdate()
     {
         // movement
-        var input = m.InputMaster;
+        var input = GetMaster().InputMaster;
         speed = input.IsKeyPressed(Keys.Space) ? sprintSpeed : normalSpeed;
-
+        
         Vec2 direction = Vec2.Zero;
         if (input.IsKeyPressed(Keys.A)) direction -= new Vec2(speed, 0f);
         if (input.IsKeyPressed(Keys.D)) direction += new Vec2(speed, 0f);
         if (input.IsKeyPressed(Keys.W)) direction -= new Vec2(0f, speed);
         if (input.IsKeyPressed(Keys.S)) direction += new Vec2(0f, speed);
 
-        dir = direction.Normalize() * speed * m.TimeMaster.DeltaTime;
+        dir = direction.Normalize() * speed * GetMaster().TimeMaster.DeltaTime;
         
         if (!this.IsColliding(Program.testPlaceInstance.colliders, out ICollide? coll)) // to avoid player clipping
             Position += dir;
@@ -204,12 +203,12 @@ internal class TestPlacePlayer : Transform, ICollide
         ray.IsColliding(Program.testPlaceInstance.sprite, out hitInfo);
         inP = hitInfo.collisionPoint;
     }
-    public override void OnDraw(GameMaster m)
+    public override void OnDraw()
     {
         // updating not registred object manually
-        playerSprite.Draw(m,m.Renderer);
+        playerSprite.Draw(GetMaster(), GetMaster().Renderer);
 
         // drawing ray gizmos
-        hitInfo.ray.DrawGizmos(m, inP);
+        hitInfo.ray.DrawGizmos(GetMaster(), inP);
     }
 }

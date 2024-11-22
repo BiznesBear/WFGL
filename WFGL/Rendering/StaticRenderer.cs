@@ -14,7 +14,7 @@ public class StaticRenderer : Transform, IDrawable
     public Bitmap GetRender() => staticBitmap ?? throw new ArgumentNullException("Null render");
     public virtual void Render()
     {
-        staticBitmap = new(GetMaster().RenderSize.Width, GetMaster().RenderSize.Height);
+        staticBitmap = new(GetMaster().VirtualSize.Width, GetMaster().VirtualSize.Height);
 
         using (Graphics g = Graphics.FromImage(staticBitmap))
         {

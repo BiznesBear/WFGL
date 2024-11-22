@@ -13,10 +13,10 @@ public abstract class Entity
 
     public Layer Layer { get; set; } = Layer.Defalut;
 
-    public GameMaster GetMaster() => Master ?? throw new ArgumentNullException("Null game master instance in entity");
-    public Hierarchy GetHierarchy() => Hierarchy ?? throw new ArgumentNullException("Null hierarchy instance in entity");
-        
-    public void SetMaster(GameMaster master) => Master = master;
+    public GameMaster GetMaster() => Master ?? throw new ArgumentNullException("Null GameMaster instance in entity");
+    public Hierarchy GetHierarchy() => Hierarchy ?? throw new ArgumentNullException("Null Hierarchy instance in entity");
+
+    public void SetMaster(GameMaster master) => Master = master; 
     public void SetHierarchy(Hierarchy? hierarchy) => Hierarchy = hierarchy;
 
 
@@ -30,8 +30,8 @@ public abstract class Entity
         OnDestroy(hierarchy, hierarchy.GetMaster());
         hierarchy.Deregister(this);
     }
-    public virtual void OnCreate(Hierarchy h, GameMaster m) { Master = m; }
+    public virtual void OnCreate(Hierarchy h, GameMaster m) { SetMaster(m); }
     public virtual void OnDestroy(Hierarchy h, GameMaster m) { }
-    public virtual void OnUpdate(GameMaster m) { }
-    public virtual void OnDraw(GameMaster m) { }
+    public virtual void OnUpdate() { }
+    public virtual void OnDraw() { }
 }

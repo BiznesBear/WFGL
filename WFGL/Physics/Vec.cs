@@ -52,15 +52,6 @@ public struct Vec2(float x, float y) : IVec<Vec2>
 
     public readonly override string ToString() => $"Vec2({X};{Y})";
 
-    public Point GetPoint()
-    {
-        throw new NotImplementedException();
-    }
-
-    public Size GetSize()
-    {
-        throw new NotImplementedException();
-    }
 }
 
 public struct Vec3(float x, float y, float z) : IVec<Vec3>
