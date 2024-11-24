@@ -7,15 +7,16 @@ namespace WFGL.Objects;
 // TODO: Make hierarchy drawable?
 public class Hierarchy : Entity  
 {
-    public List<Entity> Objects
+    public List<Entity> Objects => objects;
+    public IReadOnlyList<Entity> Init
     {
-        get => objects;
         set
         {
             foreach (Entity obj in value)
                 obj.Create(this);
         }
     }
+
 
     public event Action ChangedList;
     public event EntityEventHandler? AddedObject;

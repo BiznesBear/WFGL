@@ -120,12 +120,12 @@ public class TextRectButton : RectangleButton
         stringRenderer.Draw(GetMaster(),GetMaster().Renderer);
     }
 }
-public class TextSpriteButton : BitmapButton
+public class TextBitmapButton : BitmapButton
 {
     public Font font = new(StringRenderer.DEFALUT_FONT_NAME, 12);
     public readonly StringRenderer stringRenderer;
-    public TextSpriteButton(string text,Bitmap defalutBmp, Bitmap pointedBmp, Bitmap clickedBmp) : base(defalutBmp, pointedBmp, clickedBmp) { stringRenderer = new(font, text);}
-    public TextSpriteButton(string text, Bitmap bmp) : this(text,bmp, bmp, bmp) { }
+    public TextBitmapButton(string text,Bitmap defalutBmp, Bitmap pointedBmp, Bitmap clickedBmp) : base(defalutBmp, pointedBmp, clickedBmp) { stringRenderer = new(font, text);}
+    public TextBitmapButton(string text, Bitmap bmp) : this(text,bmp, bmp, bmp) { }
 
     public override void OnUpdate()
     {

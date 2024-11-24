@@ -7,7 +7,7 @@ internal class Program
     #pragma warning disable
     public static TestPlaceMaster testPlaceInstance;
     public static GravityTestsMaster gravityTestsInstance;
-    public static OrtographicCubeMaster renderTestInstance;
+    public static OrtographicCubeMaster ortographicCubeGame;
     public static LabMaster labInstance;
     #pragma warning restore
 
@@ -16,8 +16,8 @@ internal class Program
     {
         GameWindow window = new(GameWindowOptions.Default);
 
-        //renderTestInstance = new(window);
-        //renderTestInstance.Load();
+        //ortographicCubeGame = new(window);
+        //ortographicCubeGame.Load();
 
         testPlaceInstance = new(window);
         testPlaceInstance.Load();

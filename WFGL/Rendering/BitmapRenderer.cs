@@ -1,6 +1,7 @@
 ﻿using WFGL.Core;
 using WFGL.Objects;
 using System.Drawing.Imaging.Effects;
+using System.Drawing.Imaging;
 namespace WFGL.Rendering;
 
 /// <summary>
@@ -34,9 +35,16 @@ public class BitmapRenderer : Transform, IDrawable
         Point size = RealSize.VirtualizePixel(m.MainView);
         Point pos = Position.ToPoint(m.VirtualScale);
 
-        r.TranslateTransform(pos.X, pos.Y);
-        r.RotateTransform(BitmapRotation);
-        r.DrawImage(Source, 0, 0, size.X, size.Y);
-        r.ResetTransform();
+        if(BitmapRotation != 0)
+        {
+            r.TranslateTransform(pos.X, pos.Y);
+            r.RotateTransform(BitmapRotation);
+            r.DrawImage(Source, 0, 0, size.X, size.Y);
+            r.ResetTransform();
+        }
+        else
+        {
+            r.DrawImage(Source, pos.X, pos.Y, size.X, size.Y);
+        }
     }
 }

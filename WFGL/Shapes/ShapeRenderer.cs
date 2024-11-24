@@ -34,7 +34,9 @@ public class ShapeRenderer : Transform3D, IPenDrawable
         foreach (var v in Shape.Vertices)
             yield return (v + Position).ToPoint(GetMaster().VirtualScale);
     }
-
+    /// <summary>
+    /// Transforms shape by rotation. Need to be called after transformation manually.
+    /// </summary>
     public virtual void UpdateRot()
     {
         Matrix4x4 rotationMatrix = Matrix4x4.CreateFromYawPitchRoll(Rot.Y, Rot.X, Rot.Z);

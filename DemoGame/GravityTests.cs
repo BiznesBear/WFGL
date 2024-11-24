@@ -54,7 +54,7 @@ public class GravityTestsMaster : GameMaster
 
     protected override void OnLoad()
     {
-        background.Objects = [
+        background.Init = [
             sprite,
             sprite2,
             new BitmapRenderer(Assets.maszWypadloCi) { Position = 1 },
@@ -67,12 +67,12 @@ public class GravityTestsMaster : GameMaster
             new BitmapRenderer(Assets.maszWypadloCi) { Position = new(3, 0) },
         ];
 
-        objects.Objects = [
+        objects.Init = [
             player,
             background,
         ];
 
-        canvas.Objects = [
+        canvas.Init = [
             fpsText,
             userNameText,
         ];

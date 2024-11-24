@@ -7,13 +7,23 @@ namespace WFGL.Core;
 
 public abstract partial class GameMaster 
 {
-    #region Main
     public GameWindow GameWindow { get; }
     public View MainView { get; set; }
     public Time TimeMaster { get; } = new();
     public LayerMaster LayerMaster { get; } = new();
     public Hierarchy MainHierarchy { get; }
     public Graphics Renderer { get; private set; }
+    public Canvas? Canvas { get; private set; }
+    public Control TargetControl => Canvas is null? GameWindow : Canvas;
+    public InputHandler InputMaster => GameWindow.GetInput();
+
+    #region Virtual
+    public VirtualUnit VirtualScale => new VirtualUnit(RealVirtualScaleX, RealVirtualScaleY).Normalize();
+    public float RealVirtualScaleX => VirtualUnit.VirtualizeToFactor(TargetControl.ClientSize.Width);
+    public float RealVirtualScaleY => VirtualUnit.VirtualizeToFactor(TargetControl.ClientSize.Height);
+    public Point Center => new(TargetControl.ClientSize.Width / 2, TargetControl.ClientSize.Height / 2);
+
+    public Size VirtualSize => VirtualScale.GetSize();
 
     #endregion
 
@@ -34,25 +44,20 @@ public abstract partial class GameMaster
 
     #endregion
 
-    #region Getters
-    public InputHandler InputMaster => GameWindow.GetInput();
-    public VirtualUnit VirtualScale => GameWindow.VirtualScale;
-    public Size VirtualSize => VirtualScale.GetSize();
-
-    #endregion
-
     // render view
+    
     private Bitmap renderBuffer;
     private Size windowSizeTemp;
 
-    public GameMaster(GameWindow window)
+
+    public GameMaster(GameWindow window, Canvas? canvas)
     {
         // IMPORTANT: DO NOT CHANGE THE ORDER
         GameWindow = window;
+        Canvas = canvas;
         windowSizeTemp = GameWindow.ClientSize;
 
-        
-        GameWindow.Paint += Draw;
+        TargetControl.Paint += Draw;
         GameWindow.ResizeEnd += Resized;
 
         MainView = new(this, ViewOptions.Default);
@@ -71,17 +76,18 @@ public abstract partial class GameMaster
         WhenUpdate += MainHierarchy.OnUpdate;
         WhenDraw += MainHierarchy.OnDraw;
     }
-    
-    public void Load()
+    public GameMaster(GameWindow window) : this(window, null) { }
+
+    public void Load(bool showDialog=true)
     {
         // IMPORTANT: DO NOT CHANGE THE ORDER
         TimeMaster.Start();
         OnLoad();
-        GameWindow.ShowDialog();
+        if(showDialog) GameWindow.ShowDialog();
     }
     private void Update(object? sender, EventArgs e)
     {
-        GameWindow.Invalidate(new Rectangle(MainView.RealPosition.X, MainView.RealPosition.Y, VirtualSize.Width, VirtualSize.Height));
+        TargetControl.Invalidate(new Rectangle(MainView.RealPosition.X, MainView.RealPosition.Y, VirtualSize.Width, VirtualSize.Height));
         WhenUpdate?.Invoke();
     }
 
@@ -119,9 +125,16 @@ public abstract partial class GameMaster
     {
         Renderer.SetClip((new Rectangle(MainView.RealPosition.X, MainView.RealPosition.Y, VirtualSize.Width, VirtualSize.Height)));
     }
+    public void RefreshTarget() => TargetControl.Invalidate();
+
     #endregion
 
+    public void RegisterHierarchy(Hierarchy hierarchy)
+       => MainHierarchy.Register(hierarchy);
+    public void DeregisterHierarchy(Hierarchy hierarchy)
+        => MainHierarchy.Deregister(hierarchy);
 
+    #region WindowModes
     // full screen window
     public void FullScreen()
     {
@@ -146,12 +159,7 @@ public abstract partial class GameMaster
         ResetRenderBuffer();
         OnResized();
     }
-
-    public void RegisterHierarchy(Hierarchy hierarchy) 
-        => MainHierarchy.Register(hierarchy);
-    public void DeregisterHierarchy(Hierarchy hierarchy)
-        => MainHierarchy.Deregister(hierarchy);
-
+    #endregion
 
     #region EventFunctions
 

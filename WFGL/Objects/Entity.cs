@@ -4,10 +4,14 @@ using WFGL.Rendering;
 namespace WFGL.Objects;
 
 /// <summary>
-/// Base object without any additional properties.
+/// Base class for components.
 /// </summary>
 public abstract class Entity  
 {
+    /// <summary>
+    /// Optional entity name only used in WFGE for idenifing entities.
+    /// </summary>
+    public string Name => GetType().Name;
     private Hierarchy? Hierarchy { get; set; }
     private GameMaster? Master { get; set; }
 
@@ -18,7 +22,6 @@ public abstract class Entity
 
     public void SetMaster(GameMaster master) => Master = master; 
     public void SetHierarchy(Hierarchy? hierarchy) => Hierarchy = hierarchy;
-
 
     public void Create(Hierarchy hierarchy)
     {

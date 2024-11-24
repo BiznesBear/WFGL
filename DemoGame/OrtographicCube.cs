@@ -9,25 +9,26 @@ using WFGL.Components;
 
 namespace DemoGame;
 
-
 public class OrtographicCubeMaster : GameMaster
 {
-    private Hierarchy objects;
     public TestingCube cube = new();
+
+    private const float rotSp = 0.06f;
+    private Hierarchy objects;
     public OrtographicCubeMaster(GameWindow w) : base(w)
     {
         GameWindow.RegisterInput(new OrtographicCubeInput());
 
+        cube.Position = Center.ToVec3(VirtualScale);
         objects = new(this);
-        objects.Objects = 
+        objects.Init = 
         [
             cube
         ];
         RegisterHierarchy(objects);
     }
 
-
-    const float rotSp = 0.06f;
+    
     protected override void OnUpdate()
     {
         float speed = 3f;
@@ -44,9 +45,6 @@ public class OrtographicCubeMaster : GameMaster
         if (InputMaster.IsKeyPressed(Keys.Left)) cube.Rot += new Vec3(0, rotSp, 0);
         if (InputMaster.IsKeyPressed(Keys.Right)) cube.Rot += new Vec3(0, 0, rotSp);
         if (InputMaster.IsKeyPressed(Keys.Up)) cube.Rot += new Vec3(rotSp, 0, 0);
-
-        cube.UpdateRot();
-
     }
     private SolidBrush backgroundBrush = new SolidBrush(Color.FromArgb(22, 22, 22));
     protected override void OnDraw()
@@ -60,7 +58,7 @@ public class OrtographicCubeInput : InputHandler
 {
     protected override void OnMouseDown(MouseButtons buttons)
     {
-        Program.renderTestInstance.cube.Scale += buttons==MouseButtons.Left? 0.1f : -0.1f;
+        Program.ortographicCubeGame.cube.Scale += buttons==MouseButtons.Left? 0.1f : -0.1f;
         base.OnMouseDown(buttons);
     }
 }

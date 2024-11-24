@@ -6,12 +6,6 @@ namespace WFGL.Core;
 public class GameWindow : Form
 {
     public FormBorderStyle borderStyle = FormBorderStyle.Sizable;
-
-    public VirtualUnit VirtualScale => new VirtualUnit(RealVirtualScaleX, RealVirtualScaleY).Normalize();
-    public float RealVirtualScaleX => VirtualUnit.VirtualizeToFactor(ClientSize.Width);
-    public float RealVirtualScaleY => VirtualUnit.VirtualizeToFactor(ClientSize.Height);
-    public Point WindowCenter => new(ClientSize.Width / 2, ClientSize.Height / 2);
-
     private InputHandler? inputHandler;
 
     public GameWindow(GameWindowOptions options)
@@ -19,7 +13,7 @@ public class GameWindow : Form
         DoubleBuffered = true;
         SetWindowOptions(options);
     }
-
+    public GameWindow() : this(GameWindowOptions.Default) { }
     public void SetWindowOptions(GameWindowOptions options)
     {
         SetStyle(ControlStyles.EnableNotifyMessage, options.EnableNotifyMessage);
@@ -88,7 +82,6 @@ public struct GameWindowOptions
         Title = "WFGL game window",
         Size = new(700, 700),
         MinSize = new(250, 250),
-        Background = Color.Black,
         EnableNotifyMessage = true,
         OptimizedDoubleBuffer = true,
         UserPaint = true,

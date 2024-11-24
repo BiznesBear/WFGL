@@ -74,7 +74,7 @@ public class TestPlaceMaster : GameMaster
 
         // use this instead
         
-        background.Objects = [
+        background.Init = [
             sprite,
             new BitmapRenderer(Assets.maszWypadloCi) { Position = 1 },
             new BitmapRenderer(Assets.maszWypadloCi) { Position = 3 },
@@ -86,13 +86,13 @@ public class TestPlaceMaster : GameMaster
             new BitmapRenderer(Assets.maszWypadloCi) { Position = new(3, 0) },
         ];
 
-        objects.Objects = [
+        objects.Init = [
             player,
             background,
             myButton
-         ];
+        ];
 
-        canvas.Objects = [
+        canvas.Init = [
             fpsText,
             userNameText,
         ];

@@ -17,5 +17,6 @@ public class TestingCube : Cube
     {
         base.OnUpdate();
         Rot += rotatingSpeed;
+        UpdateRot();
     }
 }
