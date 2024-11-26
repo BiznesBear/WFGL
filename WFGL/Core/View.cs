@@ -17,10 +17,6 @@ public class View : Transform
     /// </summary>
     public Size AspectRatio { get; set; }
 
-    /// <summary>
-    /// Target resolution of viewed render 
-    /// </summary>
-    public Size Resolution { get; set; } 
 
     /// <summary>
     /// Refrence size of rendering everything on window.
@@ -51,11 +47,10 @@ public class View : Transform
         return win.ClientSize;
     }
 }
-public struct ViewOptions(Size aspectRatio, Size resolution, uint target = View.DEFALUT_TARGET)
+public struct ViewOptions(Size aspectRatio, uint target = View.DEFALUT_TARGET)
 {
     public uint Target { get; set; } = target;
     public Size AspectRatio { get; set; } = aspectRatio;
-    public Size Resolution { get; set; } = resolution;
 
-    public readonly static ViewOptions Default = new(new Size(16, 9), new(700, 700));
+    public readonly static ViewOptions Default = new(new Size(16, 9));
 }

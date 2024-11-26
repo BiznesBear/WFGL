@@ -5,11 +5,10 @@ namespace WFGL.Rendering;
 
 public class StaticRenderer : Transform, IDrawable
 {
-    public List<IDrawable> drawables = new();
+    public List<IDrawable> drawables = [];
     public bool needsRedraw;
 
     private Bitmap? staticBitmap;
-
 
     public Bitmap GetRender() => staticBitmap ?? throw new ArgumentNullException("Null render");
     public virtual void Render()

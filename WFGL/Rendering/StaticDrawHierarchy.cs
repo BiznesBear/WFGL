@@ -4,7 +4,7 @@ using WFGL.Objects;
 namespace WFGL.Rendering;
 
 /// <summary>
-/// Renders multiple bitmaps at once. Need to be rendered manually. 
+/// Optimalization method for hierarchy. Renders objects only when Render method is called.
 /// </summary>
 /// <param name="m"></param>
 public class StaticDrawHierarchy(GameMaster m) : Hierarchy(m), IDrawable

@@ -7,7 +7,7 @@ public sealed class LayerMaster
     private List<Layer> LayersList { get; set; } = [Layer.Defalut];
 
     /// <summary>
-    /// Sets, and updates list of layers (with defalut, layer)
+    /// Gets or sets layers list with defalut layer.
     /// </summary>
     public List<Layer> Layers
     {
@@ -15,32 +15,33 @@ public sealed class LayerMaster
         set
         {
             LayersList = [Layer.Defalut];
-            LayersList.AddRange(value);
+            foreach(var l in value)
+                Register(l);
             UpdateList();
         }
     }
 
     /// <summary>
-    /// Registers new layer
+    /// Registers new layer.
     /// </summary>
     /// <param name="layer">Layer to register</param>
-    public void Register(Layer layer)
+    public void Register(Layer layer, bool updateList = true)
     {
         LayersList.Add(layer);
-        UpdateList();
+        if(updateList) UpdateList();
     }
     /// <summary>
-    /// Deregisters layer
+    /// Deregisters existing layer.
     /// </summary>
     /// <param name="layer">Layer to unregister</param>
-    public void Deregister(Layer layer)
+    public void Deregister(Layer layer, bool updateList = true)
     {
         LayersList.Remove(layer);
-        UpdateList();
+        if(updateList) UpdateList();
     }
 
     /// <summary>
-    /// Sorts layers list by draw weight
+    /// Sorts layers list by draw weight.
     /// </summary> 
     public void UpdateList() => LayersList.Sort((a, b) => a.DrawWeight.CompareTo(b.DrawWeight));
 
@@ -51,26 +52,20 @@ public sealed class LayerMaster
     /// <returns></returns>
     public static Dictionary<Layer, List<Entity>> SortObjectList(List<Entity> list) => list.GroupBy(o => o.Layer).ToDictionary(g => g.Key, g => g.ToList());
 
-    /// <summary>
-    /// 
-    /// </summary>
-    /// <param name="lm"></param>
-    /// <param name="order"></param>
-    /// <returns></returns>
+
     public static IEnumerable<Entity> GetObjectsFrom(LayerMaster lm, Dictionary<Layer, List<Entity>> order)
     {
         foreach (Layer layer in lm.LayersList)
         {
             if (order.TryGetValue(layer, out var objects))
-            {
                 foreach (Entity obj in objects)
                     yield return obj;
-            }
         }
     }
 }
+
 /// <summary>
-/// Specifies the priority of drawing the object.
+/// Specifies the priority of drawing the objects.
 /// </summary>
 /// <param name="drawWeight">Priority of drawing the object</param>
 public class Layer(short drawWeight)

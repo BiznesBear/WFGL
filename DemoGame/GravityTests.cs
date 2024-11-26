@@ -122,19 +122,19 @@ internal class GravityTestsInput : InputHandler
         if (key == Keys.F11)
         {
             // full screen
-            if (!Program.gravityTestsInstance.IsFullScreen) Program.gravityTestsInstance.FullScreen();
-            else Program.gravityTestsInstance.NormalScreen();
+            if (!Program.gravityTests.IsFullScreen) Program.gravityTests.FullScreen();
+            else Program.gravityTests.NormalScreen();
         }
 
         if(key == Keys.C)
         {
-            Program.gravityTestsInstance.player.ResetVelocity();
-            Program.gravityTestsInstance.player.AddForce(new(5, Vec2.Up));
+            Program.gravityTests.player.ResetVelocity();
+            Program.gravityTests.player.AddForce(new(5, Vec2.Up));
         }
 
         if (key == Keys.P)
         {
-            Program.gravityTestsInstance.MainView.Position = 0;
+            Program.gravityTests.MainView.Position = 0;
         }
     }
 }
@@ -176,7 +176,7 @@ internal class RigidPlayer : GravityTransform, ICollide
         if (input.IsKeyPressed(Keys.D)) direction += new Vec2(speed, 0f);
         
 
-        if (this.IsColliding(Program.gravityTestsInstance.colliders, out ICollide? coll)) // to avoid player clipping
+        if (this.IsColliding(Program.gravityTests.colliders, out ICollide? coll)) // to avoid player clipping
         {
             dir += Vec2.Up * 0.01f;
             ResetVelocity();

@@ -1,26 +1,28 @@
-﻿using WFGL.Core
-    ;
+﻿using System.Drawing;
+using WFGL.Core;
 namespace DemoGame;
 
 internal class Program
 {
-    #pragma warning disable
-    public static TestPlaceMaster testPlaceInstance;
-    public static GravityTestsMaster gravityTestsInstance;
-    public static OrtographicCubeMaster ortographicCubeGame;
-    public static LabMaster labInstance;
-    #pragma warning restore
+
+#pragma warning disable CS8618 
+    public static TestPlaceMaster testPlace;
+    public static GravityTestsMaster gravityTests;
+    public static OrtographicCubeMaster ortographicCube;
+    public static LabMaster lab;
+#pragma warning restore CS8618 
+
 
     [STAThread]
     private static void Main(string[] args)
     {
-        GameWindow window = new(GameWindowOptions.Default);
+        GameWindow window = new(GameWindowOptions.Default with { Background = Color.Black });
 
         //ortographicCubeGame = new(window);
         //ortographicCubeGame.Load();
 
-        testPlaceInstance = new(window);
-        testPlaceInstance.Load();
+        testPlace = new(window);
+        testPlace.Load();
 
         //labInstance = new(window);
         //labInstance.Load();

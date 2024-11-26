@@ -1,6 +1,6 @@
 ﻿using System.Drawing;
 using System.Windows.Forms;
-
+using WFGL;
 using WFGL.Core;
 using WFGL.Input;
 using WFGL.Physics;
@@ -8,7 +8,7 @@ using WFGL.UI;
 using WFGL.Rendering;
 using WFGL.Objects;
 using WFGL.Components;
-using System.Drawing.Imaging.Effects;
+using WFGL.Utilities;
 
 namespace DemoGame;
 
@@ -44,6 +44,7 @@ public class TestPlaceMaster : GameMaster
 
     public TestPlaceMaster(GameWindow window) : base(window)
     {
+        RuntimeSettings.All = true;
         GameWindow.RegisterInput(new TestPlaceInput());
         WindowAspectLock = true;
 
@@ -143,12 +144,17 @@ internal class TestPlaceInput : InputHandler
         if (key == Keys.F11)
         {
             // full screen
-            if (!Program.testPlaceInstance.IsFullScreen) Program.testPlaceInstance.FullScreen();
-            else Program.testPlaceInstance.NormalScreen();
+            if (!Program.testPlace.IsFullScreen) Program.testPlace.FullScreen();
+            else Program.testPlace.NormalScreen();
         }
         if (key == Keys.P)
         {
-            Program.testPlaceInstance.MainView.Position = 0;
+            Program.testPlace.MainView.Position = 0;
+        }
+        if(key == Keys.R)
+        {
+            Program.testPlace.Screenshot("screenshot.jpg");
+            Wrint.Info("Saved screenshot.jpg !");
         }
     }
 }
@@ -192,15 +198,14 @@ internal class TestPlacePlayer : Transform, ICollide
 
         dir = direction.Normalize() * speed * GetMaster().TimeMaster.DeltaTime;
         
-        if (!this.IsColliding(Program.testPlaceInstance.colliders, out ICollide? coll)) // to avoid player clipping
+        if (!this.IsColliding(Program.testPlace.colliders, out ICollide? coll)) // to avoid player clipping
             Position += dir;
 
         playerSprite.Position = Position;
 
-
         // raycast
         Ray ray = new(Position, coll != null ? coll.ColliderPosition : 1);
-        ray.IsColliding(Program.testPlaceInstance.sprite, out hitInfo);
+        ray.IsColliding(Program.testPlace.sprite, out hitInfo);
         inP = hitInfo.collisionPoint;
     }
     public override void OnDraw()

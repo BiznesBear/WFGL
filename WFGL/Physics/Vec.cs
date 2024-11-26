@@ -12,6 +12,7 @@ public struct Vec2(float x, float y) : IVec<Vec2>
 {
     public readonly static Vec2 Zero = new(0, 0);
     public readonly static Vec2 One = new(1, 1);
+    public readonly static Vec2 Half = new(0.5f, 0.5f);
 
     public readonly static Vec2 Left = new(-1, 0);
     public readonly static Vec2 Right = new(1, 0);
@@ -58,6 +59,7 @@ public struct Vec3(float x, float y, float z) : IVec<Vec3>
 {
     public readonly static Vec3 Zero = new(0, 0, 0);
     public readonly static Vec3 One = new(1, 1, 1);
+    public readonly static Vec3 Half = new(0.5f, 0.5f, 0.5f);
 
 
     public float X = x;

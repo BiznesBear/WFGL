@@ -1,5 +1,6 @@
 ﻿using WFGL.Core;
 using WFGL.Rendering;
+using WFGL.Utilities;
 
 namespace WFGL.Objects;
 
@@ -17,21 +18,20 @@ public class Hierarchy : Entity
         }
     }
 
-
     public event Action ChangedList;
     public event EntityEventHandler? AddedObject;
     public event EntityEventHandler? RemovedObject;
 
-    internal event Action? WhenUpdate;
+    public event Action? WhenUpdate;
 
     private Dictionary<Layer, List<Entity>> Order = [];
+    private readonly List<Entity> objects = [];
 
-    private readonly List<Entity> objects = new();
-
-
-    
-
-    public Hierarchy(GameMaster m) { ChangedList += UpdateOrder; SetMaster(m); }
+    public Hierarchy(GameMaster m) 
+    { 
+        ChangedList += UpdateOrder; 
+        SetMaster(m); 
+    }
 
     public void Register(Entity entity)
     {
@@ -42,6 +42,8 @@ public class Hierarchy : Entity
 
         AddedObject?.Invoke(entity);
         ChangedList.Invoke();
+
+        Wrint.Register($"{entity.GetType().Name} registered in {GetType().Name}");
     }
 
     public void Deregister(Entity entity)
@@ -53,6 +55,7 @@ public class Hierarchy : Entity
 
         RemovedObject?.Invoke(entity);
         ChangedList.Invoke();
+        Wrint.Deregister($"{entity.GetType().Name} deregistered in {GetType().Name}");
     }
 
     public void DestroyAll()
@@ -67,16 +70,23 @@ public class Hierarchy : Entity
     public IEnumerable<Entity> GetObjects() => LayerMaster.GetObjectsFrom(GetMaster().LayerMaster, Order);
 
    
-
     public override void OnUpdate()
     {
+        base.OnUpdate();
         WhenUpdate?.Invoke();
     }
-
     public override void OnDraw()
     {
+        base.OnDraw();
         DrawAll();
     }
+
+    public IEnumerable<T> GetAllObjectsWithType<T>()
+    {
+        foreach (var item in objects)
+            if (item is T t) yield return t;
+    }
+    
 
     protected void DrawAll()
     {
@@ -86,16 +96,9 @@ public class Hierarchy : Entity
             OnEntityDraw(entity);
         }
     }
-
     protected virtual void OnEntityDraw(Entity entity)
     {
         if (entity is IDrawable d) 
             d.Draw(GetMaster(), GetMaster().Renderer);
-    }
-
-    public IEnumerable<T> GetAllObjectsWithType<T>()
-    {
-        foreach (var item in objects)
-            if (item is T t) yield return t;
     }
 }

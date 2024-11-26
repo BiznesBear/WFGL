@@ -1,5 +1,6 @@
 ﻿using WFGL.Core;
 using WFGL.Rendering;
+using WFGL.Utilities;
 
 namespace WFGL.Objects;
 
@@ -8,10 +9,6 @@ namespace WFGL.Objects;
 /// </summary>
 public abstract class Entity  
 {
-    /// <summary>
-    /// Optional entity name only used in WFGE for idenifing entities.
-    /// </summary>
-    public string Name => GetType().Name;
     private Hierarchy? Hierarchy { get; set; }
     private GameMaster? Master { get; set; }
 

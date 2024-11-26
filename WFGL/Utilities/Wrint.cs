@@ -34,5 +34,7 @@ public static class Wrint
     public static void Info(object message) => Print("INFO",TextColor.Cyan, message);
     public static void Warring(object message) => Print("WARRING", TextColor.Yellow, message);
     public static void Error(object message) => Print("ERROR", TextColor.Red, message);
+    public static void Register(object message) => Print("REGISTER", TextColor.Green, message);
+    public static void Deregister(object message) => Print("DEREGISTER", TextColor.Red, message);
     public static void Collection<T>(IEnumerable<T> collection) => Print("COLLECTION",TextColor.Magneta,string.Join("; ",collection));
 }

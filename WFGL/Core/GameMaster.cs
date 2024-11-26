@@ -108,7 +108,7 @@ public abstract partial class GameMaster
     }
 
     #region RenderBuffer
-    public Bitmap GetRender() => renderBuffer;
+
     public void ResetRenderBuffer()
     {
         renderBuffer.Dispose();
@@ -118,14 +118,25 @@ public abstract partial class GameMaster
 
         Renderer.SmoothingMode = Smoothing;
         Renderer.InterpolationMode = Interpolation;
+
         ResetRenderClip();
         OnRenderBufferReset();
     }
+
     public void ResetRenderClip() 
-    {
-        Renderer.SetClip((new Rectangle(MainView.RealPosition.X, MainView.RealPosition.Y, VirtualSize.Width, VirtualSize.Height)));
-    }
-    public void RefreshTarget() => TargetControl.Invalidate();
+        => Renderer.SetClip(GetDrawingArea());
+
+    public void RefreshTarget() 
+        => TargetControl.Invalidate();
+
+    public void Screenshot(string filePath) 
+        => renderBuffer.Save(filePath);
+
+    public Rectangle GetDrawingArea() 
+        => new(MainView.RealPosition.X, MainView.RealPosition.Y, VirtualSize.Width, VirtualSize.Height);
+
+    public Bitmap GetRender() 
+        => renderBuffer;
 
     #endregion
 
@@ -133,6 +144,7 @@ public abstract partial class GameMaster
        => MainHierarchy.Register(hierarchy);
     public void DeregisterHierarchy(Hierarchy hierarchy)
         => MainHierarchy.Deregister(hierarchy);
+
 
     #region WindowModes
     // full screen window

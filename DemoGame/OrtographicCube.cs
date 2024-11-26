@@ -58,7 +58,7 @@ public class OrtographicCubeInput : InputHandler
 {
     protected override void OnMouseDown(MouseButtons buttons)
     {
-        Program.ortographicCubeGame.cube.Scale += buttons==MouseButtons.Left? 0.1f : -0.1f;
+        Program.ortographicCube.cube.Scale += buttons==MouseButtons.Left? 0.1f : -0.1f;
         base.OnMouseDown(buttons);
     }
 }
