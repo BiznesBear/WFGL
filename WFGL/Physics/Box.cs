@@ -1,5 +1,4 @@
-﻿using System.ComponentModel;
-using WFGL.Core;
+﻿using WFGL.Core;
 using WFGL.Rendering;
 
 namespace WFGL.Physics;

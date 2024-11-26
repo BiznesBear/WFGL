@@ -38,7 +38,7 @@ public class OrtographicCubeMaster : GameMaster
         if (InputMaster.IsKeyPressed(Keys.D)) direction += new Vec2(speed, 0f);
         if (InputMaster.IsKeyPressed(Keys.W)) direction -= new Vec2(0f, speed);
         if (InputMaster.IsKeyPressed(Keys.S)) direction += new Vec2(0f, speed);
-        cube.Position += (Vec3)(direction.Normalize() * speed * TimeMaster.DeltaTime);
+        cube.Position += (Vec3)(direction.Normalize() * speed * TimeMaster.DeltaTimeF);
 
 
         if (InputMaster.IsKeyPressed(Keys.Down)) cube.Rot += new Vec3(rotSp, 0, rotSp); 

@@ -1,5 +1,4 @@
 ﻿using System.Numerics;
-using WFGL.Core;
 namespace WFGL.Physics;
 
 public interface IVec<T> where T : struct, IVec<T>

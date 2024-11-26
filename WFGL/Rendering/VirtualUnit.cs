@@ -1,5 +1,3 @@
-using WFGL.Core;
-
 namespace WFGL.Rendering;
 
 /// <summary>

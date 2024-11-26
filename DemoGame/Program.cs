@@ -18,8 +18,8 @@ internal class Program
     {
         GameWindow window = new(GameWindowOptions.Default with { Background = Color.Black });
 
-        //ortographicCubeGame = new(window);
-        //ortographicCubeGame.Load();
+        //ortographicCube = new(window);
+        //ortographicCube.Load();
 
         testPlace = new(window);
         testPlace.Load();

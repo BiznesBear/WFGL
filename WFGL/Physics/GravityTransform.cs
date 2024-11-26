@@ -1,5 +1,4 @@
-﻿using WFGL.Core;
-using WFGL.Objects;
+﻿using WFGL.Objects;
 
 namespace WFGL.Physics;
 public abstract class GravityTransform : Transform
@@ -12,14 +11,14 @@ public abstract class GravityTransform : Transform
     public override void OnUpdate()
     {
         base.OnUpdate();
-        Velocity += GravityDirection * GravityStrenght * GetMaster().TimeMaster.DeltaTime;
+        Velocity += GravityDirection * GravityStrenght * GetMaster().TimeMaster.DeltaTimeF;
         Velocity = CheckVelocityLimit(Velocity);
         Position += Velocity;
     }
 
     public void AddForce(Force force)
     {
-        Velocity += force.Direction * force.Strenght * GetMaster().TimeMaster.DeltaTime;
+        Velocity += force.Direction * force.Strenght * GetMaster().TimeMaster.DeltaTimeF;
         Velocity = CheckVelocityLimit(Velocity);
     }
 

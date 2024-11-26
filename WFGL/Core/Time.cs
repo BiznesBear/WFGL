@@ -1,20 +1,27 @@
 ﻿using System.Diagnostics;
 using Timer = System.Windows.Forms.Timer;
+
 namespace WFGL.Core;
 
 
-// TODO: Maybe rework this? 
 public class Time 
 {
+    // consts
     public const int DEFALUT_INTERVAL = 1000 / DEFALUT_FPS;
     public const int DEFALUT_FPS = 100;
 
+
+    // settings
+    public double TimeScale { get; set; } = 1.0;
     public Timer Timer { get; } = new();
 
-    // Getters 
-    public float DeltaTime => (float)deltaTime;
-    public float Fps => framesPerSecond;
 
+    public float FramesPerSecond => framesPerSecond;
+    public float DeltaTimeF => (float)(deltaTime * TimeScale);
+    public double DeltaTime => deltaTime * TimeScale;
+
+    public float UncaledDeltaTimeF => (float)deltaTime;
+    public double UncaledTime => deltaTime;
 
 
     private DateTime previousTime = DateTime.Now;
@@ -30,9 +37,10 @@ public class Time
 
         frameStopwatch = new Stopwatch();
         frameStopwatch.Start();
-        SetFps();
+        SetInterval();
     }
     
+
     // TODO: Rework if possible 
     private void Tick(object? sender, EventArgs e)
     {
@@ -53,5 +61,12 @@ public class Time
     public void Start() => Timer.Start();
     public void Stop() => Timer.Stop();
     public void SetInterval(int ms = DEFALUT_INTERVAL) => Timer.Interval = ms;
-    public void SetFps(int fps = DEFALUT_FPS) => Timer.Interval = 1000 / fps;
+    public void SetFps(int fps = DEFALUT_FPS) { if (fps > 0) Timer.Interval = DEFALUT_INTERVAL / fps; }
+
+    public void AdvanceTime(double seconds)
+    {
+        deltaTime += seconds * TimeScale;
+        frames++;
+        previousTime = previousTime.AddSeconds(seconds);
+    }
 }

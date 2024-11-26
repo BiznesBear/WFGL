@@ -9,6 +9,7 @@ public class View : Transform
     {
         SetMaster(m);
         Target = options.Target;
+        AspectRatio = options.AspectRatio;
     }
 
 
@@ -46,11 +47,15 @@ public class View : Transform
         }
         return win.ClientSize;
     }
+    public Rectangle GetClip(bool clear = false)
+    {
+        return new Rectangle(clear? new() : RealPosition, GetMaster().VirtualSize);
+    }
 }
 public struct ViewOptions(Size aspectRatio, uint target = View.DEFALUT_TARGET)
 {
     public uint Target { get; set; } = target;
     public Size AspectRatio { get; set; } = aspectRatio;
 
-    public readonly static ViewOptions Default = new(new Size(16, 9));
+    public readonly static ViewOptions Default = new(new Size(1, 1));
 }

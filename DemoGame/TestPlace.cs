@@ -46,16 +46,16 @@ public class TestPlaceMaster : GameMaster
     {
         RuntimeSettings.All = true;
         GameWindow.RegisterInput(new TestPlaceInput());
-        WindowAspectLock = true;
 
         LayerMaster.Layers = [topLayer, underTopLayer, canvasLayer];
 
         objects = new(this);
         canvas = new(this) { Layer = canvasLayer };
-        fpsText = new(font, $"FPS: {TimeMaster.Fps}");
+        fpsText = new(font, $"FPS: {TimeMaster.FramesPerSecond}");
         player = new() { Layer = topLayer };
         background = new(this);
         colliders = new(background);
+        
     }
 
     protected override void OnLoad()
@@ -108,7 +108,7 @@ public class TestPlaceMaster : GameMaster
     protected override void OnUpdate()
     {
         userNameText.Position = player.Position + new Vec2(0.33f, -0.15f);
-        fpsText.Content = $"FPS: {TimeMaster.Fps}";
+        fpsText.Content = $"FPS: {TimeMaster.FramesPerSecond}";
 
 
         var input = InputMaster;
@@ -123,7 +123,7 @@ public class TestPlaceMaster : GameMaster
     protected override void OnDraw()
     {
         // drawing background 
-        Renderer.FillRectangle(defaultBrush, new(0, 0, VirtualSize.Width, VirtualSize.Height));
+        Renderer.FillRectangle(defaultBrush, new(0, 0, VirtualSize.Width,VirtualSize.Height));
     }
     protected override void OnAfterDraw()
     {
@@ -151,32 +151,28 @@ internal class TestPlaceInput : InputHandler
         {
             Program.testPlace.MainView.Position = 0;
         }
-        if(key == Keys.R)
-        {
-            Program.testPlace.Screenshot("screenshot.jpg");
-            Wrint.Info("Saved screenshot.jpg !");
-        }
+
     }
 }
 
 internal class TestPlacePlayer : Transform, ICollide
 {
-    // sub-objects
-    internal BitmapRenderer playerSprite = new(Assets.player);
-
-    // movement
-    float speed = normalSpeed;
     const float normalSpeed = 2.5f;
     const float sprintSpeed = 4;
+
+
+    // sub-objects
+    internal BitmapRenderer playerSprite = new(Assets.player);
     internal Vec2 dir;
-
-
-    // colliders 
     internal RaycastInfo hitInfo;
+
+
     public Vec2 ColliderSize => playerSprite.RealSize.VirtualizePixel(GetMaster().MainView).ToVec2(GetMaster().VirtualScale);
     public Vec2 ColliderPosition => playerSprite.Position + dir;
 
+
     private Vec2 inP;
+    private float speed = normalSpeed;
 
     public TestPlacePlayer() { }
     public override void OnCreate(Hierarchy h, GameMaster m)
@@ -191,12 +187,13 @@ internal class TestPlacePlayer : Transform, ICollide
         speed = input.IsKeyPressed(Keys.Space) ? sprintSpeed : normalSpeed;
         
         Vec2 direction = Vec2.Zero;
+
         if (input.IsKeyPressed(Keys.A)) direction -= new Vec2(speed, 0f);
         if (input.IsKeyPressed(Keys.D)) direction += new Vec2(speed, 0f);
         if (input.IsKeyPressed(Keys.W)) direction -= new Vec2(0f, speed);
         if (input.IsKeyPressed(Keys.S)) direction += new Vec2(0f, speed);
 
-        dir = direction.Normalize() * speed * GetMaster().TimeMaster.DeltaTime;
+        dir = direction.Normalize() * speed * GetMaster().TimeMaster.DeltaTimeF;
         
         if (!this.IsColliding(Program.testPlace.colliders, out ICollide? coll)) // to avoid player clipping
             Position += dir;

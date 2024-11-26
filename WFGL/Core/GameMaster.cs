@@ -87,7 +87,7 @@ public abstract partial class GameMaster
     }
     private void Update(object? sender, EventArgs e)
     {
-        TargetControl.Invalidate(new Rectangle(MainView.RealPosition.X, MainView.RealPosition.Y, VirtualSize.Width, VirtualSize.Height));
+        TargetControl.Invalidate(MainView.GetClip(true));
         WhenUpdate?.Invoke();
     }
 
@@ -96,12 +96,13 @@ public abstract partial class GameMaster
         WhenDraw?.Invoke();
         OnAfterDraw();
 
-        e.Graphics.SetClip((new Rectangle(MainView.RealPosition.X, MainView.RealPosition.Y, VirtualSize.Width, VirtualSize.Height)));
-        e.Graphics.DrawImageUnscaled(GetRender(), new Rectangle(0, 0, VirtualSize.Width, VirtualSize.Height));
+        e.Graphics.SetClip(MainView.GetClip());
+        e.Graphics.DrawImageUnscaled(GetRender(), MainView.GetClip());
     }
     private void Resized(object? sender, EventArgs e)
     {
-        if (WindowAspectLock) GameWindow.ClientSize = MainView.GetAspect();
+        if (WindowAspectLock) 
+            GameWindow.ClientSize = MainView.GetAspect();
         ResetRenderBuffer();
         OnResized();
         ResetRenderClip();

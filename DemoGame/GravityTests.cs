@@ -183,7 +183,7 @@ internal class RigidPlayer : GravityTransform, ICollide
         }
         else
         {
-            dir = direction.Normalize() * speed * GetMaster().TimeMaster.DeltaTime;
+            dir = direction.Normalize() * speed * GetMaster().TimeMaster.DeltaTimeF;
         }
 
         Position += dir;
