@@ -1,5 +1,6 @@
 ﻿using System.Drawing;
 using System.Windows.Forms;
+
 using WFGL;
 using WFGL.Core;
 using WFGL.Input;
@@ -8,7 +9,6 @@ using WFGL.UI;
 using WFGL.Rendering;
 using WFGL.Objects;
 using WFGL.Components;
-using WFGL.Utilities;
 
 namespace DemoGame;
 
@@ -44,7 +44,7 @@ public class TestPlaceMaster : GameMaster
 
     public TestPlaceMaster(GameWindow window) : base(window)
     {
-        RuntimeSettings.All = true;
+        WFGLSettings.All = true;
         GameWindow.RegisterInput(new TestPlaceInput());
 
         LayerMaster.Layers = [topLayer, underTopLayer, canvasLayer];
@@ -151,7 +151,6 @@ internal class TestPlaceInput : InputHandler
         {
             Program.testPlace.MainView.Position = 0;
         }
-
     }
 }
 

@@ -2,11 +2,13 @@
 using WFGL.Input;
 using WFGL.Objects;
 using WFGL.Rendering;
+using WFGL.Utilities;
 
 namespace WFGL.Core;
 
 public abstract partial class GameMaster 
 {
+    #region Properties
     public GameWindow GameWindow { get; }
     public View MainView { get; set; }
     public Time TimeMaster { get; } = new();
@@ -16,6 +18,7 @@ public abstract partial class GameMaster
     public Canvas? Canvas { get; private set; }
     public Control TargetControl => Canvas is null? GameWindow : Canvas;
     public InputHandler InputMaster => GameWindow.GetInput();
+    #endregion
 
     #region Virtual
     public VirtualUnit VirtualScale => new VirtualUnit(RealVirtualScaleX, RealVirtualScaleY).Normalize();
@@ -27,15 +30,6 @@ public abstract partial class GameMaster
 
     #endregion
 
-    // defaluts
-    public Pen DefaultPen = Pens.Red;
-    public SolidBrush defaultBrush = new(Color.DarkSlateGray);
-
-    // events 
-    public event Action? WhenUpdate;
-    public event Action? WhenDraw;
-
-
     #region Settings
     public bool IsFullScreen { get; private set; }
     public bool WindowAspectLock { get; set; } = false;
@@ -44,8 +38,14 @@ public abstract partial class GameMaster
 
     #endregion
 
+    // events 
+    public event Action? WhenDraw;
+
+    // defaluts
+    public Pen defaultPen = Pens.Red;
+    public SolidBrush defaultBrush = new(Color.DarkSlateGray);
+
     // render view
-    
     private Bitmap renderBuffer;
     private Size windowSizeTemp;
 
@@ -63,17 +63,17 @@ public abstract partial class GameMaster
         MainView = new(this, ViewOptions.Default);
         MainHierarchy = new Hierarchy(this);
 
-        TimeMaster.Timer.Tick += Update;
+        TimeMaster.Update += Update;
 
         renderBuffer = new Bitmap(VirtualSize.Width, VirtualSize.Height);
         Renderer = Graphics.FromImage(renderBuffer);
 
         ResetRenderBuffer();
 
-        WhenUpdate += OnUpdate;
+        TimeMaster.Update += OnUpdate;
         WhenDraw += OnDraw;
 
-        WhenUpdate += MainHierarchy.OnUpdate;
+        TimeMaster.Update += MainHierarchy.OnUpdate;
         WhenDraw += MainHierarchy.OnDraw;
     }
     public GameMaster(GameWindow window) : this(window, null) { }
@@ -84,11 +84,13 @@ public abstract partial class GameMaster
         TimeMaster.Start();
         OnLoad();
         if(showDialog) GameWindow.ShowDialog();
+        Wrint.Info("Loaded");
+        if (GameWindow.InputHandlerIsNull) Wrint.Warring("No InputHandler assigned");
     }
-    private void Update(object? sender, EventArgs e)
+
+    private void Update()
     {
         TargetControl.Invalidate(MainView.GetClip(true));
-        WhenUpdate?.Invoke();
     }
 
     private void Draw(object? sender, PaintEventArgs e)
@@ -99,6 +101,7 @@ public abstract partial class GameMaster
         e.Graphics.SetClip(MainView.GetClip());
         e.Graphics.DrawImageUnscaled(GetRender(), MainView.GetClip());
     }
+
     private void Resized(object? sender, EventArgs e)
     {
         if (WindowAspectLock) 
@@ -148,6 +151,7 @@ public abstract partial class GameMaster
 
 
     #region WindowModes
+
     // full screen window
     public void FullScreen()
     {
@@ -158,6 +162,7 @@ public abstract partial class GameMaster
         IsFullScreen = true;
         ResetRenderBuffer();
         OnResized();
+        Wrint.Info("Entered fullscreen");
     }
 
 
@@ -171,6 +176,7 @@ public abstract partial class GameMaster
         IsFullScreen = false;
         ResetRenderBuffer();
         OnResized();
+        Wrint.Info("Entered normalscreen");
     }
     #endregion
 

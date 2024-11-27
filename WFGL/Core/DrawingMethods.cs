@@ -13,7 +13,7 @@ public abstract partial class GameMaster
         using var p = new Pen(color, 1);
         DrawLine(p,pos1,pos2);
     }
-    public void DrawLine(Vec2 pos1, Vec2 pos2) => DrawLine(DefaultPen.Color, pos1, pos2);
+    public void DrawLine(Vec2 pos1, Vec2 pos2) => DrawLine(defaultPen.Color, pos1, pos2);
 
     #endregion
 
@@ -25,7 +25,7 @@ public abstract partial class GameMaster
         using var p = new Pen(color);
         DrawBox(p, box);
     }
-    public void DrawBox(Box box) => DrawBox(DefaultPen.Color, box);
+    public void DrawBox(Box box) => DrawBox(defaultPen.Color, box);
 
     #endregion
 

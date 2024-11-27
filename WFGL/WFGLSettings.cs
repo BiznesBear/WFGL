@@ -3,17 +3,26 @@
 /// <summary>
 /// Debug tools.
 /// </summary>
-public static class RuntimeSettings
+public static class WFGLSettings
 {
+    #region Wrint
+
     /// <summary>
-    /// Prints info to console when new object is registered or deregistered.
+    /// Enables info when new object is registered or deregistered.
     /// </summary>
     public static bool ShowRegisters { get; set; } = false;
 
     /// <summary>
-    /// Currently not applicable. 
+    /// Enable Infos, Warrings and Errors.
     /// </summary>
     public static bool ShowEvents { get; set; } = false;
+
+    /// <summary>
+    /// Enable other custom wrints.
+    /// </summary>
+    public static bool ShowCustoms { get; set; } = true;
+
+    #endregion
 
     /// <summary>
     /// Turn on/off all settings.
@@ -24,6 +33,7 @@ public static class RuntimeSettings
         {
             ShowRegisters = value;
             ShowEvents = value;
+            ShowCustoms = value;
         }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using WFGL.Objects;
+using WFGL.Utilities;
 
 namespace WFGL.Rendering;
 
@@ -29,6 +30,7 @@ public sealed class LayerMaster
     {
         LayersList.Add(layer);
         if(updateList) UpdateList();
+        Wrint.Register("New " + layer);
     }
     /// <summary>
     /// Deregisters existing layer.
@@ -38,6 +40,7 @@ public sealed class LayerMaster
     {
         LayersList.Remove(layer);
         if(updateList) UpdateList();
+        Wrint.Deregister("New " + layer);
     }
 
     /// <summary>
@@ -68,8 +71,9 @@ public sealed class LayerMaster
 /// Specifies the priority of drawing the objects.
 /// </summary>
 /// <param name="drawWeight">Priority of drawing the object</param>
-public class Layer(short drawWeight)
+public class Layer(int drawWeight)
 {
     public readonly static Layer Defalut = new(0);
-    public short DrawWeight { get; } = drawWeight;
+    public int DrawWeight { get; } = drawWeight;
+    public override string ToString() => $"layer({DrawWeight})";
 }

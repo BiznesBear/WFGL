@@ -22,7 +22,7 @@ public class Hierarchy : Entity
     public event EntityEventHandler? AddedObject;
     public event EntityEventHandler? RemovedObject;
 
-    public event Action? WhenUpdate;
+    public event Action? Update;
 
     private Dictionary<Layer, List<Entity>> Order = [];
     private readonly List<Entity> objects = [];
@@ -38,30 +38,31 @@ public class Hierarchy : Entity
         entity.SetHierarchy(this);
 
         objects.Add(entity);
-        WhenUpdate += entity.OnUpdate;
+        Update += entity.OnUpdate;
 
         AddedObject?.Invoke(entity);
         ChangedList.Invoke();
 
-        Wrint.Register($"{entity.GetType().Name} registered in {GetType().Name}");
+        Wrint.Register($"{entity.GetType().Name} in {GetType().Name}");
     }
 
     public void Deregister(Entity entity)
     {
         entity.SetHierarchy(null);
 
-        WhenUpdate -= entity.OnUpdate;
+        Update -= entity.OnUpdate;
         objects.Remove(entity);
 
         RemovedObject?.Invoke(entity);
         ChangedList.Invoke();
-        Wrint.Deregister($"{entity.GetType().Name} deregistered in {GetType().Name}");
+        Wrint.Deregister($"{entity.GetType().Name} in {GetType().Name}");
     }
 
     public void DestroyAll()
     {
         foreach (Entity obj in objects)
             obj.Destroy(this);
+        Wrint.Info("Destroyed all objects");
     }
 
     public void UpdateOrder() =>
@@ -73,7 +74,7 @@ public class Hierarchy : Entity
     public override void OnUpdate()
     {
         base.OnUpdate();
-        WhenUpdate?.Invoke();
+        Update?.Invoke();
     }
     public override void OnDraw()
     {

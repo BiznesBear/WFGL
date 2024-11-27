@@ -5,12 +5,12 @@ namespace DemoGame;
 internal class Program
 {
 
-#pragma warning disable CS8618 
+    #pragma warning disable CS8618 
     public static TestPlaceMaster testPlace;
     public static GravityTestsMaster gravityTests;
     public static OrtographicCubeMaster ortographicCube;
     public static LabMaster lab;
-#pragma warning restore CS8618 
+    #pragma warning restore CS8618 
 
 
     [STAThread]

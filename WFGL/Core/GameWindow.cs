@@ -1,11 +1,13 @@
 ﻿using WFGL.Input;
-using WFGL.Rendering;
+using WFGL.Utilities;
 
 namespace WFGL.Core;
 
 public class GameWindow : Form
 {
+    public bool InputHandlerIsNull => inputHandler is null;
     public FormBorderStyle borderStyle = FormBorderStyle.Sizable;
+
     private InputHandler? inputHandler;
 
     public GameWindow(GameWindowOptions options)
@@ -33,6 +35,8 @@ public class GameWindow : Form
     public void RegisterInput(InputHandler handler)
     {
         if (inputHandler != null) DeregisterInput(inputHandler);
+        Wrint.Register(handler.GetType().Name);
+
         inputHandler = handler;
 
         KeyDown += handler.KeyDown;
@@ -49,6 +53,7 @@ public class GameWindow : Form
 
     public void DeregisterInput(InputHandler handler)
     {
+        Wrint.Deregister(handler.GetType().Name);
         inputHandler = null;
         KeyDown -= handler.KeyDown;
         KeyUp -= handler.KeyUp;

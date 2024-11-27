@@ -3,32 +3,34 @@ using Timer = System.Windows.Forms.Timer;
 
 namespace WFGL.Core;
 
-
+/// <summary>
+/// Updates the game.
+/// </summary>
 public class Time 
 {
     // consts
     public const int DEFALUT_INTERVAL = 1000 / DEFALUT_FPS;
     public const int DEFALUT_FPS = 100;
 
+    public event Action? Update;
+    public Timer Timer { get; } = new();
 
     // settings
     public double TimeScale { get; set; } = 1.0;
-    public Timer Timer { get; } = new();
-
-
     public float FramesPerSecond => framesPerSecond;
-    public float DeltaTimeF => (float)(deltaTime * TimeScale);
+
+    // delta time
     public double DeltaTime => deltaTime * TimeScale;
+    public double UncaledDeltaTime => deltaTime;
+    public float DeltaTimeF => (float)DeltaTime;
+    public float UncaledDeltaTimeF => (float)UncaledDeltaTime;
 
-    public float UncaledDeltaTimeF => (float)deltaTime;
-    public double UncaledTime => deltaTime;
+    // privates
 
-
+    private readonly Stopwatch frameStopwatch;
     private DateTime previousTime = DateTime.Now;
     private double deltaTime;
     private float framesPerSecond;
-
-    private readonly Stopwatch frameStopwatch;
     private int frames;
 
     public Time()
@@ -39,11 +41,10 @@ public class Time
         frameStopwatch.Start();
         SetInterval();
     }
-    
 
-    // TODO: Rework if possible 
     private void Tick(object? sender, EventArgs e)
     {
+        Update?.Invoke();
         frames++;
         if (frameStopwatch.ElapsedMilliseconds >= 1000)
         {
@@ -62,11 +63,41 @@ public class Time
     public void Stop() => Timer.Stop();
     public void SetInterval(int ms = DEFALUT_INTERVAL) => Timer.Interval = ms;
     public void SetFps(int fps = DEFALUT_FPS) { if (fps > 0) Timer.Interval = DEFALUT_INTERVAL / fps; }
-
     public void AdvanceTime(double seconds)
     {
         deltaTime += seconds * TimeScale;
         frames++;
         previousTime = previousTime.AddSeconds(seconds);
+    }
+}
+public class Counter : IDisposable
+{
+    private float maxTime;
+    private float timer;
+    private Time timeMaster;
+    private Action action;
+
+    public Counter(Time time, float duration, Action act)
+    {
+        maxTime = duration;
+        action = act;
+        timeMaster = time;
+        timeMaster.Update += Frame;
+    }
+
+    private void Frame()
+    {
+        timer += timeMaster.DeltaTimeF;
+        if(timer >= maxTime)
+        {
+            action.Invoke();
+            timer = 0;
+            Dispose();
+        }
+    }
+
+    public void Dispose()
+    {
+        timeMaster.Update -= Frame;
     }
 }
