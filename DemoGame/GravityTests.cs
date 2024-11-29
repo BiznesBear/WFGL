@@ -129,7 +129,7 @@ internal class GravityTestsInput : InputHandler
         if(key == Keys.C)
         {
             Program.gravityTests.player.ResetVelocity();
-            Program.gravityTests.player.AddForce(new(5, Vec2.Up));
+            Program.gravityTests.player.AddForce(new(300, Vec2.Up));
         }
 
         if (key == Keys.P)
@@ -169,7 +169,7 @@ internal class RigidPlayer : GravityTransform, ICollide
 
         if (input.IsKeyPressed(Keys.Space))
         {
-            AddForce(new(0.3f, Vec2.Up));
+            AddForce(new(1000f, Vec2.Up));
         }
 
         if (input.IsKeyPressed(Keys.A)) direction -= new Vec2(speed, 0f);

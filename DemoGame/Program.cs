@@ -21,13 +21,13 @@ internal class Program
         //ortographicCube = new(window);
         //ortographicCube.Load();
 
-        testPlace = new(window);
-        testPlace.Load();
+        //testPlace = new(window);
+        //testPlace.Load();
 
-        //labInstance = new(window);
-        //labInstance.Load();
+        //lab = new(window);
+        //lab.Load();
 
-        //gravityTestsInstance = new(window);
-        //gravityTestsInstance.Load();
+        gravityTests = new(window);
+        gravityTests.Load();
     }
 }
