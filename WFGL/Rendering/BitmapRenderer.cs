@@ -12,6 +12,7 @@ public class BitmapRenderer : Transform, IDrawable
     public Bitmap Source { get; set; }
     public Effect? Effect { get; set; }
     public Bitmap Bitmap { get=> bmp ?? throw new NullReferenceException("Missing bitmap refrence. Bitmap is not baked"); private set => bmp = value; }
+
     private Bitmap? bmp;
 
     public float BitmapRotation { get; set; }

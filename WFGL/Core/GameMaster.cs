@@ -39,7 +39,7 @@ public abstract partial class GameMaster
     #endregion
 
     // events 
-    public event Action? WhenDraw;
+    public event Action? WhenDraw = null;
 
     // defaluts
     public Pen defaultPen = Pens.Red;

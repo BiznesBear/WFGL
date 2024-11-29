@@ -1,9 +1,10 @@
 ﻿using WFGL.Core;
 using WFGL.Objects;
 using WFGL.Rendering;
+
 namespace WFGL.Pseudo.Light;
 
-// very good example how static render should work 
+
 public class PseduoLight : Transform, IDrawable
 {
     public float intensity = 1;

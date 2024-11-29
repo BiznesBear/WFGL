@@ -1,4 +1,6 @@
-﻿using System.Diagnostics;
+﻿using System;
+using System.Diagnostics;
+using WFGL.Utilities;
 using Timer = System.Windows.Forms.Timer;
 
 namespace WFGL.Core;
@@ -12,7 +14,7 @@ public class Time
     public const int DEFALUT_INTERVAL = 1000 / DEFALUT_FPS;
     public const int DEFALUT_FPS = 100;
 
-    public event Action? Update;
+    public event Action? Update = null;
     public Timer Timer { get; } = new();
 
     // settings
@@ -68,36 +70,5 @@ public class Time
         deltaTime += seconds * TimeScale;
         frames++;
         previousTime = previousTime.AddSeconds(seconds);
-    }
-}
-public class Counter : IDisposable
-{
-    private float maxTime;
-    private float timer;
-    private Time timeMaster;
-    private Action action;
-
-    public Counter(Time time, float duration, Action act)
-    {
-        maxTime = duration;
-        action = act;
-        timeMaster = time;
-        timeMaster.Update += Frame;
-    }
-
-    private void Frame()
-    {
-        timer += timeMaster.DeltaTimeF;
-        if(timer >= maxTime)
-        {
-            action.Invoke();
-            timer = 0;
-            Dispose();
-        }
-    }
-
-    public void Dispose()
-    {
-        timeMaster.Update -= Frame;
     }
 }

@@ -32,15 +32,6 @@ When you create a new console project you have to set target platform to Windows
 to your project file.
 
 
-## ⚙️ TODO list
-- Better updating and event system
-- More optimalizations
-- Add more error handling and debugging tools.
-- More ui
-- 2.5D (object rotation)
-- Pseudo 2D light 
-- Editor/Game engine based on this library (WFGE)
-
 ## ⭐ Showcase
 https://github.com/user-attachments/assets/a8b30b77-9fb4-4d3d-88e3-1df1ebba3904
 

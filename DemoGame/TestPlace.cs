@@ -151,6 +151,7 @@ internal class TestPlaceInput : InputHandler
         {
             Program.testPlace.MainView.Position = 0;
         }
+        
     }
 }
 
@@ -203,6 +204,8 @@ internal class TestPlacePlayer : Transform, ICollide
         Ray ray = new(Position, coll != null ? coll.ColliderPosition : 1);
         ray.IsColliding(Program.testPlace.sprite, out hitInfo);
         inP = hitInfo.collisionPoint;
+
+        
     }
     public override void OnDraw()
     {
