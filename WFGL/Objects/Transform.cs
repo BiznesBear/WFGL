@@ -12,18 +12,17 @@ public abstract class Transform : TransformBase<Vec2>
     public override Vec2 Scale { get; set; } = Vec2.One;
     public Point RealPosition 
     { 
-        get => Position.ToPoint(GetMaster().VirtualScale); 
-        set => Position = value.ToVec2(GetMaster().VirtualScale); 
+        get => Position.ToPoint(Master.VirtualScale); 
+        set => Position = value.ToVec2(Master.VirtualScale); 
     }
 }
 public abstract class Transform3D : TransformBase<Vec3>
 {
     public override Vec3 Scale { get; set; } = Vec3.One;
-
     public Vec3 Rot { get; set; } = new(0, 0, 0);
     public Point RealPosition
     {
-        get => Position.ToPoint(GetMaster().VirtualScale);
-        set => Position = value.ToVec3(GetMaster().VirtualScale);
+        get => Position.ToPoint(Master.VirtualScale);
+        set => Position = value.ToVec3(Master.VirtualScale);
     }
 }

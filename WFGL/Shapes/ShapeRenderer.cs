@@ -32,7 +32,7 @@ public class ShapeRenderer : Transform3D, IPenDrawable
     public IEnumerable<Point> GetPoints()
     {
         foreach (var v in Shape.Vertices)
-            yield return (v + Position).ToPoint(GetMaster().VirtualScale);
+            yield return (v + Position).ToPoint(Master.VirtualScale);
     }
     /// <summary>
     /// Transforms shape by rotation. Need to be called after transformation manually.

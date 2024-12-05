@@ -150,7 +150,7 @@ internal class RigidPlayer : GravityTransform, ICollide
     internal Vec2 dir;
 
     // physics
-    public Vec2 ColliderSize => playerSprite.RealSize.VirtualizePixel(GetMaster().MainView).ToVec2(GetMaster().VirtualScale);
+    public Vec2 ColliderSize => playerSprite.RealSize.VirtualizePixel(Master.MainView).ToVec2(Master.VirtualScale);
     public Vec2 ColliderPosition => playerSprite.Position + dir;
 
     public RigidPlayer() { }
@@ -165,7 +165,7 @@ internal class RigidPlayer : GravityTransform, ICollide
         // movement
         Vec2 direction = Vec2.Zero;
 
-        var input = GetMaster().InputMaster;
+        var input = Master.InputMaster;
 
         if (input.IsKeyPressed(Keys.Space))
         {
@@ -183,7 +183,7 @@ internal class RigidPlayer : GravityTransform, ICollide
         }
         else
         {
-            dir = direction.Normalize() * speed * GetMaster().TimeMaster.DeltaTimeF;
+            dir = direction.Normalize() * speed * Master.TimeMaster.DeltaTimeF;
         }
 
         Position += dir;
@@ -193,6 +193,6 @@ internal class RigidPlayer : GravityTransform, ICollide
     public override void OnDraw()
     {
         // updating not registred object manually
-        playerSprite.Draw(GetMaster(), GetMaster().Renderer);
+        playerSprite.Draw(Master, Master.Renderer);
     }
 }

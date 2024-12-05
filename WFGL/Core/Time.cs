@@ -1,6 +1,4 @@
-﻿using System;
-using System.Diagnostics;
-using WFGL.Utilities;
+﻿using System.Diagnostics;
 using Timer = System.Windows.Forms.Timer;
 
 namespace WFGL.Core;

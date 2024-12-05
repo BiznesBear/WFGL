@@ -11,13 +11,16 @@ public class BitmapRenderer : Transform, IDrawable
 {
     public Bitmap Source { get; set; }
     public Effect? Effect { get; set; }
-    public Bitmap Bitmap { get=> bmp ?? throw new NullReferenceException("Missing bitmap refrence. Bitmap is not baked"); private set => bmp = value; }
+    public Bitmap Bitmap { get => bmp ?? throw new NullReferenceException("Missing bitmap refrence. Bitmap is not baked"); private set => bmp = value; }
 
     private Bitmap? bmp;
 
     public float BitmapRotation { get; set; }
     public Vec2 Pivot { get; set; } = Vec2.Zero;
+
+
     public Size RealSize => new((int)(Source.Width * Scale.X), (int)(Source.Height * Scale.Y));
+    public Vec2 VecSize => RealSize.VirtualizePixel(Master.MainView).ToVec2(Master.VirtualScale);
 
     public BitmapRenderer(Bitmap source, Effect? effect)
     {
@@ -42,9 +45,7 @@ public class BitmapRenderer : Transform, IDrawable
             r.ResetTransform();
         }
         else
-        {
             r.DrawImage(Bitmap, pos.X, pos.Y, size.Width, size.Height);
-        }
     }
 
     public Bitmap Bake()

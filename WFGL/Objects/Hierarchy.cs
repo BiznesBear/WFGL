@@ -68,7 +68,7 @@ public class Hierarchy : Entity
     public void UpdateOrder() =>
         Order = LayerMaster.SortObjectList(objects);
 
-    public IEnumerable<Entity> GetObjects() => LayerMaster.GetObjectsFrom(GetMaster().LayerMaster, Order);
+    public IEnumerable<Entity> GetObjects() => LayerMaster.GetObjectsFrom(Master.LayerMaster, Order);
 
    
     public override void OnUpdate()
@@ -100,6 +100,6 @@ public class Hierarchy : Entity
     protected virtual void OnEntityDraw(Entity entity)
     {
         if (entity is IDrawable d) 
-            d.Draw(GetMaster(), GetMaster().Renderer);
+            d.Draw(Master, Master.Renderer);
     }
 }

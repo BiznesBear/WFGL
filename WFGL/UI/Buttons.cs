@@ -2,7 +2,7 @@
 using WFGL.Input;
 using WFGL.Objects;
 using WFGL.Physics;
-using WFGL.Rendering;
+
 namespace WFGL.UI;
 
 public enum ButtonState
@@ -15,7 +15,7 @@ public abstract class ButtonBase<T> : Transform
 {
     public ButtonState State { get; private set; }
     public Vec2 RectSize { get; set; } = new(1.5f, 0.5f);
-    public Size RealRectSize => RectSize.ToSize(GetMaster().VirtualScale);
+    public Size RealRectSize => RectSize.ToSize(Master.VirtualScale);
     public Rectangle Bounds => new(RealPosition.X, RealPosition.Y, RealRectSize.Width, RealRectSize.Height);
 
     public event Action? OnClick;
@@ -37,12 +37,12 @@ public abstract class ButtonBase<T> : Transform
 
     public override void OnUpdate()
     {
-        if (!GetMaster().InputMaster.MouseInside)
+        if (!Master.InputMaster.MouseInside)
         {
             ChangeState(ButtonState.Defalut);
             return;
         }
-        if (Bounds.IntersectsWithMouse(GetMaster().InputMaster))
+        if (Bounds.IntersectsWithMouse(Master.InputMaster))
         {
             if (Mouse.IsButtonPressed(MouseButtons.Left))
             {
@@ -90,7 +90,7 @@ public class RectangleButton : ButtonBase<Color>
     public RectangleButton(Color color) : this(color, color, color) { }
     public override void OnDraw()
     {
-        GetMaster().Renderer.FillRectangle(GetBrush(), Bounds);
+        Master.Renderer.FillRectangle(GetBrush(), Bounds);
     }
 }
 public class BitmapButton : ButtonBase<Bitmap>
@@ -99,7 +99,7 @@ public class BitmapButton : ButtonBase<Bitmap>
     public BitmapButton(Bitmap bmp) : this(bmp,bmp,bmp) { }
     public override void OnDraw()
     {
-        GetMaster().DrawBitmap(displayed, Bounds.Location);
+        Master.DrawBitmap(displayed, Bounds.Location);
     }
 }
 public class TextRectButton : RectangleButton
@@ -117,7 +117,7 @@ public class TextRectButton : RectangleButton
     public override void OnDraw()
     {
         base.OnDraw();
-        stringRenderer.Draw(GetMaster(),GetMaster().Renderer);
+        stringRenderer.Draw(Master,Master.Renderer);
     }
 }
 public class TextBitmapButton : BitmapButton
@@ -135,6 +135,6 @@ public class TextBitmapButton : BitmapButton
     public override void OnDraw()
     {
         base.OnDraw();
-        stringRenderer.Draw(GetMaster(), GetMaster().Renderer);
+        stringRenderer.Draw(Master, Master.Renderer);
     }
 }

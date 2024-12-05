@@ -9,6 +9,7 @@ using WFGL.UI;
 using WFGL.Rendering;
 using WFGL.Objects;
 using WFGL.Components;
+using WFGL.Utilities;
 
 namespace DemoGame;
 
@@ -44,7 +45,7 @@ public class TestPlaceMaster : GameMaster
 
     public TestPlaceMaster(GameWindow window) : base(window)
     {
-        WFGLSettings.All = true;
+        Wrint.All = true;
         GameWindow.RegisterInput(new TestPlaceInput());
 
         LayerMaster.Layers = [topLayer, underTopLayer, canvasLayer];
@@ -167,7 +168,7 @@ internal class TestPlacePlayer : Transform, ICollide
     internal RaycastInfo hitInfo;
 
 
-    public Vec2 ColliderSize => playerSprite.RealSize.VirtualizePixel(GetMaster().MainView).ToVec2(GetMaster().VirtualScale);
+    public Vec2 ColliderSize => playerSprite.RealSize.VirtualizePixel(Master.MainView).ToVec2(Master.VirtualScale);
     public Vec2 ColliderPosition => playerSprite.Position + dir;
 
 
@@ -183,7 +184,7 @@ internal class TestPlacePlayer : Transform, ICollide
     public override void OnUpdate()
     {
         // movement
-        var input = GetMaster().InputMaster;
+        var input = Master.InputMaster;
         speed = input.IsKeyPressed(Keys.Space) ? sprintSpeed : normalSpeed;
         
         Vec2 direction = Vec2.Zero;
@@ -193,7 +194,7 @@ internal class TestPlacePlayer : Transform, ICollide
         if (input.IsKeyPressed(Keys.W)) direction -= new Vec2(0f, speed);
         if (input.IsKeyPressed(Keys.S)) direction += new Vec2(0f, speed);
 
-        dir = direction.Normalize() * speed * GetMaster().TimeMaster.DeltaTimeF;
+        dir = direction.Normalize() * speed * Master.TimeMaster.DeltaTimeF;
         
         if (!this.IsColliding(Program.testPlace.colliders, out ICollide? coll)) // to avoid player clipping
             Position += dir;
@@ -210,9 +211,9 @@ internal class TestPlacePlayer : Transform, ICollide
     public override void OnDraw()
     {
         // updating not registred object manually
-        playerSprite.Draw(GetMaster(), GetMaster().Renderer);
+        playerSprite.Draw(Master, Master.Renderer);
 
         // drawing ray gizmos
-        hitInfo.ray.DrawGizmos(GetMaster(), inP);
+        hitInfo.ray.DrawGizmos(Master, inP);
     }
 }

@@ -5,6 +5,34 @@
 /// </summary>
 public static class Wrint
 {
+
+    /// <summary>
+    /// Enables info when new object is registered or deregistered.
+    /// </summary>
+    public static bool ShowRegisters { get; set; } = false;
+
+    /// <summary>
+    /// Enable Infos, Warrings and Errors.
+    /// </summary>
+    public static bool ShowEvents { get; set; } = false;
+
+    /// <summary>
+    /// Enable other custom wrints.
+    /// </summary>
+    public static bool ShowCustoms { get; set; } = true;
+
+    /// <summary>
+    /// Turn on/off all settings.
+    /// </summary>
+    public static bool All
+    {
+        set
+        {
+            ShowRegisters = value;
+            ShowEvents = value;
+            ShowCustoms = value;
+        }
+    }
     private enum TextColor
     {
         White = 37,
@@ -23,27 +51,27 @@ public static class Wrint
 
     public static void Info(object message)
     {
-        if (WFGLSettings.ShowEvents)
+        if (ShowEvents)
             Print("INFO", TextColor.Cyan, message);
     }
     public static void Warring(object message)
     {
-        if (WFGLSettings.ShowEvents)
+        if (ShowEvents)
             Print("WARRING", TextColor.Yellow, message);
     }
     public static void Error(object message)
     {
-        if (WFGLSettings.ShowEvents)
+        if (ShowEvents)
             Print("ERROR", TextColor.Red, message);
     }
     public static void Register(object message)
     {
-        if (WFGLSettings.ShowRegisters)
+        if (ShowRegisters)
             Print("REGISTERED", TextColor.Green, message);
     }
     public static void Deregister(object message)
     {
-        if (WFGLSettings.ShowRegisters)
+        if (ShowRegisters)
             Print("DEREGISTERED", TextColor.Red, message);
     }
 
@@ -52,7 +80,7 @@ public static class Wrint
     #region ForUserUse
     public static void Collection<T>(IEnumerable<T> collection)
     {
-        if (WFGLSettings.ShowCustoms)
+        if (ShowCustoms)
             Print("COLLECTION", TextColor.Magneta, string.Join("; ", collection));
     }
 

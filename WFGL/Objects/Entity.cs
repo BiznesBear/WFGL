@@ -9,25 +9,26 @@ namespace WFGL.Objects;
 /// </summary>
 public abstract class Entity  
 {
-    private Hierarchy? Hierarchy { get; set; }
-    private GameMaster? Master { get; set; }
+    private Hierarchy? hierarchy;
+    private GameMaster? master;
 
     public Layer Layer { get; set; } = Layer.Defalut;
 
-    public GameMaster GetMaster() => Master ?? throw new ArgumentNullException("Null GameMaster instance in entity");
-    public Hierarchy GetHierarchy() => Hierarchy ?? throw new ArgumentNullException("Null Hierarchy instance in entity");
+    
+    public GameMaster Master => master ?? throw new NullReferenceException("Null GameMaster instance in entity");
+    public Hierarchy Hierarchy => hierarchy ?? throw new NullReferenceException("Null Hierarchy instance in entity");
 
-    public void SetMaster(GameMaster master) => Master = master; 
-    public void SetHierarchy(Hierarchy? hierarchy) => Hierarchy = hierarchy;
+    public void SetMaster(GameMaster master) => this.master = master; 
+    public void SetHierarchy(Hierarchy? hierarchy) => this.hierarchy = hierarchy;
 
     public void Create(Hierarchy hierarchy)
     {
         hierarchy.Register(this);
-        OnCreate(hierarchy, hierarchy.GetMaster());
+        OnCreate(hierarchy, hierarchy.Master);
     }
     public void Destroy(Hierarchy hierarchy)
     {
-        OnDestroy(hierarchy, hierarchy.GetMaster());
+        OnDestroy(hierarchy, hierarchy.Master);
         hierarchy.Deregister(this);
     }
     public virtual void OnCreate(Hierarchy h, GameMaster m) { SetMaster(m); }

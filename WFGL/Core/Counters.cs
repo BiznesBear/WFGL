@@ -11,7 +11,6 @@ public class BaseCounter : IDisposable
     public BaseCounter(Time time, float duration, bool loopAfterEnd)
     {
         maxTime = duration;
-
         timeMaster = time;
         loop = loopAfterEnd;
 
@@ -32,20 +31,14 @@ public class BaseCounter : IDisposable
     public virtual void Dispose() { timeMaster.Update -= Frame; }
 }
 
-public class Counter : BaseCounter
+public class Counter(Time time, float duration, bool loopAfterEnd, Action act) : BaseCounter(time, duration, loopAfterEnd)
 {
-    private Action action;
-
-    public Counter(Time time, float duration, bool loopAfterEnd, Action act) : base(time, duration, loopAfterEnd)
-    {
-        action = act;
-    }
     public Counter(Time time, CounterEvent cevent, bool loopAfterEnd) : this(time, cevent.Duration, loopAfterEnd, cevent.Action) { }
 
     public override void OnCountingEnd()
     {
         base.OnCountingEnd();
-        action?.Invoke();
+        act?.Invoke();
     }
 }
 
@@ -55,7 +48,7 @@ public class SequanceCounter : BaseCounter
     public List<CounterEvent> events;
     private int current;
 
-    public SequanceCounter(Time time, params List<CounterEvent> cEvents) : base(time, 1, true)
+    public SequanceCounter(Time time, bool loop = true, params List<CounterEvent> cEvents) : base(time, 1, loop)
     {
         events = cEvents;
         maxTime = events.First().Duration;
@@ -65,7 +58,6 @@ public class SequanceCounter : BaseCounter
             Wrint.Error($"Empty {nameof(CounterEvent)} list in {nameof(SequanceCounter)}");
             Dispose();
         }
-
     }
     public override void OnCountingEnd()
     {
@@ -76,7 +68,7 @@ public class SequanceCounter : BaseCounter
 
         maxTime = events[current].Duration;
 
-        // check if its last
+        // check if current is ending sequance
         if (current > events.Count) current = 0;
     }
 }

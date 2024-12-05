@@ -27,11 +27,11 @@ public class View : Transform
     /// <summary>
     /// Used in scaling objects 
     /// </summary>
-    public float Scaler => GetMaster().VirtualScale.FactorX / Target; // dividing virtual unit by refrence target to get real virtual unit 
+    public float Scaler => Master.VirtualScale.FactorX / Target; // dividing virtual unit by refrence target to get real virtual unit 
 
     public Size GetAspect()
     {
-        var win = GetMaster().GameWindow;
+        var win = Master.GameWindow;
         var winAspectRatio = (float)win.ClientSize.Width / win.ClientSize.Height;
         var targetAspectRatio = (float)AspectRatio.Width / AspectRatio.Height;
 
@@ -47,10 +47,8 @@ public class View : Transform
         }
         return win.ClientSize;
     }
-    public Rectangle GetClip(bool clear = false)
-    {
-        return new Rectangle(clear? new() : RealPosition, GetMaster().VirtualSize);
-    }
+    public Rectangle GetClip(bool clear = false) => new(clear ? new() : RealPosition, Master.VirtualSize);
+
 }
 public struct ViewOptions(Size aspectRatio, uint target = View.DEFALUT_TARGET)
 {

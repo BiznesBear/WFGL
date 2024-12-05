@@ -11,9 +11,8 @@ public abstract class GravityTransform : Transform
     public override void OnUpdate()
     {
         base.OnUpdate();
-        Velocity += GravityDirection * GravityStrenght;
-        Velocity = CheckVelocityLimit(Velocity);
-        Position += Velocity * GetMaster().TimeMaster.DeltaTimeF;
+        Velocity += CheckVelocityLimit(GravityDirection * GravityStrenght); 
+        Position += Velocity * Master.TimeMaster.DeltaTimeF;
     }
 
     public void AddForce(Force force)
