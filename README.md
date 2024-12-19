@@ -1,35 +1,32 @@
 ﻿# WFGL
-"Windows forms game library" allows you to create small 2D games faster (in windows forms, of course). 
+"Windows forms game library" allows you to create small 2D games faster and simplier (in windows forms, of course). 
 
 > [!NOTE]
 > WFGL was created as a 4fun project. This *library* was not created with the intention of creatin large games in it (or even anything in it). 
-> Treat this project as a kind of joke/meme. 
-> The structure of this project is more like game engine than actually game library.
+> Treat this as a kind of joke/meme. 
 
 > [!IMPORTANT]
-> WFGL uses GDI+ graphics which may result in low fps if there are too many bitmaps on view. 
+> WFGL uses GDI+ graphics which may result in low fps. 
 
 ## 📄 General futures 
 - Auto scaling
-- Very basic physics (rect colliders and very simple raycasting)
-- Built-in object managment
-- Optimalizations
-- UI
+- Object managment
+- Small optimalizations
+- Very very basic ui
 
 
 ## 🎈 Install by Cloning
+> [!IMPORTANT]
+> You need minimum .NET 9.0 to build WFGL
+
 ```
 $ https://github.com/BiznesBear/WFGL.git
 ```
 
-> [!IMPORTANT]
-> You need minimum .NET 9.0 to use WFGL
-
-When you create a new console project you have to set target platform to Windows and add
+When you create a new console project you have to set target platform to Windows and add this to your project file.
 ```csproj
 <UseWindowsForms>true</UseWindowsForms>
 ```
-to your project file.
 
 
 ## ⭐ Showcase

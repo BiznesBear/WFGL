@@ -1,6 +1,7 @@
 ﻿using WFGL.Core;
 using WFGL.Objects;
-using WFGL.Shapes;
+using WFGL.Pseudo.Shapes;
+
 namespace WFGL.Components;
 
 public class TestingCube : Cube

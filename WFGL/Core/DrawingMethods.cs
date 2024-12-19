@@ -2,7 +2,6 @@
 
 namespace WFGL.Core;
 
-// TODO: Add more drawing methods
 public abstract partial class GameMaster
 {
     #region Line
@@ -42,10 +41,12 @@ public abstract partial class GameMaster
     #endregion
 
     #region Other
-    public void DrawBitmap(Bitmap bitmap, Point position)
+    public void DrawBitmap(Bitmap bitmap, Point position, Vec2 scale)
     {
-        Size size = bitmap.Size.VirtualizePixel(MainView);
+        Size size = new Size((int)(bitmap.Size.Width * scale.X), (int)(bitmap.Size.Height * scale.Y)).VirtualizePixel(MainView);
         Renderer.DrawImage(bitmap, position.X, position.Y, size.Width, size.Height);
     }
+    public void DrawBitmap(Bitmap bitmap, Point position) => DrawBitmap(bitmap, position, Vec2.One);
+
     #endregion
 }

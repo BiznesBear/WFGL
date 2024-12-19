@@ -4,7 +4,7 @@ using WFGL.Objects;
 using WFGL.Physics;
 using WFGL.Rendering;
 
-namespace WFGL.Shapes;
+namespace WFGL.Pseudo.Shapes;
 
 public class ShapeRenderer : Transform3D, IPenDrawable
 {

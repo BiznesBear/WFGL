@@ -18,16 +18,16 @@ internal class Program
     {
         GameWindow window = new(GameWindowOptions.Default with { Background = Color.Black });
 
-        ortographicCube = new(window);
-        ortographicCube.Load();
+        testPlace = new(window);
+        testPlace.Load();
 
-        //testPlace = new(window);
-        //testPlace.Load();
-
-        //lab = new(window);
-        //lab.Load();
+        //ortographicCube = new(window);
+        //ortographicCube.Load();
 
         //gravityTests = new(window);
         //gravityTests.Load();
+
+        //lab = new(window);
+        //lab.Load();
     }
 }

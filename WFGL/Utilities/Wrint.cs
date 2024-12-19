@@ -76,7 +76,6 @@ public static class Wrint
     }
 
 
-    // un used in wfgl
     #region ForUserUse
     public static void Collection<T>(IEnumerable<T> collection)
     {

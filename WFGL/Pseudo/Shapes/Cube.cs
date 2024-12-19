@@ -1,6 +1,6 @@
 ﻿using WFGL.Physics;
 
-namespace WFGL.Shapes;
+namespace WFGL.Pseudo.Shapes;
 public class Cube : ShapeRenderer
 {
     public Cube() : base(new Shape(Vec3.One, new int[,] {
