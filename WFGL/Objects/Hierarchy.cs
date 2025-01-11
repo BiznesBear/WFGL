@@ -1,11 +1,8 @@
 ﻿using WFGL.Core;
 using WFGL.Rendering;
-using WFGL.Utilities;
 
 namespace WFGL.Objects;
 
-
-// TODO: Make hierarchy drawable?
 public class Hierarchy : Entity  
 {
     public List<Entity> Objects => objects;
@@ -22,7 +19,6 @@ public class Hierarchy : Entity
     public event EntityEventHandler? AddedObject;
     public event EntityEventHandler? RemovedObject;
 
-    public event Action? Update;
 
     private Dictionary<Layer, List<Entity>> Order = [];
     private readonly List<Entity> objects = [];
@@ -38,7 +34,7 @@ public class Hierarchy : Entity
         entity.SetHierarchy(this);
 
         objects.Add(entity);
-        Update += entity.OnUpdate;
+        Master.TimeMaster.Update += entity.OnUpdate;
 
         AddedObject?.Invoke(entity);
         ChangedList.Invoke();
@@ -50,7 +46,7 @@ public class Hierarchy : Entity
     {
         entity.SetHierarchy(null);
 
-        Update -= entity.OnUpdate;
+        Master.TimeMaster.Update -= entity.OnUpdate;
         objects.Remove(entity);
 
         RemovedObject?.Invoke(entity);
@@ -70,12 +66,7 @@ public class Hierarchy : Entity
 
     public IEnumerable<Entity> GetObjects() => LayerMaster.GetObjectsFrom(Master.LayerMaster, Order);
 
-   
-    public override void OnUpdate()
-    {
-        base.OnUpdate();
-        Update?.Invoke();
-    }
+
     public override void OnDraw()
     {
         base.OnDraw();

@@ -1,6 +1,4 @@
-﻿using WFGL.Physics;
-
-namespace WFGL.Pseudo.Shapes;
+﻿namespace WFGL.Pseudo.Shapes;
 
 public class Shape(Vec3 mesh, int[,] edges)
 {

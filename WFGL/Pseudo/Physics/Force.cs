@@ -1,5 +1,4 @@
-﻿
-namespace WFGL.Physics;
+﻿namespace WFGL.Pseudo.Physics;
 
 public struct Force(float strenght, Vec2 direction)
 {

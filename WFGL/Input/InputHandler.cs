@@ -1,9 +1,7 @@
 ﻿namespace WFGL.Input;
 
-// TODO: Find a way to replace all "if(!Enabled) return;" with better system
-
 /// <summary>
-/// Handle input in more accessible way.
+/// Handle input in more accessible way
 /// </summary>
 public abstract class InputHandler
 {
@@ -48,7 +46,6 @@ public abstract class InputHandler
     internal void MouseDoubleClicked(object? sender, MouseEventArgs e)
     {
         if (!Enabled) return;
-
         OnMouseDoubleClicked(e.Button);
     }
         

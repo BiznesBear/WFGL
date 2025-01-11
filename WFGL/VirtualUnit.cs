@@ -1,4 +1,4 @@
-namespace WFGL.Rendering;
+namespace WFGL;
 
 /// <summary>
 /// Amount of pixels per vector. Defines refrence for drawing objects in appropriate scale.

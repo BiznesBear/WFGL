@@ -1,4 +1,4 @@
-﻿namespace WFGL.Utilities;
+﻿namespace WFGL;
 
 /// <summary>
 /// Wfgl printer - Wrint. 
@@ -45,7 +45,7 @@ public static class Wrint
         Cyan = 36
     }
     private static string FromEnum(this TextColor color) { return $"\u001b[{(int)color}m"; }
-    private static string SetColor(this string message, TextColor color) => $"{FromEnum(color)}{message}{FromEnum(TextColor.White)}";
+    private static string SetColor(this string message, TextColor color) => $"{color.FromEnum()}{message}{TextColor.White.FromEnum()}";
     private static void Print(string prefix, TextColor color, object message) => Console.WriteLine($"[{prefix}] ".SetColor(color) + message);
 
 

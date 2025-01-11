@@ -1,6 +1,6 @@
 using WFGL.Core;
 
-namespace WFGL.Physics;
+namespace WFGL.Pseudo.Physics;
 
 /// <summary>
 /// Ray used for calculating raycasts
@@ -44,7 +44,7 @@ public struct Ray(Vec2 origin, Vec2 direction)
 
         if (t_max < 0) return false;
 
-        float t_hit = (t_min >= 0) ? t_min : t_max;
+        float t_hit = t_min >= 0 ? t_min : t_max;
 
         if (t_hit > maxRange)
             return false;

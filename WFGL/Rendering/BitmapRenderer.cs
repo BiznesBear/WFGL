@@ -1,11 +1,10 @@
 ﻿using WFGL.Core;
 using WFGL.Objects;
 using System.Drawing.Imaging.Effects;
-using WFGL.Physics;
 namespace WFGL.Rendering;
 
 /// <summary>
-/// Bitmap rendered directly on renderer.
+/// Bitmap rendered directly on renderer
 /// </summary>
 public class BitmapRenderer : Transform, IDrawable
 {
@@ -28,6 +27,7 @@ public class BitmapRenderer : Transform, IDrawable
         Effect = effect;
         Bake();
     }
+
     public BitmapRenderer(Bitmap source) : this(source, null) { }
     public BitmapRenderer(string filePath) : this(new Bitmap(filePath)) { }
 

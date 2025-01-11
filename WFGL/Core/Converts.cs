@@ -1,6 +1,4 @@
 ﻿using System.Numerics;
-using WFGL.Physics;
-using WFGL.Rendering;
 
 namespace WFGL.Core;
 

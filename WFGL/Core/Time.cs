@@ -10,7 +10,7 @@ public class Time
 {
     // consts
     public const int DEFALUT_INTERVAL = 1000 / DEFALUT_FPS;
-    public const int DEFALUT_FPS = 100;
+    public const int DEFALUT_FPS = 65;
 
     public event Action? Update = null;
     public Timer Timer { get; } = new();
@@ -25,7 +25,7 @@ public class Time
     public float DeltaTimeF => (float)DeltaTime;
     public float UncaledDeltaTimeF => (float)UncaledDeltaTime;
 
-    // privates
+    // other
 
     private readonly Stopwatch frameStopwatch;
     private DateTime previousTime = DateTime.Now;

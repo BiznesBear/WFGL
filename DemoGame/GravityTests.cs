@@ -1,10 +1,12 @@
 ﻿using System.Drawing;
 using System.Windows.Forms;
+
+using WFGL;
 using WFGL.Components;
 using WFGL.Core;
 using WFGL.Input;
 using WFGL.Objects;
-using WFGL.Physics;
+using WFGL.Pseudo.Physics;
 using WFGL.Rendering;
 using WFGL.UI;
 
@@ -79,7 +81,7 @@ public class GravityTestsMaster : GameMaster
 
         RegisterHierarchy(objects);
         RegisterHierarchy(canvas);
-        colliders.Update();
+        colliders.UpdateHashSet();
         background.Render();
     }
     protected override void OnUpdate()

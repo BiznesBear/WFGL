@@ -1,5 +1,4 @@
 ﻿using WFGL.Objects;
-using WFGL.Utilities;
 
 namespace WFGL.Rendering;
 
@@ -55,7 +54,6 @@ public sealed class LayerMaster
     /// <returns></returns>
     public static Dictionary<Layer, List<Entity>> SortObjectList(List<Entity> list) => list.GroupBy(o => o.Layer).ToDictionary(g => g.Key, g => g.ToList());
 
-
     public static IEnumerable<Entity> GetObjectsFrom(LayerMaster lm, Dictionary<Layer, List<Entity>> order)
     {
         foreach (Layer layer in lm.LayersList)
@@ -71,9 +69,8 @@ public sealed class LayerMaster
 /// Specifies the priority of drawing the objects.
 /// </summary>
 /// <param name="drawWeight">Priority of drawing the object</param>
-public class Layer(int drawWeight)
+public record Layer(int DrawWeight)
 {
-    public readonly static Layer Defalut = new(0);
-    public int DrawWeight { get; } = drawWeight;
-    public override string ToString() => $"layer({DrawWeight})";
+    public static Layer Defalut => new(0);
+    public override string ToString() => $"Layer({DrawWeight})";
 }

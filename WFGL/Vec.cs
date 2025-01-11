@@ -1,5 +1,5 @@
 ﻿using System.Numerics;
-namespace WFGL.Physics;
+namespace WFGL;
 
 public interface IVec<T> where T : struct, IVec<T>
 {
@@ -37,6 +37,7 @@ public struct Vec2(float x, float y) : IVec<Vec2>
     public static explicit operator Vec2(Vec3 a) => new(a.X, a.Y);
     public static explicit operator Vec2(Vector2 a) => new(a.X, a.Y);
     public static explicit operator Vec2(Vector3 a) => new(a.X, a.Y);
+
     public static Vec2 operator +(Vec2 a, Vec2 b) => new(a.X + b.X, a.Y + b.Y);
     public static Vec2 operator -(Vec2 a, Vec2 b) => new(a.X - b.X, a.Y - b.Y);
     public static Vec2 operator *(Vec2 a, Vec2 b) => new(a.X * b.X, a.Y * b.Y);

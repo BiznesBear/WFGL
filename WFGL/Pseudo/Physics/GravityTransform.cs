@@ -1,6 +1,6 @@
 ﻿using WFGL.Objects;
 
-namespace WFGL.Physics;
+namespace WFGL.Pseudo.Physics;
 public abstract class GravityTransform : Transform
 {
     public Vec2 Velocity { get; set; }
@@ -11,7 +11,7 @@ public abstract class GravityTransform : Transform
     public override void OnUpdate()
     {
         base.OnUpdate();
-        Velocity += CheckVelocityLimit(GravityDirection * GravityStrenght); 
+        Velocity += CheckVelocityLimit(GravityDirection * GravityStrenght);
         Position += Velocity * Master.TimeMaster.DeltaTimeF;
     }
 
@@ -22,10 +22,10 @@ public abstract class GravityTransform : Transform
     }
 
     public void ResetVelocity() => Velocity = 0;
-    private Vec2 CheckVelocityLimit(Vec2 velocity) 
+    private Vec2 CheckVelocityLimit(Vec2 velocity)
     {
         return new Vec2(
         Math.Clamp(velocity.X, -MaxVelocity, MaxVelocity),
-        Math.Clamp(velocity.Y, -MaxVelocity, MaxVelocity)); 
+        Math.Clamp(velocity.Y, -MaxVelocity, MaxVelocity));
     }
 }

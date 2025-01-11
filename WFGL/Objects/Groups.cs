@@ -2,7 +2,7 @@
 namespace WFGL.Objects;
 
 /// <summary>
-/// Allows to group objects by type.
+/// Allows to group objects by type
 /// </summary>
 /// <typeparam name="T"></typeparam>
 public class Group<T> : HashSet<T>
@@ -16,7 +16,7 @@ public class Group<T> : HashSet<T>
     {
         foreach (Hierarchy hierarchy in hierarchys)
             Register(hierarchy);
-        Update();
+        UpdateHashSet();
     }
 
     public void Register(Hierarchy hierarchy)
@@ -34,7 +34,7 @@ public class Group<T> : HashSet<T>
     /// <summary>
     /// Update object list.
     /// </summary>
-    public void Update()
+    public void UpdateHashSet()
     {
         Clear();
         foreach (var hierarchy in Hierarchys)
@@ -44,7 +44,7 @@ public class Group<T> : HashSet<T>
 }
 
 /// <summary>
-/// Auto updates when new hierarchy or object is added in any hierarchy of group.
+/// Auto updates when new hierarchy or object is added in any hierarchy of group
 /// </summary>
 /// <typeparam name="T"></typeparam>
 public class AutoGroup<T> : Group<T>
@@ -54,15 +54,16 @@ public class AutoGroup<T> : Group<T>
         HierarchyAdded += AddedHierarchy;
         HierarchyRemoved += RemovedHierarchy;
     }
+
     private void AddedHierarchy(Hierarchy h)
     {
-        h.ChangedList += Update;
-        Update();
+        h.ChangedList += UpdateHashSet;
+        UpdateHashSet();
     }
 
     private void RemovedHierarchy(Hierarchy h)
     {
-        h.ChangedList -= Update;
-        Update();
+        h.ChangedList -= UpdateHashSet;
+        UpdateHashSet();
     }
 }

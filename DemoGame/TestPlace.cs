@@ -1,14 +1,14 @@
 ﻿using System.Drawing;
 using System.Windows.Forms;
 
+using WFGL;
 using WFGL.Core;
 using WFGL.Input;
-using WFGL.Physics;
 using WFGL.UI;
 using WFGL.Rendering;
 using WFGL.Objects;
 using WFGL.Components;
-using WFGL.Utilities;
+using WFGL.Pseudo.Physics;
 
 namespace DemoGame;
 
@@ -55,7 +55,6 @@ public class TestPlaceMaster : GameMaster
         player = new() { Layer = topLayer };
         background = new(this);
         colliders = new(background);
-        
     }
 
     protected override void OnLoad()
@@ -101,7 +100,7 @@ public class TestPlaceMaster : GameMaster
         RegisterHierarchy(objects);
         RegisterHierarchy(canvas);
 
-        colliders.Update();
+        colliders.UpdateHashSet();
         background.Render();
     }
     
@@ -120,11 +119,13 @@ public class TestPlaceMaster : GameMaster
 
         ResetRenderClip();
     }
+
     protected override void OnDraw()
     {
         // drawing background 
         Renderer.FillRectangle(defaultBrush, new(0, 0, VirtualSize.Width,VirtualSize.Height));
     }
+
     protected override void OnAfterDraw()
     {
         sprite.DrawColliderBounds(this);
@@ -147,11 +148,10 @@ internal class TestPlaceInput : InputHandler
             if (!Program.testPlace.IsFullScreen) Program.testPlace.FullScreen();
             else Program.testPlace.NormalScreen();
         }
-        if (key == Keys.P)
+        else if (key == Keys.P)
         {
             Program.testPlace.MainView.Position = 0;
         }
-        
     }
 }
 
@@ -180,6 +180,7 @@ internal class TestPlacePlayer : Transform, ICollide
         base.OnCreate(h, m);
         playerSprite.Scale = new(1f, 0.6f);
     }
+
     public override void OnUpdate()
     {
         // movement

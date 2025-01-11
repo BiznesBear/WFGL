@@ -1,5 +1,4 @@
 ﻿using WFGL.Input;
-using WFGL.Utilities;
 
 namespace WFGL.Core;
 

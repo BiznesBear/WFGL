@@ -1,6 +1,6 @@
 ﻿using WFGL.Objects;
 
-namespace WFGL.Physics;
+namespace WFGL.Pseudo.Physics;
 
 public class BoxCollider : Transform, ICollide
 {
@@ -10,7 +10,7 @@ public class BoxCollider : Transform, ICollide
     {
         Box = box;
     }
-    
+
     public virtual Vec2 ColliderSize => Box.Size;
     public virtual Vec2 ColliderPosition => Position + Box.Location;
 }

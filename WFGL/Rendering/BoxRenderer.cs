@@ -1,6 +1,6 @@
 ﻿using WFGL.Core;
-using WFGL.Physics;
 using WFGL.Objects;
+using WFGL.Pseudo.Physics;
 
 namespace WFGL.Rendering;
 

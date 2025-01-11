@@ -1,6 +1,6 @@
 ﻿using WFGL.Core;
 
-namespace WFGL.Physics;
+namespace WFGL.Pseudo.Physics;
 public interface ICollide
 {
     public Vec2 ColliderSize { get; }
@@ -16,14 +16,14 @@ public static class Collider
 
     #region IsColliding
     public static bool IsColliding(this ICollide self, ICollide other) =>
-            (self.ColliderPosition.X < other.ColliderPosition.X + other.ColliderSize.X) && (other.ColliderPosition.X < self.ColliderPosition.X + self.ColliderSize.X) &&
-            (self.ColliderPosition.Y < other.ColliderPosition.Y + other.ColliderSize.Y) && (other.ColliderPosition.Y < self.ColliderPosition.Y + self.ColliderSize.Y);
+            self.ColliderPosition.X < other.ColliderPosition.X + other.ColliderSize.X && other.ColliderPosition.X < self.ColliderPosition.X + self.ColliderSize.X &&
+            self.ColliderPosition.Y < other.ColliderPosition.Y + other.ColliderSize.Y && other.ColliderPosition.Y < self.ColliderPosition.Y + self.ColliderSize.Y;
 
     public static bool IsColliding(this ICollide self, IEnumerable<ICollide> other, out ICollide? collider)
     {
         foreach (ICollide coll in other)
         {
-            if (IsColliding(self, coll))
+            if (self.IsColliding(coll))
             {
                 collider = coll;
                 return true;
@@ -33,7 +33,7 @@ public static class Collider
         return false;
     }
     public static bool IsColliding(this ICollide self, IEnumerable<ICollide> other) =>
-        IsColliding(self, other, out ICollide? c);
+        self.IsColliding(other, out ICollide? c);
 
     #endregion
 
@@ -51,14 +51,14 @@ public static class Collider
     }
 
     public static bool IsColliding(this ICircleCollide self, IEnumerable<ICircleCollide> other) =>
-        IsColliding(self, other, out ICircleCollide? c);
+        self.IsColliding(other, out ICircleCollide? c);
 
 
     public static bool IsColliding(this ICircleCollide self, IEnumerable<ICircleCollide> other, out ICircleCollide? collider)
     {
         foreach (ICircleCollide coll in other)
         {
-            if (IsColliding(self, coll))
+            if (self.IsColliding(coll))
             {
                 collider = coll;
                 return true;

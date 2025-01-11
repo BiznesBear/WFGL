@@ -1,11 +1,10 @@
 ﻿using WFGL.Core;
-using WFGL.Rendering;
 
-namespace WFGL.Physics;
+namespace WFGL.Pseudo.Physics;
 
 public struct Box
 {
-    public Vec2 Location { get; set; } 
+    public Vec2 Location { get; set; }
     public Vec2 Size { get; set; }
 
     public Box()

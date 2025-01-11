@@ -1,5 +1,4 @@
 ﻿using WFGL.Core;
-using WFGL.Physics;
 namespace WFGL.Objects;
 
 public abstract class TransformBase<T> : Entity where T : struct, IVec<T>
@@ -7,6 +6,7 @@ public abstract class TransformBase<T> : Entity where T : struct, IVec<T>
     public virtual T Scale { get; set; } 
     public T Position { get; set; }
 }
+
 public abstract class Transform : TransformBase<Vec2>
 {
     public override Vec2 Scale { get; set; } = Vec2.One;
@@ -16,6 +16,7 @@ public abstract class Transform : TransformBase<Vec2>
         set => Position = value.ToVec2(Master.VirtualScale); 
     }
 }
+
 public abstract class Transform3D : TransformBase<Vec3>
 {
     public override Vec3 Scale { get; set; } = Vec3.One;

@@ -1,7 +1,6 @@
 ﻿using WFGL.Core;
 using WFGL.Input;
 using WFGL.Objects;
-using WFGL.Physics;
 
 namespace WFGL.UI;
 
@@ -60,6 +59,7 @@ public abstract class ButtonBase<T> : Transform
         OnStateChanged(State, state);
         State = state;
     }
+
     public virtual void OnStateChanged(ButtonState oldState, ButtonState newState) {
 
         displayed = newState switch
@@ -69,6 +69,7 @@ public abstract class ButtonBase<T> : Transform
             ButtonState.Pressed => Clicked,
             _ => Defalut
         };
+
         switch (newState)
         {
             case ButtonState.Defalut:
@@ -83,58 +84,55 @@ public abstract class ButtonBase<T> : Transform
         }
     }
 }
-public class RectangleButton : ButtonBase<Color>
+public class RectangleButton(Color defalut, Color pointed, Color clicked) : ButtonBase<Color>(defalut, pointed, clicked)
 {
     private SolidBrush GetBrush() => new(displayed);
-    public RectangleButton(Color defalut,Color pointed,Color clicked) : base(defalut, pointed, clicked) { }
     public RectangleButton(Color color) : this(color, color, color) { }
-    public override void OnDraw()
-    {
-        Master.Renderer.FillRectangle(GetBrush(), Bounds);
-    }
+    public override void OnDraw() => Master.Renderer.FillRectangle(GetBrush(), Bounds); 
 }
-public class BitmapButton : ButtonBase<Bitmap>
+public class BitmapButton(Bitmap defalutBitmap, Bitmap pointedBitmap, Bitmap clickedBitmap) : ButtonBase<Bitmap>(defalutBitmap, pointedBitmap, clickedBitmap)
 {
-    public BitmapButton(Bitmap defalutBitmap, Bitmap pointedBitmap, Bitmap clickedBitmap) : base(defalutBitmap, pointedBitmap, clickedBitmap) { }
     public BitmapButton(Bitmap bmp) : this(bmp,bmp,bmp) { }
-    public override void OnDraw()
-    {
-        Master.DrawBitmap(displayed, Bounds.Location);
-    }
+    public override void OnDraw() => Master.DrawBitmap(displayed, Bounds.Location);
 }
 public class TextRectButton : RectangleButton
 {
     public Font font = new(StringRenderer.DEFALUT_FONT_NAME,12);
-    public readonly StringRenderer stringRenderer;
+
+    public StringRenderer stringRenderer;
     public TextRectButton(string text,Color defalut, Color pointed, Color clicked) : base(defalut, pointed, clicked) { stringRenderer = new(font, text); }
     public TextRectButton(string text,Color color) : this(text,color, color, color) { }
 
-    public override void OnUpdate()
+    public override void OnCreate(Hierarchy h, GameMaster m)
     {
-        base.OnUpdate();
-        stringRenderer.OnUpdate();
+        base.OnCreate(h, m);
+        h.Register(stringRenderer);
     }
-    public override void OnDraw()
+
+    public override void OnDestroy(Hierarchy h, GameMaster m)
     {
-        base.OnDraw();
-        stringRenderer.Draw(Master,Master.Renderer);
+        base.OnDestroy(h, m);
+        h.Deregister(stringRenderer);
     }
+
 }
 public class TextBitmapButton : BitmapButton
 {
     public Font font = new(StringRenderer.DEFALUT_FONT_NAME, 12);
-    public readonly StringRenderer stringRenderer;
+
+    public StringRenderer stringRenderer;
     public TextBitmapButton(string text,Bitmap defalutBmp, Bitmap pointedBmp, Bitmap clickedBmp) : base(defalutBmp, pointedBmp, clickedBmp) { stringRenderer = new(font, text);}
     public TextBitmapButton(string text, Bitmap bmp) : this(text,bmp, bmp, bmp) { }
 
-    public override void OnUpdate()
+    public override void OnCreate(Hierarchy h, GameMaster m)
     {
-        base.OnUpdate();
-        stringRenderer.OnUpdate();
+        base.OnCreate(h, m);
+        h.Register(stringRenderer);
     }
-    public override void OnDraw()
+
+    public override void OnDestroy(Hierarchy h, GameMaster m)
     {
-        base.OnDraw();
-        stringRenderer.Draw(Master, Master.Renderer);
+        base.OnDestroy(h, m);
+        h.Deregister(stringRenderer);
     }
 }

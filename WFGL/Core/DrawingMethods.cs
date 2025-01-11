@@ -1,4 +1,4 @@
-﻿using WFGL.Physics;
+﻿using WFGL.Pseudo.Physics;
 
 namespace WFGL.Core;
 

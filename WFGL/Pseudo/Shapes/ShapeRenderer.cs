@@ -1,7 +1,6 @@
 ﻿using System.Numerics;
 using WFGL.Core;
 using WFGL.Objects;
-using WFGL.Physics;
 using WFGL.Rendering;
 
 namespace WFGL.Pseudo.Shapes;

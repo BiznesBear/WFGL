@@ -4,8 +4,8 @@ using System.Windows.Forms;
 using WFGL.Core;
 using WFGL.Input;
 using WFGL.Objects;
-using WFGL.Physics;
 using WFGL.Components;
+using WFGL;
 
 namespace DemoGame;
 
@@ -20,11 +20,14 @@ public class OrtographicCubeMaster : GameMaster
         GameWindow.RegisterInput(new OrtographicCubeInput());
 
         cube.Position = Center.ToVec3(VirtualScale);
-        objects = new(this);
-        objects.Init = 
-        [
-            cube
-        ];
+        objects = new(this)
+        {
+            Init =
+            [
+                cube
+            ]
+        };
+
         RegisterHierarchy(objects);
     }
 

@@ -1,6 +1,4 @@
-﻿using WFGL.Utilities;
-
-namespace WFGL.Core;
+﻿namespace WFGL.Core;
 public class BaseCounter : IDisposable
 {
     protected float maxTime;
@@ -28,7 +26,7 @@ public class BaseCounter : IDisposable
         }
     }
     public virtual void OnCountingEnd() { }
-    public virtual void Dispose() { timeMaster.Update -= Frame; }
+    public virtual void Dispose() { timeMaster.Update -= Frame; GC.SuppressFinalize(this); }
 }
 
 public class Counter(Time time, float duration, bool loopAfterEnd, Action act) : BaseCounter(time, duration, loopAfterEnd)
@@ -59,6 +57,7 @@ public class SequanceCounter : BaseCounter
             Dispose();
         }
     }
+
     public override void OnCountingEnd()
     {
         base.OnCountingEnd();

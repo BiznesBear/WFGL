@@ -2,7 +2,6 @@
 using WFGL.Input;
 using WFGL.Objects;
 using WFGL.Rendering;
-using WFGL.Utilities;
 
 namespace WFGL.Core;
 
@@ -18,6 +17,7 @@ public abstract partial class GameMaster
     public Canvas? Canvas { get; private set; }
     public Control TargetControl => Canvas is null? GameWindow : Canvas;
     public InputHandler InputMaster => GameWindow.GetInput();
+
     #endregion
 
     #region Virtual
@@ -25,7 +25,6 @@ public abstract partial class GameMaster
     public float RealVirtualScaleX => VirtualUnit.VirtualizeToFactor(TargetControl.ClientSize.Width);
     public float RealVirtualScaleY => VirtualUnit.VirtualizeToFactor(TargetControl.ClientSize.Height);
     public Point Center => new(TargetControl.ClientSize.Width / 2, TargetControl.ClientSize.Height / 2);
-
     public Size VirtualSize => VirtualScale.GetSize();
 
     #endregion
@@ -61,11 +60,11 @@ public abstract partial class GameMaster
         GameWindow.ResizeEnd += Resized;
 
         MainView = new(this, ViewOptions.Default);
-        MainHierarchy = new Hierarchy(this);
+        MainHierarchy = new(this);
 
         TimeMaster.Update += Update;
 
-        renderBuffer = new Bitmap(VirtualSize.Width, VirtualSize.Height);
+        renderBuffer = new(VirtualSize.Width, VirtualSize.Height);
         Renderer = Graphics.FromImage(renderBuffer);
 
         ResetRenderBuffer();
@@ -76,6 +75,7 @@ public abstract partial class GameMaster
         TimeMaster.Update += MainHierarchy.OnUpdate;
         WhenDraw += MainHierarchy.OnDraw;
     }
+
     public GameMaster(GameWindow window) : this(window, null) { }
 
     public void Load(bool showDialog=true)
@@ -83,8 +83,9 @@ public abstract partial class GameMaster
         // IMPORTANT: DO NOT CHANGE THE ORDER
         TimeMaster.Start();
         OnLoad();
-        if(showDialog) GameWindow.ShowDialog();
+
         Wrint.Info("Loaded");
+        if(showDialog) GameWindow.ShowDialog();
         if (GameWindow.InputHandlerIsNull) Wrint.Warring("No InputHandler assigned");
     }
 
