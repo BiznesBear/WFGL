@@ -6,6 +6,7 @@ public sealed class LayerMaster
 {
     private List<Layer> LayersList { get; set; } = [Layer.Defalut];
 
+
     /// <summary>
     /// Gets or sets layers list with defalut layer.
     /// </summary>

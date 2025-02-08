@@ -15,7 +15,7 @@ public class BoxRenderer : BoxRendererBase, IPenDrawable
 
     public void Draw(GameMaster m, Graphics r)
     {
-        m.DrawBox(Pen, Box);
+        m.Drawer.DrawBox(Pen, Box);
     }
 }
 
@@ -24,6 +24,6 @@ public class FilledBoxRenderer : BoxRendererBase, IBrushDrawable
     public Brush Brush { get; set; } = Brushes.Green;
     public void Draw(GameMaster m, Graphics r)
     {
-        m.DrawFilledBox(Brush, Box);
+        m.Drawer.DrawFilledBox(Brush, Box);
     }
 }

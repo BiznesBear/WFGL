@@ -1,4 +1,5 @@
 ﻿using System.Drawing;
+
 using WFGL.Core;
 using WFGL.Input;
 
@@ -18,8 +19,8 @@ public class LabMaster : GameMaster
     {
         base.OnDraw();
         Renderer.FillRectangle(backgroundBrush, new(0, 0, VirtualSize.Width, VirtualSize.Height));
-        
-        DrawBitmap(Assets.player, new Point());
+
+        Drawer.DrawBitmap(Assets.player, WFGL.Vec2.One);
     }
 } 
 public class LabInput : InputHandler

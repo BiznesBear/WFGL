@@ -1,13 +1,11 @@
-﻿# WFGL
+﻿# 🗑️ WFGL
 "Windows forms game library" allows you to create small 2D games faster and simplier (in windows forms, of course). 
-Remember that WFGL was created as *prototype* of an idea.
 
 > [!NOTE]
-> WFGL was created as a 4fun project. This *library* was not created with the intention of creatin large games in it (or even anything in it). 
+> WFGL was created as a 4fun project. 
+> This *library* was not created with the intention of creatin large games in it (or even anything in it). 
+> Also contains huge amounts of spagetti code.
 > Treat this as a kind of joke/meme. 
-
-> [!IMPORTANT]
-> WFGL uses GDI+ graphics which may result in low fps. 
 
 ## 📄 General futures 
 - Auto scaling

@@ -71,5 +71,5 @@ public static class Collider
     #endregion
 
     public static void DrawColliderBounds(this ICollide self, GameMaster m) =>
-        m.DrawBox(new(self.ColliderPosition, self.ColliderSize));
+        m.Drawer.DrawBox(new(self.ColliderPosition, self.ColliderSize));
 }

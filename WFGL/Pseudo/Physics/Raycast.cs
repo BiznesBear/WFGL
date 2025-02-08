@@ -55,10 +55,10 @@ public struct Ray(Vec2 origin, Vec2 direction)
     }
 
     public readonly void DrawGizmos(GameMaster m) =>
-        m.DrawLine(Origin, Direction);
+        m.Drawer.DrawLine(Origin, Direction);
 
     public readonly void DrawGizmos(GameMaster m, Vec2 intersectionPoint) =>
-        m.DrawLine(Origin, intersectionPoint);
+        m.Drawer.DrawLine(Origin, intersectionPoint);
 
     public override readonly string ToString() => $"{Origin} => {Direction}";
 }

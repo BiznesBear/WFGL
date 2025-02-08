@@ -5,7 +5,7 @@ using WFGL.Rendering;
 
 namespace WFGL.Core;
 
-public abstract partial class GameMaster 
+public abstract class GameMaster 
 {
     #region Properties
     public GameWindow GameWindow { get; }
@@ -14,6 +14,7 @@ public abstract partial class GameMaster
     public LayerMaster LayerMaster { get; } = new();
     public Hierarchy MainHierarchy { get; }
     public Graphics Renderer { get; private set; }
+    public Drawer Drawer { get; private set; }
     public Canvas? Canvas { get; private set; }
     public Control TargetControl => Canvas is null? GameWindow : Canvas;
     public InputHandler InputMaster => GameWindow.GetInput();
@@ -55,6 +56,7 @@ public abstract partial class GameMaster
         GameWindow = window;
         Canvas = canvas;
         windowSizeTemp = GameWindow.ClientSize;
+        Drawer = new(this);
 
         TargetControl.Paint += Draw;
         GameWindow.ResizeEnd += Resized;
@@ -78,6 +80,10 @@ public abstract partial class GameMaster
 
     public GameMaster(GameWindow window) : this(window, null) { }
 
+    /// <summary>
+    /// Loads game
+    /// </summary>
+    /// <param name="showDialog">If true shows dialog after load</param>
     public void Load(bool showDialog=true)
     {
         // IMPORTANT: DO NOT CHANGE THE ORDER

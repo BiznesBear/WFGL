@@ -93,7 +93,7 @@ public class RectangleButton(Color defalut, Color pointed, Color clicked) : Butt
 public class BitmapButton(Bitmap defalutBitmap, Bitmap pointedBitmap, Bitmap clickedBitmap) : ButtonBase<Bitmap>(defalutBitmap, pointedBitmap, clickedBitmap)
 {
     public BitmapButton(Bitmap bmp) : this(bmp,bmp,bmp) { }
-    public override void OnDraw() => Master.DrawBitmap(displayed, Bounds.Location);
+    public override void OnDraw() => Master.Drawer.DrawBitmap(displayed, Bounds.Location.ToVec2(Master.VirtualScale));
 }
 public class TextRectButton : RectangleButton
 {
